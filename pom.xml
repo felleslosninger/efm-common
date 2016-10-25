@@ -7,6 +7,13 @@
     <version>1.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <scm>
+        <connection>scm:git:https://github.com/difi/move-common</connection>
+        <developerConnection>scm:git:https://github.com/difi/move-common</developerConnection>
+        <url>https://github.com/difi/move-common</url>
+        <tag>HEAD</tag>
+    </scm>
+
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -36,5 +43,32 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>1.4.3</version>
+                <configuration>
+                    <format>XML</format>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>sonar</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <sonar.host.url>
+                    http://sonar-app01.difi.local:9000/
+                </sonar.host.url>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>
