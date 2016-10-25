@@ -13,6 +13,8 @@ public class MarkerFactory {
     private static final String RESPONSE_STATUS_MESSAGE_TEXT = "response-message-text";
     private static final String RESPONSE_STATUS_MESSAGE_CODE = "response-message-code";
     private static final String MESSAGE_TYPE = "message-type";
+    private static final String MESSAGE_ID = "message_id";
+    private static final String RECEIPT_STATUS = "receipt_status";
 
     /**
      * Simple factory pattern
@@ -50,5 +52,13 @@ public class MarkerFactory {
 
     public static LogstashMarker responseMessageTextMarker(String statusMessageText) {
         return Markers.append(RESPONSE_STATUS_MESSAGE_TEXT, statusMessageText);
+    }
+
+    public static LogstashMarker messageIdMarker(String messageId) {
+        return Markers.append(MESSAGE_ID, messageId);
+    }
+
+    public static LogstashMarker receiptStatus(String status) {
+        return Markers.append(RECEIPT_STATUS, status);
     }
 }
