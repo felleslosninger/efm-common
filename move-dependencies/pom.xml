@@ -23,10 +23,16 @@
         <json-path.version>2.2.0</json-path.version>
         <activemq.version>5.14.1</activemq.version>
         <spring-data-releasetrain.version>Hopper-SR4</spring-data-releasetrain.version>
+        <nimbus.version>4.23</nimbus.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.nimbusds</groupId>
+                <artifactId>nimbus-jose-jwt</artifactId>
+                <version>${nimbus.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
