@@ -78,15 +78,15 @@ public class KeystoreHelper {
         keystore.load(i, this.keystore.getStorePassword().toCharArray());
         if (!keystore.containsAlias(this.keystore.getAlias())) {
             throw new RuntimeException("no entry with alias " + this.keystore.getAlias() + " found in the keystore "
-                    + this.keystore.getLocation());
+                    + this.keystore.getLocation().getDescription());
         }
         if (!certificate && keystore.isKeyEntry(this.keystore.getAlias())) {
             throw new RuntimeException("no key with alias " + this.keystore.getAlias() + " found in the keystore "
-                    + this.keystore.getLocation());
+                    + this.keystore.getLocation().getDescription());
         }
         if (certificate && keystore.isCertificateEntry(this.keystore.getAlias())) {
             throw new RuntimeException("no certificate with alias " + this.keystore.getAlias() + " found in the keystore "
-                    + this.keystore.getLocation());
+                    + this.keystore.getLocation().getDescription());
         }
         return keystore;
     }
