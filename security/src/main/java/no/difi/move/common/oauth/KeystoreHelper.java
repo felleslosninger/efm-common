@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Enumeration;
 import no.difi.asic.SignatureHelper;
 import no.difi.move.common.config.KeystoreProperties;
 
@@ -30,7 +31,11 @@ public class KeystoreHelper {
 
         PrivateKey key = null;
         try (InputStream i = this.keystore.getLocation().getInputStream()) {
-            KeyStore keystore = getKeystoreEntry(i, false);
+            KeyStore keystore = getKeystore(i);
+            if (!isKeyEntry(keystore)) {
+                throw new RuntimeException("no private key with alias " + this.keystore.getAlias() + " found in the keystore "
+                        + this.keystore.getLocation());
+            }
             key = (PrivateKey) keystore.getKey(this.keystore.getAlias(), this.keystore.getEntryPassword().toCharArray());
             return key;
         } catch (CertificateException | KeyStoreException | IOException | NoSuchAlgorithmException | UnrecoverableKeyException e) {
@@ -42,7 +47,11 @@ public class KeystoreHelper {
 
         KeyPair result = null;
         try (InputStream i = this.keystore.getLocation().getInputStream()) {
-            KeyStore keystore = getKeystoreEntry(i, false);
+            KeyStore keystore = getKeystore(i);
+            if (!isKeyEntry(keystore)) {
+                throw new RuntimeException("no key pair with alias " + this.keystore.getAlias() + " found in the keystore "
+                        + this.keystore.getLocation());
+            }
             PrivateKey key = (PrivateKey) keystore.getKey(this.keystore.getAlias(), this.keystore.getEntryPassword().toCharArray());
             X509Certificate c = (X509Certificate) keystore.getCertificate(this.keystore.getAlias());
             result = new KeyPair(c.getPublicKey(), key);
@@ -56,7 +65,11 @@ public class KeystoreHelper {
 
         X509Certificate result = null;
         try (InputStream i = this.keystore.getLocation().getInputStream()) {
-            KeyStore keystore = getKeystoreEntry(i, true);
+            KeyStore keystore = getKeystore(i);
+            if (isKeyEntry(keystore)) {
+                throw new RuntimeException("no certificate with alias " + this.keystore.getAlias() + " found in the keystore "
+                        + this.keystore.getLocation());
+            }
             result = (X509Certificate) keystore.getCertificate(this.keystore.getAlias());
         } catch (CertificateException | KeyStoreException | IOException | NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
@@ -73,21 +86,21 @@ public class KeystoreHelper {
         }
     }
 
-    private KeyStore getKeystoreEntry(final InputStream i, final boolean certificate) throws IOException, RuntimeException, NoSuchAlgorithmException, CertificateException, KeyStoreException {
+    private boolean isKeyEntry(final KeyStore keystore) throws IOException, RuntimeException, NoSuchAlgorithmException, CertificateException, KeyStoreException {
+        Enumeration aliases = keystore.aliases();
+        while (aliases.hasMoreElements()) {
+            String alias = (String) aliases.nextElement();
+            boolean isKey = keystore.isKeyEntry(alias);
+            if (isKey && alias.equals(this.keystore.getAlias())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private KeyStore getKeystore(final InputStream i) throws KeyStoreException, CertificateException, IOException, NoSuchAlgorithmException {
         KeyStore keystore = KeyStore.getInstance("JKS");
         keystore.load(i, this.keystore.getStorePassword().toCharArray());
-        if (!keystore.containsAlias(this.keystore.getAlias())) {
-            throw new RuntimeException("no entry with alias " + this.keystore.getAlias() + " found in the keystore "
-                    + this.keystore.getLocation().getDescription());
-        }
-        if (!certificate && keystore.isKeyEntry(this.keystore.getAlias())) {
-            throw new RuntimeException("no key with alias " + this.keystore.getAlias() + " found in the keystore "
-                    + this.keystore.getLocation().getDescription());
-        }
-        if (certificate && keystore.isCertificateEntry(this.keystore.getAlias())) {
-            throw new RuntimeException("no certificate with alias " + this.keystore.getAlias() + " found in the keystore "
-                    + this.keystore.getLocation().getDescription());
-        }
         return keystore;
     }
 
