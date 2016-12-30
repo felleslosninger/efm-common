@@ -6,6 +6,7 @@ import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
+import lombok.extern.slf4j.Slf4j;
 import no.difi.asic.SignatureHelper;
 import no.difi.move.common.config.KeystoreProperties;
 
@@ -14,6 +15,7 @@ import no.difi.move.common.config.KeystoreProperties;
  *
  * @author Glebnn Bech
  */
+@Slf4j
 public class KeystoreHelper {
 
     private final KeystoreProperties keystore;
@@ -66,7 +68,7 @@ public class KeystoreHelper {
         X509Certificate result = null;
         try (InputStream i = this.keystore.getLocation().getInputStream()) {
             KeyStore keystore = getKeystore(i);
-            if (isKeyEntry(keystore)) {
+            if (!isKeyEntry(keystore)) {
                 throw new RuntimeException("no certificate with alias " + this.keystore.getAlias() + " found in the keystore "
                         + this.keystore.getLocation());
             }
@@ -90,6 +92,7 @@ public class KeystoreHelper {
         Enumeration aliases = keystore.aliases();
         while (aliases.hasMoreElements()) {
             String alias = (String) aliases.nextElement();
+            log.debug("Found: " + alias + " in " + this.keystore.getLocation());
             boolean isKey = keystore.isKeyEntry(alias);
             if (isKey && alias.equals(this.keystore.getAlias())) {
                 return true;
