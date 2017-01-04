@@ -26,10 +26,21 @@
         <!-- <nimbus.version>4.23</nimbus.version> -->
         <nimbus.sdk.version>5.17.2</nimbus.sdk.version>
         <nimbus.jwt.version>4.27</nimbus.jwt.version>
+        <swagger.version>2.6.1</swagger.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger2</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger-ui</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.nimbusds</groupId>
                 <artifactId>oauth2-oidc-sdk</artifactId>
