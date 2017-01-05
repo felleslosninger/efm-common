@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
-        <version>1.4.1.RELEASE</version>
+        <version>1.4.3.RELEASE</version>
     </parent>
     <groupId>no.difi.move-common</groupId>
     <artifactId>move-dependencies</artifactId>
