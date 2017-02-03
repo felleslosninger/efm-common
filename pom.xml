@@ -44,6 +44,7 @@
         <module>move-dependencies</module>
         <module>security</module>
         <module>config</module>
+        <module>cloud</module>
     </modules>
 
     <dependencyManagement>
