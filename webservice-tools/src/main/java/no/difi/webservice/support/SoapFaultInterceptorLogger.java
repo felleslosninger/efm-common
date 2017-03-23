@@ -50,7 +50,7 @@ public class SoapFaultInterceptorLogger implements ClientInterceptor {
     @SuppressWarnings("squid:RedundantThrowsDeclarationCheck")
     @Override
     public boolean handleFault(MessageContext messageContext) throws WebServiceClientException {
-        throw new SoapFaultException("Failed to send message to correspondence agency");
+        throw new SoapFaultException("Failed to send message");
     }
 
     @SuppressWarnings("squid:MaximumInheritanceDepth")
@@ -81,7 +81,7 @@ public class SoapFaultInterceptorLogger implements ClientInterceptor {
         if (Optional.ofNullable(ex).filter(e -> e instanceof SoapFaultException).isPresent()) {
             final WebServiceMessage response = messageContext.getResponse();
             System.out.println("Fault from server: " + asString(response.getPayloadSource()));
-            Audit.error("Failed to send message to correspondence agency", logMarkers.and(Markers.append("soap_fault", asString(response.getPayloadSource()))), ex);
+            Audit.error("Failed to send message", logMarkers.and(Markers.append("soap_fault", asString(response.getPayloadSource()))), ex);
         } else if (ex != null)
         {
             System.out.println("Fault from server: " + asString(messageContext.getResponse().getPayloadSource()));
