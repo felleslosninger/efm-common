@@ -26,7 +26,12 @@ public class SpringCloudConfigConfiguration implements ApplicationContextAware {
     @Bean
     @ConfigurationPropertiesBinding
     public Converter<String, Resource> resourceConverter() {
-        return s -> applicationContext.getResource(s);
+        return new Converter<String, Resource>() {
+            @Override
+            public Resource convert(String s) {
+                return applicationContext.getResource(s);
+            }
+        };
     }
 
     @Override
