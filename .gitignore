@@ -63,3 +63,4 @@ fabric.properties
 /webservice-tools/target/
 /audit/target/
 /config/target/
+/cloud/target/

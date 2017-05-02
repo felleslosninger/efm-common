@@ -3,6 +3,8 @@ package no.difi.meldingsutveksling.logging;
 import net.logstash.logback.marker.LogstashMarker;
 import net.logstash.logback.marker.Markers;
 
+import static no.difi.move.common.IdentifierHasher.hashIfPersonnr;
+
 public class MarkerFactory {
     private static final String CONVERSATION_ID = "conversation_id";
     private static final String JOURNALPOST_ID = "journalpost_id";
@@ -35,7 +37,7 @@ public class MarkerFactory {
     }
 
     public static LogstashMarker receiverMarker(String recieverPartyNumber) {
-        return Markers.append(RECEIVER_ORG_NUMBER, recieverPartyNumber);
+        return Markers.append(RECEIVER_ORG_NUMBER, hashIfPersonnr(recieverPartyNumber));
     }
 
     public static LogstashMarker senderMarker(String senderPartynumber) {
