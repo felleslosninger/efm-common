@@ -38,6 +38,10 @@ public class Audit {
         logger.error(text);
     }
 
+    public static void error(String text, Throwable throwable) {
+        logger.error(text, throwable);
+    }
+
     public static void warn(String text, LogstashMarker marker) {
         logger.warn(marker, text);
     }
