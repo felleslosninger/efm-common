@@ -5,11 +5,11 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
         <version>1.5.4.RELEASE</version>
-        <relativePath></relativePath>
+        <relativePath />
     </parent>
     <groupId>no.difi.move-common</groupId>
     <artifactId>move-dependencies</artifactId>
-    <version>1.0.17-SNAPSHOT</version>
+    <version>1.0.17</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -206,4 +206,8 @@
             </plugins>
         </pluginManagement>
     </build>
+
+  <scm>
+    <tag>v1.0.17</tag>
+  </scm>
 </project>
