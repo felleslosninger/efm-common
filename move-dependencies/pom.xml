@@ -4,7 +4,8 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
-        <version>1.4.3.RELEASE</version>
+        <version>1.5.4.RELEASE</version>
+        <relativePath></relativePath>
     </parent>
     <groupId>no.difi.move-common</groupId>
     <artifactId>move-dependencies</artifactId>
@@ -12,7 +13,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <spring.cloud.version>Brixton.RELEASE</spring.cloud.version>
+        <spring.cloud.version>Dalston.SR1</spring.cloud.version>
         <logback.version>1.1.6</logback.version>
         <logback.logstash.encoder.version>4.7</logback.logstash.encoder.version>
         <virksert.version>1.0-SNAPSHOT</virksert.version>
