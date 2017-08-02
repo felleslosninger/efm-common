@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <spring.cloud.version>Dalston.SR1</spring.cloud.version>
+        <spring.cloud.version>Dalston.SR2</spring.cloud.version>
         <logback.version>1.1.6</logback.version>
         <logback.logstash.encoder.version>4.7</logback.logstash.encoder.version>
         <virksert.version>1.0-SNAPSHOT</virksert.version>
