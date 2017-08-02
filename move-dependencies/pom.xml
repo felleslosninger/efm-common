@@ -23,7 +23,6 @@
         <xmlsec.version>2.0.7</xmlsec.version>
         <json-path.version>2.2.0</json-path.version>
         <activemq.version>5.14.1</activemq.version>
-        <spring-data-releasetrain.version>Hopper-SR4</spring-data-releasetrain.version>
         <!-- <nimbus.version>4.23</nimbus.version> -->
         <nimbus.sdk.version>5.17.2</nimbus.sdk.version>
         <nimbus.jwt.version>4.27</nimbus.jwt.version>
