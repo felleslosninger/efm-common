@@ -9,7 +9,7 @@
     </parent>
     <groupId>no.difi.move-common</groupId>
     <artifactId>move-dependencies</artifactId>
-    <version>1.0.22-SNAPSHOT</version>
+    <version>1.0.22</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -211,4 +211,8 @@
             </plugins>
         </pluginManagement>
     </build>
+
+  <scm>
+    <tag>v1.0.22</tag>
+  </scm>
 </project>
