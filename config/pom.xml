@@ -4,7 +4,7 @@
     <parent>
         <groupId>no.difi.move-common</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.23</version>
+        <version>1.0.24-SNAPSHOT</version>
     </parent>
     <artifactId>config</artifactId>
     <packaging>jar</packaging>
