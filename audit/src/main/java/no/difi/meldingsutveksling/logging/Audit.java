@@ -46,4 +46,8 @@ public class Audit {
         logger.warn(marker, text);
     }
 
+    public static void warn(String text, LogstashMarker marker, Throwable throwable) {
+        logger.warn(marker, text, throwable);
+    }
+
 }
