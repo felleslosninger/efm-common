@@ -1,33 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
-        <version>1.5.18.RELEASE</version>
-        <relativePath />
+        <version>2.1.6.RELEASE</version>
+        <relativePath/>
     </parent>
     <groupId>no.difi.move-common</groupId>
     <artifactId>move-dependencies</artifactId>
-    <version>1.0.28-SNAPSHOT</version>
+    <version>1.0.28-spring_boot2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
-        <spring.cloud.version>Dalston.SR2</spring.cloud.version>
+        <spring.cloud.version>Greenwich.SR2</spring.cloud.version>
         <logback.version>1.1.6</logback.version>
         <logback.logstash.encoder.version>4.7</logback.logstash.encoder.version>
         <virksert.version>1.0-SNAPSHOT</virksert.version>
-        <mockito.version>1.10.19</mockito.version>
+        <mockito.version>2.28.2</mockito.version>
         <commons-lang.version>2.3</commons-lang.version>
-        <apache.commons.version>10.0-b28</apache.commons.version>
-        <xmlsec.version>2.0.7</xmlsec.version>
-        <json-path.version>2.2.0</json-path.version>
-        <activemq.version>5.15.1</activemq.version>
+        <xmlsec.version>2.1.3</xmlsec.version>
+        <json-path.version>2.4.0</json-path.version>
+        <activemq.version>5.15.9</activemq.version>
         <!-- <nimbus.version>4.23</nimbus.version> -->
-        <nimbus.sdk.version>5.17.2</nimbus.sdk.version>
-        <nimbus.jwt.version>4.27</nimbus.jwt.version>
-        <swagger.version>2.6.1</swagger.version>
+        <nimbus.sdk.version>6.13</nimbus.sdk.version>
+        <nimbus.jwt.version>7.3</nimbus.jwt.version>
+        <springfox.version>2.9.2</springfox.version>
+        <swagger.version>1.5.20</swagger.version>
         <guava.version>23.0</guava.version>
+        <jackson.version>2.9.9</jackson.version>
+        <xstream.version>1.4.11</xstream.version>
+        <bouncycastle.version>1.62</bouncycastle.version>
+        <commons-asic.version>0.9.3</commons-asic.version>
+        <spring-security-oath.version>2.3.6.RELEASE</spring-security-oath.version>
     </properties>
 
     <dependencyManagement>
@@ -40,11 +46,26 @@
             <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger2</artifactId>
-                <version>${swagger.version}</version>
+                <version>${springfox.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger-ui</artifactId>
+                <version>${springfox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-bean-validators</artifactId>
+                <version>${springfox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-annotations</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-models</artifactId>
                 <version>${swagger.version}</version>
             </dependency>
             <dependency>
@@ -85,14 +106,15 @@
                 <artifactId>xmlsec</artifactId>
                 <version>${xmlsec.version}</version>
             </dependency>
+            <!-- See https://better-coding.com/solved-org-w3c-dom-domexception-wrong_document_err/ -->
             <dependency>
-                <groupId>org.glassfish.external</groupId>
-                <artifactId>apache-commons</artifactId>
-                <version>${apache.commons.version}</version>
+                <groupId>org.apache.wss4j</groupId>
+                <artifactId>wss4j-ws-security-dom</artifactId>
+                <version>2.2.3</version>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
-                <artifactId>mockito-all</artifactId>
+                <artifactId>mockito-core</artifactId>
                 <version>${mockito.version}</version>
                 <scope>test</scope>
             </dependency>
@@ -104,17 +126,17 @@
             <dependency>
                 <groupId>com.thoughtworks.xstream</groupId>
                 <artifactId>xstream</artifactId>
-                <version>1.4.9</version>
+                <version>${xstream.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcprov-jdk15on</artifactId>
-                <version>1.55</version>
+                <version>${bouncycastle.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcpkix-jdk15on</artifactId>
-                <version>1.55</version>
+                <version>${bouncycastle.version}</version>
             </dependency>
             <dependency>
                 <groupId>no.difi.move-common</groupId>
@@ -139,7 +161,19 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jsr310</artifactId>
-                <version>2.8.8</version>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>no.difi.commons</groupId>
+                <artifactId>commons-asic</artifactId>
+                <version>${commons-asic.version}</version>
+                <type>jar</type>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security.oauth</groupId>
+                <artifactId>spring-security-oauth2</artifactId>
+                <version>${spring-security-oath.version}</version>
+                <type>jar</type>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -182,7 +216,6 @@
                     <groupId>org.sonarsource.scanner.maven</groupId>
                     <artifactId>sonar-maven-plugin</artifactId>
                     <version>3.0.2</version>
-
                 </plugin>
 
                 <plugin>
