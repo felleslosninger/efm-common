@@ -1,8 +1,5 @@
 package no.difi.move.common.oauth;
 
-import com.google.common.collect.Sets;
-import java.time.Instant;
-import java.util.Date;
 import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
 import org.springframework.security.oauth2.client.resource.UserApprovalRequiredException;
 import org.springframework.security.oauth2.client.resource.UserRedirectRequiredException;
@@ -12,8 +9,11 @@ import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2RefreshToken;
 
+import java.time.Instant;
+import java.util.Collections;
+import java.util.Date;
+
 /**
- *
  * @author Nikolai Luthman <nikolai dot luthman at inmeta dot no>
  */
 public class Oauth2JwtAccessTokenProvider implements AccessTokenProvider {
@@ -28,7 +28,7 @@ public class Oauth2JwtAccessTokenProvider implements AccessTokenProvider {
         JwtTokenResponse oidcTokenResponse = tokenClient.fetchToken();
         DefaultOAuth2AccessToken oa2at = new DefaultOAuth2AccessToken(oidcTokenResponse.getAccessToken());
         oa2at.setExpiration(Date.from(Instant.now().plusSeconds(250)));
-        oa2at.setScope(Sets.newHashSet(oidcTokenResponse.getScope()));
+        oa2at.setScope(Collections.singleton(oidcTokenResponse.getScope()));
         return oa2at;
     }
 

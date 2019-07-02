@@ -22,7 +22,6 @@
         <dependency>
             <groupId>no.difi.move-common</groupId>
             <artifactId>audit</artifactId>
-            <version>${project.parent.version}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>commons-io</artifactId>
