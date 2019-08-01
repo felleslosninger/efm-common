@@ -2,7 +2,6 @@ package no.difi.move.common.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
 import org.springframework.cloud.config.client.ConfigClientProperties;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -11,11 +10,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ProtocolResolver;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -24,7 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
  * @author Nikolai Luthman <nikolai dot luthman at inmeta dot no>
  */
 public class SpringCloudProtocolResolver implements ApplicationContextInitializer<ConfigurableApplicationContext>, Ordered {
@@ -54,9 +48,8 @@ public class SpringCloudProtocolResolver implements ApplicationContextInitialize
                 return maps.get(location);
             }
 
-            private void fetchRemote(String location) throws BeansException {
+            private void fetchRemote(String location) {
                 ConfigClientProperties bean = c.getBean(ConfigClientProperties.class);
-                String path = "/{name}/default/{label}/{resource}";
                 String label = "master";
                 if (StringUtils.hasText(bean.getLabel())) {
                     label = bean.getLabel();
@@ -66,9 +59,12 @@ public class SpringCloudProtocolResolver implements ApplicationContextInitialize
                 headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_OCTET_STREAM_VALUE);
                 final HttpEntity<Void> entity = new HttpEntity<>(null, headers);
 
-                logger.info("Fetching resource " + location + " from cloud: " + bean.getRawUri() + "/" + bean.getName() + "/default/" + label + "/" + location.substring(PREFIX.length()));
+                String uri = bean.getUri()[0];
+
+                logger.info("Fetching resource {} from cloud: {}/{}/default/{}/{}", location, uri, bean.getName(), label, location.substring(PREFIX.length()));
+
                 try {
-                    ResponseEntity<byte[]> exchange = new RestTemplate().exchange(bean.getRawUri() + path, HttpMethod.GET, entity, byte[].class, args);
+                    ResponseEntity<byte[]> exchange = new RestTemplate().exchange(uri + "/{name}/default/{label}/{resource}", HttpMethod.GET, entity, byte[].class, args);
                     maps.put(location, new ByteArrayResource(exchange.getBody()));
                 } catch (RestClientException rce) {
                     logger.error("Error loading cloud resource: " + location, rce);

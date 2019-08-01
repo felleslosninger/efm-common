@@ -21,7 +21,7 @@ public class IdentifierHasherTest {
     public void shouldReturnHashForPersonnrTest() {
         String identifier = "12345678901";
         String s = hashIfPersonnr(identifier);
-        assertEquals("bfd81ee3ed27ad31c95ca75e21365973", s);
+        assertEquals("JUqiSKy0fdZUyj6lP0jCwm1kHSPX4uk6HsViWN92dMQ=", s);
     }
 
 }
