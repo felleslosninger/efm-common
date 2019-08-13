@@ -35,7 +35,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring.boot.version>2.1.6.RELEASE</spring.boot.version>
+        <spring.boot.version>2.1.7.RELEASE</spring.boot.version>
     </properties>
 
     <modules>
@@ -62,9 +62,14 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>no.difi.meldingsutveksling</groupId>
+                <artifactId>security</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>no.difi.move-common</groupId>
                 <artifactId>audit</artifactId>
-                <version>${project.parent.version}</version>
+                <version>${project.version}</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>commons-io</artifactId>
@@ -75,7 +80,7 @@
             <dependency>
                 <groupId>net.logstash.logback</groupId>
                 <artifactId>logstash-logback-encoder</artifactId>
-                <version>4.7</version>
+                <version>4.9</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
