@@ -1,11 +1,10 @@
 package no.difi.move.common;
 
 import lombok.experimental.UtilityClass;
+import org.apache.commons.codec.digest.DigestUtils;
 
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -39,8 +38,7 @@ public class IdentifierHasher {
     public static String hashIfPersonnr(String identifier) {
 
         if (EXACTLY_11_NUMBERS.test(identifier)) {
-            byte[] hash = SHA_256.digest(identifier.getBytes(StandardCharsets.UTF_8));
-            return Base64.getEncoder().encodeToString(hash);
+            return DigestUtils.sha256Hex(identifier);
         }
 
         return identifier;
