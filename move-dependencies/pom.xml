@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
-        <version>2.1.6.RELEASE</version>
+        <version>2.1.7.RELEASE</version>
         <relativePath />
     </parent>
     <groupId>no.difi.move-common</groupId>
@@ -14,8 +14,8 @@
 
     <properties>
         <spring.cloud.version>Greenwich.SR2</spring.cloud.version>
-        <logback.version>1.1.6</logback.version>
-        <logback.logstash.encoder.version>4.7</logback.logstash.encoder.version>
+        <logback.version>1.2.3</logback.version>
+        <logback.logstash.encoder.version>4.9</logback.logstash.encoder.version>
         <virksert.version>1.0-SNAPSHOT</virksert.version>
         <mockito.version>2.28.2</mockito.version>
         <commons-lang.version>2.3</commons-lang.version>
