@@ -4,14 +4,14 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>parent</artifactId>
     <groupId>no.difi.move-common</groupId>
-    <version>1.1.2-SNAPSHOT</version>
+    <version>1.1.2</version>
     <packaging>pom</packaging>
 
     <scm>
         <connection>scm:git:https://github.com/difi/move-common</connection>
         <developerConnection>scm:git:https://github.com/difi/move-common</developerConnection>
         <url>https://github.com/difi/move-common</url>
-        <tag>HEAD</tag>
+        <tag>v1.1.2</tag>
     </scm>
 
     <repositories>
