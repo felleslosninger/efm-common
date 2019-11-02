@@ -23,7 +23,7 @@
         <json-path.version>2.4.0</json-path.version>
         <activemq.version>5.15.9</activemq.version>
         <nimbus.sdk.version>6.13</nimbus.sdk.version>
-        <nimbus.jwt.version>7.3</nimbus.jwt.version>
+        <nimbus.jwt.version>7.9</nimbus.jwt.version>
         <springfox.version>2.9.2</springfox.version>
         <swagger.version>1.5.20</swagger.version>
         <guava.version>28.0-jre</guava.version>
