@@ -19,7 +19,7 @@
         <virksert.version>1.0-SNAPSHOT</virksert.version>
         <mockito.version>2.28.2</mockito.version>
         <commons-lang.version>2.3</commons-lang.version>
-        <xmlsec.version>2.1.3</xmlsec.version>
+        <xmlsec.version>2.1.4</xmlsec.version>
         <json-path.version>2.4.0</json-path.version>
         <activemq.version>5.15.9</activemq.version>
         <nimbus.sdk.version>6.13</nimbus.sdk.version>
