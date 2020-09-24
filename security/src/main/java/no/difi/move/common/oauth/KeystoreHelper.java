@@ -1,14 +1,15 @@
 package no.difi.move.common.oauth;
 
+import lombok.extern.slf4j.Slf4j;
+import no.difi.asic.SignatureHelper;
+import no.difi.move.common.config.KeystoreProperties;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
-import lombok.extern.slf4j.Slf4j;
-import no.difi.asic.SignatureHelper;
-import no.difi.move.common.config.KeystoreProperties;
 
 /**
  * Class responsible for accessing the keystore for the Integrasjonspunkt.
@@ -102,7 +103,7 @@ public class KeystoreHelper {
     }
 
     private KeyStore getKeystore(final InputStream i) throws KeyStoreException, CertificateException, IOException, NoSuchAlgorithmException {
-        KeyStore keystore = KeyStore.getInstance("JKS");
+        KeyStore keystore = KeyStore.getInstance(this.keystore.getType());
         keystore.load(i, this.keystore.getStorePassword().toCharArray());
         return keystore;
     }
