@@ -28,7 +28,7 @@
         <swagger.version>1.5.20</swagger.version>
         <guava.version>28.0-jre</guava.version>
         <jackson.version>2.9.9</jackson.version>
-        <xstream.version>1.4.11</xstream.version>
+        <xstream.version>1.4.13-java7</xstream.version>
         <bouncycastle.version>1.62</bouncycastle.version>
         <commons-asic.version>0.9.3</commons-asic.version>
         <spring-security-oath.version>2.3.6.RELEASE</spring-security-oath.version>
