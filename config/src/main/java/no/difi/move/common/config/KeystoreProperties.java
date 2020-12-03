@@ -7,10 +7,10 @@ import org.springframework.core.io.Resource;
 import java.security.KeyStore;
 
 @Data
-@ToString(exclude = "password")
 public class KeystoreProperties {
 
     private String alias;
+    @ToString.Exclude
     private String password;
     private String type = KeyStore.getDefaultType();
     private Resource path;
