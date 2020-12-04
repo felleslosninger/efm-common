@@ -13,22 +13,19 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
 
-/**
- * @author Nikolai Luthman <nikolai dot luthman at inmeta dot no>
- */
 public class Oauth2JwtAccessTokenProvider implements AccessTokenProvider {
 
-    private final NimbusDSJwtTokenClient tokenClient;
+    private final JwtTokenClient jwtTokenClient;
 
-    public Oauth2JwtAccessTokenProvider(NimbusDSJwtTokenClient tokenClient) {
-        this.tokenClient = tokenClient;
+    public Oauth2JwtAccessTokenProvider(JwtTokenClient jwtTokenClient) {
+        this.jwtTokenClient = jwtTokenClient;
     }
 
     private DefaultOAuth2AccessToken getAccessToken() {
-        JwtTokenResponse oidcTokenResponse = tokenClient.fetchToken();
-        DefaultOAuth2AccessToken oa2at = new DefaultOAuth2AccessToken(oidcTokenResponse.getAccessToken());
-        oa2at.setExpiration(Date.from(Instant.now().plusSeconds(250)));
-        oa2at.setScope(Collections.singleton(oidcTokenResponse.getScope()));
+        JwtTokenResponse jwtTokenResponse = jwtTokenClient.fetchToken();
+        DefaultOAuth2AccessToken oa2at = new DefaultOAuth2AccessToken(jwtTokenResponse.getAccessToken());
+        oa2at.setExpiration(Date.from(Instant.now().plusSeconds(jwtTokenResponse.getExpiresIn())));
+        oa2at.setScope(Collections.singleton(jwtTokenResponse.getScope()));
         return oa2at;
     }
 
