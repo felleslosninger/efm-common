@@ -38,25 +38,31 @@ public class JwtTokenClient {
 
     public JwtTokenClient(JwtTokenConfig config) {
         this.config = config;
-        this.wc = WebClient.create(config.getTokenUri().toString());
+        this.wc = WebClient.create(config.getTokenUri());
     }
 
     public Mono<JwtTokenResponse> fetchTokenMono() {
-        LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
-        body.add("assertion", generateJWT());
+        Mono<LinkedMultiValueMap<String, String>> body = Mono.fromSupplier(() -> {
+            LinkedMultiValueMap<String, String> fields = new LinkedMultiValueMap<>();
+            fields.add("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
+            fields.add("assertion", generateJWT());
+            return fields;
+        });
 
         return wc.post()
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .accept(MediaType.APPLICATION_JSON)
-                .bodyValue(body)
+                .body(body, LinkedMultiValueMap.class)
                 .retrieve()
+                .onStatus(HttpStatus::isError, e -> e.bodyToMono(String.class)
+                        .flatMap(s -> Mono.error(new JwtTokenException("http status: " + e.statusCode() + ", body: " + s)))
+                )
                 .bodyToMono(JwtTokenResponse.class)
                 .retryWhen(Retry.backoff(Long.MAX_VALUE, Duration.ofSeconds(2L))
                         .maxBackoff(Duration.ofMinutes(1L))
                         .doBeforeRetry(rs -> log.warn("Error connecting to token endpoint, retrying.. " + rs)))
-                .onErrorMap((Throwable t) -> new JwtTokenException("Error retrieving token from " + config.getTokenUri() + ": " + t.getMessage(), t))
-                .doOnNext(res -> log.info("Response: {}", res.toString()));
+                .doOnNext(res -> log.info("Response: {}", res.toString()))
+                .cache(r -> Duration.ofSeconds(r.getExpiresIn()-10 ), (t) -> Duration.ZERO , () -> Duration.ZERO);
     }
 
     @Retryable(value = HttpClientErrorException.class, maxAttempts = Integer.MAX_VALUE,
