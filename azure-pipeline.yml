@@ -7,9 +7,8 @@ resources:
 
 extends:
   template: build-and-deploy-template.yml@efm-eproc-pipeline
-
-parameters:
-  buildDockerArtifact: false
+  parameters:
+    buildDockerArtifact: false
 
 trigger:
   batch: true
