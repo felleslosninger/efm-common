@@ -12,6 +12,13 @@
     <version>1.1.8-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <distributionManagement>
+        <repository>
+            <id>MavenArtifactFeed</id>
+            <url>https://pkgs.dev.azure.com/dificloud/_packaging/MavenArtifactFeed/maven/v1</url>
+        </repository>
+    </distributionManagement>
+
     <properties>
         <spring.cloud.version>Hoxton.SR9</spring.cloud.version>
         <logback.version>1.2.3</logback.version>
