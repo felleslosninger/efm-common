@@ -21,7 +21,7 @@ import java.text.ParseException;
 
 public class JWTDecoder {
 
-    private CertificateFactory certificateFactory;
+    private final CertificateFactory certificateFactory;
 
     public JWTDecoder() throws CertificateException {
         this.certificateFactory = CertificateFactory.getInstance("X.509");
@@ -79,10 +79,6 @@ public class JWTDecoder {
         return jwsObject.getPayload().toString();
     }
 
-    /**
-     * @Deprecated Unsecure, as it uses key from JWT header to verify content.
-     */
-    @Deprecated
     public String getPayload(String serialized) throws BadJWSException {
 
         JWSObject jwsObject;
