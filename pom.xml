@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>parent</artifactId>
     <groupId>no.difi.move-common</groupId>
-    <version>1.1.7</version>
+    <version>1.1.8</version>
     <packaging>pom</packaging>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.3.5.RELEASE</version>
+        <relativePath/>
+    </parent>
 
     <scm>
         <connection>scm:git:https://github.com/felleslosninger/efm-common</connection>
@@ -15,6 +23,16 @@
     </scm>
 
     <repositories>
+        <repository>
+            <id>MavenArtifactFeed</id>
+            <url>https://pkgs.dev.azure.com/dificloud/_packaging/MavenArtifactFeed/maven/v1</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
         <repository>
             <id>DIFI MOVE</id>
             <name>DIFI MOVE Nexus 3rd party</name>
@@ -31,46 +49,71 @@
         </repository>
     </repositories>
 
+    <distributionManagement>
+        <repository>
+            <id>MavenArtifactFeed</id>
+            <url>https://pkgs.dev.azure.com/dificloud/_packaging/MavenArtifactFeed/maven/v1</url>
+        </repository>
+    </distributionManagement>
+
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring.boot.version>2.1.7.RELEASE</spring.boot.version>
+        <spring.cloud.version>Hoxton.SR9</spring.cloud.version>
+        <logback.version>1.2.3</logback.version>
+        <mockito.version>2.28.2</mockito.version>
+        <commons-lang.version>2.3</commons-lang.version>
+        <xmlsec.version>2.1.3</xmlsec.version>
+        <json-path.version>2.4.0</json-path.version>
+        <activemq.version>5.15.9</activemq.version>
+        <nimbus.sdk.version>6.13</nimbus.sdk.version>
+        <nimbus.jwt.version>7.3</nimbus.jwt.version>
+        <springfox.version>2.9.2</springfox.version>
+        <swagger.version>1.5.20</swagger.version>
+        <guava.version>28.0-jre</guava.version>
+        <xstream.version>1.4.11</xstream.version>
+        <bouncycastle.version>1.62</bouncycastle.version>
+        <commons-asic.version>0.9.3</commons-asic.version>
+        <spring-security-oath.version>2.3.6.RELEASE</spring-security-oath.version>
     </properties>
 
     <modules>
         <module>audit</module>
-        <module>webservice-tools</module>
-        <module>move-dependencies</module>
-        <module>security</module>
-        <module>config</module>
         <module>cloud</module>
+        <module>config</module>
+        <module>security</module>
+        <module>webservice-tools</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>no.difi.move-common</groupId>
-                <artifactId>move-dependencies</artifactId>
-                <version>${project.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>no.difi.meldingsutveksling</groupId>
-                <artifactId>common</artifactId>
+                <artifactId>audit</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>no.difi.meldingsutveksling</groupId>
+                <groupId>no.difi.move-common</groupId>
+                <artifactId>cloud</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>no.difi.move-common</groupId>
+                <artifactId>config</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>no.difi.move-common</groupId>
                 <artifactId>security</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>no.difi.move-common</groupId>
-                <artifactId>audit</artifactId>
+                <artifactId>webservice-tools</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>net.logstash.logback</groupId>
                 <artifactId>logstash-logback-encoder</artifactId>
@@ -85,6 +128,103 @@
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>2.8.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger2</artifactId>
+                <version>${springfox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger-ui</artifactId>
+                <version>${springfox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-bean-validators</artifactId>
+                <version>${springfox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-annotations</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-models</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nimbusds</groupId>
+                <artifactId>oauth2-oidc-sdk</artifactId>
+                <version>${nimbus.sdk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nimbusds</groupId>
+                <artifactId>nimbus-jose-jwt</artifactId>
+                <version>${nimbus.jwt.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring.cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.santuario</groupId>
+                <artifactId>xmlsec</artifactId>
+                <version>${xmlsec.version}</version>
+            </dependency>
+            <!-- See https://better-coding.com/solved-org-w3c-dom-domexception-wrong_document_err/ -->
+            <dependency>
+                <groupId>org.apache.wss4j</groupId>
+                <artifactId>wss4j-ws-security-dom</artifactId>
+                <version>2.2.3</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${commons-lang.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.thoughtworks.xstream</groupId>
+                <artifactId>xstream</artifactId>
+                <version>${xstream.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk15on</artifactId>
+                <version>${bouncycastle.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcpkix-jdk15on</artifactId>
+                <version>${bouncycastle.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>no.difi.commons</groupId>
+                <artifactId>commons-asic</artifactId>
+                <version>${commons-asic.version}</version>
+                <type>jar</type>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security.oauth</groupId>
+                <artifactId>spring-security-oauth2</artifactId>
+                <version>${spring-security-oath.version}</version>
+                <type>jar</type>
             </dependency>
         </dependencies>
     </dependencyManagement>
