@@ -17,4 +17,5 @@ trigger:
       - development
       - release-*
       - master
-      - hotfix-pipeline
+
+pr: none
