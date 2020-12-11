@@ -8,6 +8,7 @@ resources:
 extends:
   template: build-and-deploy-template.yml@efm-eproc-pipeline
   parameters:
+    environmentRepository: git://eformidling/eformidling
     buildDockerArtifact: false
 
 trigger:
