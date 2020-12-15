@@ -17,6 +17,7 @@ trigger:
     include:
       - development
       - release-*
+      - hotfix-*
       - master
 
 pr: none
