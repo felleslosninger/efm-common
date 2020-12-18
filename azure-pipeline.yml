@@ -10,6 +10,7 @@ extends:
   parameters:
     environmentRepository: git://eformidling/eformidling
     buildDockerArtifact: false
+    mavenGoals: deploy
 
 trigger:
   batch: true
