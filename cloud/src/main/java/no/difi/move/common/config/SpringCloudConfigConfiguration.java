@@ -14,10 +14,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.io.Resource;
 
-/**
- *
- * @author Nikolai Luthman <nikolai dot luthman at inmeta dot no>
- */
 @Configuration
 public class SpringCloudConfigConfiguration implements ApplicationContextAware {
 

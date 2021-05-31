@@ -18,9 +18,6 @@ import org.springframework.web.client.RestTemplate;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Nikolai Luthman <nikolai dot luthman at inmeta dot no>
- */
 public class SpringCloudProtocolResolver implements ApplicationContextInitializer<ConfigurableApplicationContext>, Ordered {
 
     private static final Logger logger = LoggerFactory.getLogger(SpringCloudProtocolResolver.class);
