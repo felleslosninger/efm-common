@@ -13,6 +13,7 @@ extends:
     buildDockerArtifact: false
     mavenGoals: deploy
     jiraVersionPrefix: Common
+    deployOssrh: true
 
 trigger:
   batch: true
