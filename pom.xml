@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>parent</artifactId>
     <groupId>no.difi.move-common</groupId>
-    <version>1.1.10</version>
+    <version>1.1.11-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Move-common</name>
 
@@ -19,7 +19,7 @@
         <connection>scm:git:https://github.com/felleslosninger/efm-common</connection>
         <developerConnection>scm:git:https://github.com/felleslosninger/efm-common</developerConnection>
         <url>https://github.com/felleslosninger/efm-common</url>
-        <tag>v1.1.10</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <licenses>
