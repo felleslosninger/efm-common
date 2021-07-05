@@ -1,0 +1,41 @@
+package no.difi.meldingsutveksling.domain.sbdh;
+
+
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
+
+public class StandardBusinessDocumentHeaderUtils {
+
+    private StandardBusinessDocumentHeaderUtils() {
+        // Utility class
+    }
+
+    public static Optional<String> getMessageId(StandardBusinessDocumentHeader sbdh) {
+        return Optional.ofNullable(sbdh.getDocumentIdentification())
+                .flatMap(p -> Optional.ofNullable(p.getInstanceIdentifier()));
+    }
+
+    public static Optional<String> getDocumentType(StandardBusinessDocumentHeader sbdh) {
+        return Optional.ofNullable(sbdh.getDocumentIdentification())
+                .flatMap(p -> Optional.ofNullable(p.getStandard()));
+    }
+
+    public static Set<Scope> getScopes(StandardBusinessDocumentHeader sbdh) {
+        return Optional.ofNullable(sbdh.getBusinessScope())
+                .flatMap(p -> Optional.ofNullable(p.getScope()))
+                .orElseGet(Collections::emptySet);
+    }
+
+    public static Optional<Scope> getScope(StandardBusinessDocumentHeader sbdh, ScopeType scopeType) {
+        return getScopes(sbdh)
+                .stream()
+                .filter(scope -> scopeType.toString().equals(scope.getType()) || scopeType.name().equals(scope.getType()))
+                .findAny();
+    }
+
+    public static Optional<String> getType(StandardBusinessDocumentHeader sbdh) {
+        return Optional.ofNullable(sbdh.getDocumentIdentification())
+                .flatMap(p -> Optional.ofNullable(p.getType()));
+    }
+}

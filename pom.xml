@@ -104,6 +104,9 @@
         <module>config</module>
         <module>security</module>
         <module>webservice-tools</module>
+        <module>annotation</module>
+        <module>domain</module>
+        <module>validation</module>
     </modules>
 
     <dependencyManagement>
@@ -131,6 +134,21 @@
             <dependency>
                 <groupId>no.difi.move-common</groupId>
                 <artifactId>webservice-tools</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>no.difi.move-common</groupId>
+                <artifactId>annotation</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>no.difi.move-common</groupId>
+                <artifactId>domain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>no.difi.move-common</groupId>
+                <artifactId>validation</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
