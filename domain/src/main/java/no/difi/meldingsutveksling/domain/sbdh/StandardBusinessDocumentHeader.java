@@ -68,14 +68,14 @@ public class StandardBusinessDocumentHeader {
     @Size(max = 1)
     @Valid
     @ConvertGroup(to = ValidationGroups.Partner.Sender.class)
-    private Set<@Valid Sender> sender;
+    private Set<@Valid Partner> sender;
 
     @XmlElement(name = "Receiver", required = true)
     @NotEmpty
     @Size(min = 1, max = 1)
     @Valid
     @ConvertGroup(to = ValidationGroups.Partner.Receiver.class)
-    private Set<@Valid Receiver> receiver;
+    private Set<@Valid Partner> receiver;
 
     @XmlElement(name = "DocumentIdentification", required = true)
     @NotNull
@@ -91,36 +91,32 @@ public class StandardBusinessDocumentHeader {
     @Valid
     private BusinessScope businessScope;
 
-    public void setSender(Set<Sender> sender) {
-        this.sender = sender;
-    }
-
-    public Set<Sender> getSender() {
+    public Set<Partner> getSender() {
         if (sender == null) {
             sender = new HashSet<>();
         }
         return this.sender;
     }
 
-    public StandardBusinessDocumentHeader addSender(Sender partner) {
+    public StandardBusinessDocumentHeader addSender(Partner partner) {
         getSender().add(partner);
         return this;
     }
 
-    public Set<Receiver> getReceiver() {
+    public Set<Partner> getReceiver() {
         if (receiver == null) {
             receiver = new HashSet<>();
         }
         return this.receiver;
     }
 
-    public StandardBusinessDocumentHeader addReceiver(Receiver partner) {
+    public StandardBusinessDocumentHeader addReceiver(Partner partner) {
         getReceiver().add(partner);
         return this;
     }
 
     @JsonIgnore
-    public Optional<Sender> getFirstSender() {
+    public Optional<Partner> getFirstSender() {
         if (sender == null) {
             return Optional.empty();
         }
@@ -128,7 +124,7 @@ public class StandardBusinessDocumentHeader {
     }
 
     @JsonIgnore
-    public Optional<Receiver> getFirstReceiver() {
+    public Optional<Partner> getFirstReceiver() {
         if (receiver == null) {
             return Optional.empty();
         }

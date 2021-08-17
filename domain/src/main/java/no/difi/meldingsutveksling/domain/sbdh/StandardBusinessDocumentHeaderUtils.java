@@ -38,4 +38,14 @@ public class StandardBusinessDocumentHeaderUtils {
         return Optional.ofNullable(sbdh.getDocumentIdentification())
                 .flatMap(p -> Optional.ofNullable(p.getType()));
     }
+
+    public static Optional<PartnerIdentification> getFirstSenderIdentifier(StandardBusinessDocumentHeader sbdh) {
+        return sbdh.getFirstSender()
+                .flatMap(p -> Optional.ofNullable(p.getIdentifier()));
+    }
+
+    public static Optional<PartnerIdentification> getFirstReceiverIdentifier(StandardBusinessDocumentHeader sbdh) {
+        return sbdh.getFirstReceiver()
+                .flatMap(p -> Optional.ofNullable(p.getIdentifier()));
+    }
 }

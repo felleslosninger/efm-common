@@ -11,14 +11,24 @@ public class StandardBusinessDocumentUtils {
         // Utility class
     }
 
-    public static Optional<Sender> getFirstSender(StandardBusinessDocument sbd) {
+    public static Optional<Partner> getFirstSender(StandardBusinessDocument sbd) {
         return Optional.of(sbd.getStandardBusinessDocumentHeader())
                 .flatMap(StandardBusinessDocumentHeader::getFirstSender);
     }
 
-    public static Optional<Receiver> getFirstReceiver(StandardBusinessDocument sbd) {
+    public static Optional<Partner> getFirstReceiver(StandardBusinessDocument sbd) {
         return Optional.of(sbd.getStandardBusinessDocumentHeader())
                 .flatMap(StandardBusinessDocumentHeader::getFirstReceiver);
+    }
+
+    public static Optional<PartnerIdentification> getFirstSenderIdentifier(StandardBusinessDocument sbd) {
+        return getFirstSender(sbd)
+                .flatMap(p -> Optional.ofNullable(p.getIdentifier()));
+    }
+
+    public static Optional<PartnerIdentification> getFirstReceiverIdentifier(StandardBusinessDocument sbd) {
+        return getFirstReceiver(sbd)
+                .flatMap(p -> Optional.ofNullable(p.getIdentifier()));
     }
 
     public static Optional<String> getMessageId(StandardBusinessDocument sbd) {
