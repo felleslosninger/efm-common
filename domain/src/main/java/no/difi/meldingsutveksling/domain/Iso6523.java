@@ -46,6 +46,14 @@ public class Iso6523 implements Serializable {
         throw new IllegalArgumentException(String.format("Invalid ISO6523 value: '%s'", identifier));
     }
 
+    public boolean hasOrganizationPartIdentifier() {
+        return organizationPartIdentifier != null;
+    }
+
+    public boolean hasSourceIndicator() {
+        return sourceIndicator != null;
+    }
+
     public static boolean isValid(String inidentifier) {
         return ISO6523_PATTERN.matcher(inidentifier).matches();
     }

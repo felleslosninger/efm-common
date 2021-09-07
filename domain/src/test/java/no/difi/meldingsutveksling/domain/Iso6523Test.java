@@ -5,7 +5,6 @@ import org.junit.Test;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-
 public class Iso6523Test {
 
     @Test
@@ -54,5 +53,18 @@ public class Iso6523Test {
     @Test
     public void testSourceIndicator() {
         assertThat(Iso6523.parse("0192:987654321:MP//dummy:1").getSourceIndicator()).isEqualTo("1");
+    }
+
+    @Test
+    public void testHasOrganizationPartIdentifier() {
+        assertThat(Iso6523.parse("0192:987654321:MP//dummy:1").hasOrganizationPartIdentifier()).isTrue();
+        assertThat(Iso6523.parse("0192:987654321").hasOrganizationPartIdentifier()).isFalse();
+    }
+
+    @Test
+    public void testHasSourceIndicator() {
+        assertThat(Iso6523.parse("0192:987654321:MP//dummy:1").hasSourceIndicator()).isTrue();
+        assertThat(Iso6523.parse("0192:987654321:MP//dummy").hasSourceIndicator()).isFalse();
+        assertThat(Iso6523.parse("0192:987654321").hasSourceIndicator()).isFalse();
     }
 }
