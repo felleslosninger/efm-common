@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 public class Iso6523 implements Serializable {
 
     private static final Pattern ORGANIZATION_IDENTIFIER_PATTERN = Pattern.compile("^[^\\s:][^:]{1,33}[^\\s:]$");
-    private static final Pattern ISO6523_PATTERN = Pattern.compile("^(\\d{4}):([^:]{1,35})(?::([^\\s:]{1,35}))?(?::([^:]?))?$");
+    private static final Pattern ISO6523_PATTERN = Pattern.compile("^(\\d{4}):([^:]{1,35})(?::([^\\s:]{1,35}))?(?::(\\d))?$");
 
     ICD icd;
     String organizationIdentifier;
@@ -62,14 +62,12 @@ public class Iso6523 implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(icd).append(':').append(organizationIdentifier);
-        if (organizationPartIdentifier != null) {
+        if (hasOrganizationPartIdentifier()) {
             sb.append(':').append(organizationPartIdentifier);
-
-            if (sourceIndicator != null) {
+            if (hasSourceIndicator()) {
                 sb.append(':').append(sourceIndicator);
             }
         }
-
         return sb.toString();
     }
 }

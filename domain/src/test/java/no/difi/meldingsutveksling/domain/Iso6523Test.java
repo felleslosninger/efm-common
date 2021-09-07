@@ -36,33 +36,33 @@ public class Iso6523Test {
     }
 
     @Test
-    public void testGetIcd() {
+    public void getIcd() {
         assertThat(Iso6523.parse("0192:987654321:MP//dummy:1").getIcd()).isEqualTo(ICD.NO_ORG);
     }
 
     @Test
-    public void testGetOrganizationIdentifier() {
+    public void getOrganizationIdentifier() {
         assertThat(Iso6523.parse("0192:987654321:MP//dummy:1").getOrganizationIdentifier()).isEqualTo("987654321");
     }
 
     @Test
-    public void testOrganizationPartIdentifier() {
+    public void organizationPartIdentifier() {
         assertThat(Iso6523.parse("0192:987654321:MP//dummy:1").getOrganizationPartIdentifier()).isEqualTo("MP//dummy");
     }
 
     @Test
-    public void testSourceIndicator() {
+    public void sourceIndicator() {
         assertThat(Iso6523.parse("0192:987654321:MP//dummy:1").getSourceIndicator()).isEqualTo("1");
     }
 
     @Test
-    public void testHasOrganizationPartIdentifier() {
+    public void hasOrganizationPartIdentifier() {
         assertThat(Iso6523.parse("0192:987654321:MP//dummy:1").hasOrganizationPartIdentifier()).isTrue();
         assertThat(Iso6523.parse("0192:987654321").hasOrganizationPartIdentifier()).isFalse();
     }
 
     @Test
-    public void testHasSourceIndicator() {
+    public void hasSourceIndicator() {
         assertThat(Iso6523.parse("0192:987654321:MP//dummy:1").hasSourceIndicator()).isTrue();
         assertThat(Iso6523.parse("0192:987654321:MP//dummy").hasSourceIndicator()).isFalse();
         assertThat(Iso6523.parse("0192:987654321").hasSourceIndicator()).isFalse();
