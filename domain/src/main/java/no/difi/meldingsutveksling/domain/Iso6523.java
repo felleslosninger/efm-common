@@ -36,18 +36,18 @@ public class Iso6523 implements Serializable {
         return new Iso6523(icd, organizationIdentifier, organizationPartIdentifier, sourceIndicator);
     }
 
-    public static Iso6523 parse(String in) {
-        Matcher matcher = ISO6523_PATTERN.matcher(in);
+    public static Iso6523 parse(String identifier) {
+        Matcher matcher = ISO6523_PATTERN.matcher(identifier);
 
         if (matcher.matches()) {
             return new Iso6523(ICD.parse(matcher.group(1)), matcher.group(2), matcher.group(3), matcher.group(4));
         }
 
-        throw new IllegalArgumentException(String.format("Invalid ISO6523 value: '%s'", in));
+        throw new IllegalArgumentException(String.format("Invalid ISO6523 value: '%s'", identifier));
     }
 
-    public static boolean isValid(String icdAndIdentifier) {
-        return ISO6523_PATTERN.matcher(icdAndIdentifier).matches();
+    public static boolean isValid(String inidentifier) {
+        return ISO6523_PATTERN.matcher(inidentifier).matches();
     }
 
     @Override
