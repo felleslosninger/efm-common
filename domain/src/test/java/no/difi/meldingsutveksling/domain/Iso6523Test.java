@@ -32,6 +32,7 @@ public class Iso6523Test {
 
     @Test
     public void testToString() {
+        assertThat(Iso6523.parse("0192:987654321:MP//dummy:1")).hasToString("0192:987654321:MP//dummy:1");
         assertThat(Iso6523.of(ICD.NO_ORG, "987654321")).hasToString("0192:987654321");
     }
 

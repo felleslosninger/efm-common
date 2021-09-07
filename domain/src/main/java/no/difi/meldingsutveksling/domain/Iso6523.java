@@ -52,6 +52,16 @@ public class Iso6523 implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("%s:%s", icd, organizationIdentifier);
+        StringBuilder sb = new StringBuilder();
+        sb.append(icd).append(':').append(organizationIdentifier);
+        if (organizationPartIdentifier != null) {
+            sb.append(':').append(organizationPartIdentifier);
+
+            if (sourceIndicator != null) {
+                sb.append(':').append(sourceIndicator);
+            }
+        }
+
+        return sb.toString();
     }
 }
