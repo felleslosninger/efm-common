@@ -14,6 +14,9 @@ public class Iso6523Test {
         assertThatThrownBy(() -> Iso6523.parse("0192 :987654321"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Invalid ISO6523 value: '0192 :987654321'");
+
+        assertThat(Iso6523.parse("0192:987654321:MP//dummy:1")).isEqualTo(Iso6523.of(ICD.NO_ORG, "987654321", "MP//dummy", "1"));
+        assertThat(Iso6523.parse("0192:987654321:MP//Vergemålsetaten:1")).isEqualTo(Iso6523.of(ICD.NO_ORG, "987654321", "MP//Vergemålsetaten", "1"));
     }
 
     @Test
@@ -30,5 +33,25 @@ public class Iso6523Test {
     @Test
     public void testToString() {
         assertThat(Iso6523.of(ICD.NO_ORG, "987654321")).hasToString("0192:987654321");
+    }
+
+    @Test
+    public void testGetIcd() {
+        assertThat(Iso6523.parse("0192:987654321:MP//dummy:1").getIcd()).isEqualTo(ICD.NO_ORG);
+    }
+
+    @Test
+    public void testGetOrganizationIdentifier() {
+        assertThat(Iso6523.parse("0192:987654321:MP//dummy:1").getOrganizationIdentifier()).isEqualTo("987654321");
+    }
+
+    @Test
+    public void testOrganizationPartIdentifier() {
+        assertThat(Iso6523.parse("0192:987654321:MP//dummy:1").getOrganizationPartIdentifier()).isEqualTo("MP//dummy");
+    }
+
+    @Test
+    public void testSourceIndicator() {
+        assertThat(Iso6523.parse("0192:987654321:MP//dummy:1").getSourceIndicator()).isEqualTo("1");
     }
 }
