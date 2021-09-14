@@ -1,6 +1,7 @@
 package no.difi.meldingsutveksling.domain;
 
 import lombok.Value;
+import lombok.With;
 
 import java.io.Serializable;
 import java.util.regex.Matcher;
@@ -10,9 +11,11 @@ import java.util.regex.Pattern;
 public class Iso6523 implements Serializable {
 
     private static final Pattern ORGANIZATION_IDENTIFIER_PATTERN = Pattern.compile("^[^\\s:][^:]{1,33}[^\\s:]$");
+    private static final Pattern ORGANIZATION_PART_IDENTIFIER_PATTERN = Pattern.compile("^[^\\s:][^:]{1,33}[^\\s:]$");
+    private static final Pattern SOURCE_INDICATOR = Pattern.compile("^\\d$");
     private static final Pattern ISO6523_PATTERN = Pattern.compile("^(\\d{4}):([^:]{1,35})(?::([^\\s:]{1,35}))?(?::(\\d))?$");
 
-    ICD icd;
+    @With ICD icd;
     String organizationIdentifier;
     String organizationPartIdentifier;
     String sourceIndicator;
@@ -33,6 +36,18 @@ public class Iso6523 implements Serializable {
             throw new IllegalArgumentException(String.format("Invalid Organization Identifier: %s", organizationIdentifier));
         }
 
+        if (organizationPartIdentifier != null && !ORGANIZATION_PART_IDENTIFIER_PATTERN.matcher(organizationPartIdentifier).matches()) {
+            throw new IllegalArgumentException(String.format("Invalid Organization Part Identifier: %s", organizationPartIdentifier));
+        }
+
+        if (sourceIndicator != null && !SOURCE_INDICATOR.matcher(sourceIndicator).matches()) {
+            throw new IllegalArgumentException(String.format("Invalid Source Indicator: %s", sourceIndicator));
+        }
+
+        if (sourceIndicator != null && organizationPartIdentifier == null) {
+            throw new IllegalArgumentException("Source Indicator requires that the part identifier is specified");
+        }
+
         return new Iso6523(icd, organizationIdentifier, organizationPartIdentifier, sourceIndicator);
     }
 
@@ -46,6 +61,10 @@ public class Iso6523 implements Serializable {
         throw new IllegalArgumentException(String.format("Invalid ISO6523 value: '%s'", identifier));
     }
 
+    public static boolean isValid(String inidentifier) {
+        return ISO6523_PATTERN.matcher(inidentifier).matches();
+    }
+
     public boolean hasOrganizationPartIdentifier() {
         return organizationPartIdentifier != null;
     }
@@ -54,8 +73,8 @@ public class Iso6523 implements Serializable {
         return sourceIndicator != null;
     }
 
-    public static boolean isValid(String inidentifier) {
-        return ISO6523_PATTERN.matcher(inidentifier).matches();
+    public Iso6523 toMainOrganization() {
+        return Iso6523.of(icd, organizationIdentifier);
     }
 
     @Override

@@ -67,4 +67,9 @@ public class Iso6523Test {
         assertThat(Iso6523.parse("0192:987654321:MP//dummy").hasSourceIndicator()).isFalse();
         assertThat(Iso6523.parse("0192:987654321").hasSourceIndicator()).isFalse();
     }
+
+    @Test
+    public void toMainOrganization() {
+        assertThat(Iso6523.parse("0192:987654321:MP//dummy:1").toMainOrganization()).isEqualTo(Iso6523.parse("0192:987654321"));
+    }
 }
