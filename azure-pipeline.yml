@@ -10,6 +10,7 @@ extends:
   template: build-and-deploy-template.yml@efm-eproc-pipeline
   parameters:
     environmentRepository: git://eformidling/eformidling
+    jdkVersion: 1.8
     buildDockerArtifact: false
     mavenGoals: deploy
     jiraVersionPrefix: Common
