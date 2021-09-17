@@ -72,4 +72,9 @@ public class Iso6523Test {
     public void toMainOrganization() {
         assertThat(Iso6523.parse("0192:987654321:MP//dummy:1").toMainOrganization()).isEqualTo(Iso6523.parse("0192:987654321"));
     }
+
+    @Test
+    public void urlEncoding() {
+        assertThat(Iso6523.parse("0192:987654321:MP//dummy:1").urlEncode()).isEqualTo("0192%3A987654321%3AMP%2F%2Fdummy%3A1");
+    }
 }

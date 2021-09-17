@@ -4,6 +4,9 @@ import lombok.Value;
 import lombok.With;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -75,6 +78,14 @@ public class Iso6523 implements Serializable {
 
     public Iso6523 toMainOrganization() {
         return Iso6523.of(icd, organizationIdentifier);
+    }
+
+    public String urlEncode() {
+        try {
+            return URLEncoder.encode(this.toString(), StandardCharsets.UTF_8.name());
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("UTF-8 encoding not supported", e);
+        }
     }
 
     @Override
