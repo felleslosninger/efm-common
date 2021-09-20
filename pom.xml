@@ -107,6 +107,7 @@
         <module>annotation</module>
         <module>domain</module>
         <module>validation</module>
+        <module>io</module>
     </modules>
 
     <dependencyManagement>
