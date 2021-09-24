@@ -23,7 +23,7 @@ import java.time.Duration;
 public class JwtBearerOAuth2AuthorizedClientProvider implements OAuth2AuthorizedClientProvider {
 
     private final OAuth2AccessTokenResponseClient<JwtBearerGrantRequest> tokenResponseClient;
-    private Duration clockSkew = Duration.ofSeconds(60);
+    private Duration clockSkew = Duration.ofSeconds(30);
     private Clock clock = Clock.systemUTC();
 
     @Override
@@ -32,7 +32,6 @@ public class JwtBearerOAuth2AuthorizedClientProvider implements OAuth2Authorized
         Assert.notNull(context, "context cannot be null");
 
         log.debug("Attempts to authorize client assuming JWT bearer token grant type");
-        Assert.notNull(context, "context cannot be null");
 
         ClientRegistration clientRegistration = context.getClientRegistration();
 
