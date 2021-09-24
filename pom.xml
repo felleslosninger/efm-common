@@ -91,7 +91,7 @@
         <nimbus.jwt.version>7.3</nimbus.jwt.version>
         <springfox.version>2.9.2</springfox.version>
         <swagger.version>1.5.20</swagger.version>
-        <guava.version>28.0-jre</guava.version>
+        <guava.version>29.0-jre</guava.version>
         <xstream.version>1.4.18</xstream.version>
         <bouncycastle.version>1.62</bouncycastle.version>
         <commons-asic.version>0.9.3</commons-asic.version>
