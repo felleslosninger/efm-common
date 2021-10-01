@@ -11,7 +11,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.5.RELEASE</version>
+        <version>2.5.4</version>
         <relativePath />
     </parent>
 
@@ -84,16 +84,16 @@
         <logback.version>1.2.3</logback.version>
         <mockito.version>2.28.2</mockito.version>
         <commons-lang.version>2.3</commons-lang.version>
-        <xmlsec.version>2.1.3</xmlsec.version>
+        <xmlsec.version>2.1.7</xmlsec.version>
         <json-path.version>2.4.0</json-path.version>
         <activemq.version>5.15.9</activemq.version>
         <nimbus.sdk.version>6.13</nimbus.sdk.version>
         <nimbus.jwt.version>7.3</nimbus.jwt.version>
         <springfox.version>2.9.2</springfox.version>
         <swagger.version>1.5.20</swagger.version>
-        <guava.version>28.0-jre</guava.version>
-        <xstream.version>1.4.11</xstream.version>
-        <bouncycastle.version>1.62</bouncycastle.version>
+        <guava.version>29.0-jre</guava.version>
+        <xstream.version>1.4.18</xstream.version>
+        <bouncycastle.version>1.67</bouncycastle.version>
         <commons-asic.version>0.9.3</commons-asic.version>
         <spring-security-oath.version>2.3.6.RELEASE</spring-security-oath.version>
     </properties>
