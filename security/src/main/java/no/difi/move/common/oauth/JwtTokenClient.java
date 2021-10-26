@@ -35,17 +35,50 @@ public class JwtTokenClient {
 
     private final JwtTokenConfig config;
     private final WebClient wc;
+    private final JWSHeader jwsHeader;
+    private final RSASSASigner signer;
 
     public JwtTokenClient(JwtTokenConfig config) {
         this.config = config;
         this.wc = WebClient.create(config.getTokenUri());
+
+        KeystoreHelper keystoreHelper = new KeystoreHelper(config.getKeystore());
+        this.jwsHeader = getJwsHeader(keystoreHelper);
+        this.signer = getSigner(keystoreHelper);
+    }
+
+    private JWSHeader getJwsHeader(KeystoreHelper keystoreHelper) {
+        return new JWSHeader.Builder(JWSAlgorithm.RS256)
+                .x509CertChain(getCertChain(keystoreHelper))
+                .build();
+    }
+
+    private List<Base64> getCertChain(KeystoreHelper keystoreHelper) {
+        try {
+            return Collections.singletonList(Base64.encode(keystoreHelper.getX509Certificate().getEncoded()));
+        } catch (CertificateEncodingException e) {
+            log.error("Could not get encoded certificate", e);
+            throw new CertificateEncodingRuntimeException("Could not get encoded certificate", e);
+        }
+    }
+
+    private RSASSASigner getSigner(KeystoreHelper keystoreHelper) {
+        RSASSASigner s = new RSASSASigner(keystoreHelper.loadPrivateKey());
+        if (keystoreHelper.shouldLockProvider()) {
+            s.getJCAContext().setProvider(keystoreHelper.getKeyStore().getProvider());
+        }
+        return s;
     }
 
     public Mono<JwtTokenResponse> fetchTokenMono() {
+        return fetchTokenMono(new JwtTokenInput());
+    }
+
+    public Mono<JwtTokenResponse> fetchTokenMono(JwtTokenInput input) {
         Mono<LinkedMultiValueMap<String, String>> body = Mono.fromSupplier(() -> {
             LinkedMultiValueMap<String, String> fields = new LinkedMultiValueMap<>();
             fields.add("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
-            fields.add("assertion", generateJWT());
+            fields.add("assertion", generateJWT(input));
             return fields;
         });
 
@@ -62,18 +95,24 @@ public class JwtTokenClient {
                         .maxBackoff(Duration.ofMinutes(1L))
                         .doBeforeRetry(rs -> log.warn("Error connecting to token endpoint, retrying.. " + rs)))
                 .doOnNext(res -> log.info("Response: {}", res.toString()))
-                .cache(r -> Duration.ofSeconds(r.getExpiresIn()-10 ), (t) -> Duration.ZERO , () -> Duration.ZERO);
+                .cache(r -> Duration.ofSeconds(r.getExpiresIn() - 10L), t -> Duration.ZERO, () -> Duration.ZERO);
     }
 
     @Retryable(value = HttpClientErrorException.class, maxAttempts = Integer.MAX_VALUE,
             backoff = @Backoff(delay = 5000, maxDelay = 1000 * 60 * 60, multiplier = 3))
     public JwtTokenResponse fetchToken() {
+        return fetchToken(new JwtTokenInput());
+    }
+
+    @Retryable(value = HttpClientErrorException.class, maxAttempts = Integer.MAX_VALUE,
+            backoff = @Backoff(delay = 5000, maxDelay = 1000 * 60 * 60, multiplier = 3))
+    public JwtTokenResponse fetchToken(JwtTokenInput input) {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setErrorHandler(new OidcErrorHandler());
 
         LinkedMultiValueMap<String, String> attrMap = new LinkedMultiValueMap<>();
         attrMap.add("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
-        attrMap.add("assertion", generateJWT());
+        attrMap.add("assertion", generateJWT(input));
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -84,38 +123,24 @@ public class JwtTokenClient {
 
         ResponseEntity<JwtTokenResponse> response = restTemplate.exchange(config.getTokenUri(), HttpMethod.POST,
                 httpEntity, JwtTokenResponse.class);
-        log.info("Response: {}", response.toString());
+        log.info("Response: {}", response);
 
         return response.getBody();
     }
 
     public String generateJWT() {
-        KeystoreHelper nokkel = new KeystoreHelper(config.getKeystore());
+        return generateJWT(new JwtTokenInput());
+    }
 
-        List<Base64> certChain = new ArrayList<>();
-        try {
-            certChain.add(Base64.encode(nokkel.getX509Certificate().getEncoded()));
-        } catch (CertificateEncodingException e) {
-            log.error("Could not get encoded certificate", e);
-            throw new RuntimeException(e);
-        }
-
-        JWSHeader jwsHeader = new JWSHeader.Builder(JWSAlgorithm.RS256).x509CertChain(certChain).build();
-
+    public String generateJWT(JwtTokenInput input) {
         JWTClaimsSet claims = new JWTClaimsSet.Builder()
-                .audience(config.getAudience())
-                .issuer(config.getClientId())
-                .claim("scope", config.getScopes().stream().reduce((a, b) -> a + " " + b).orElse(""))
+                .audience(Optional.ofNullable(input.getAudience()).orElse(config.getAudience()))
+                .issuer(Optional.ofNullable(input.getClientId()).orElse(config.getClientId()))
+                .claim("scope", getScopeString(input))
                 .jwtID(UUID.randomUUID().toString())
                 .issueTime(Date.from(OffsetDateTime.now(DEFAULT_ZONE_ID).toInstant()))
                 .expirationTime(Date.from(OffsetDateTime.now(DEFAULT_ZONE_ID).toInstant().plusSeconds(120)))
                 .build();
-
-        RSASSASigner signer = new RSASSASigner(nokkel.loadPrivateKey());
-
-        if (nokkel.shouldLockProvider()) {
-            signer.getJCAContext().setProvider(nokkel.getKeyStore().getProvider());
-        }
 
         SignedJWT signedJWT = new SignedJWT(jwsHeader, claims);
         try {
@@ -130,4 +155,14 @@ public class JwtTokenClient {
         return serializedJwt;
     }
 
+    private String getScopeString(JwtTokenInput input) {
+        List<String> scopes = Optional.ofNullable(input.getScopes()).orElse(config.getScopes());
+        return scopes.stream().reduce((a, b) -> a + " " + b).orElse("");
+    }
+
+    public static class CertificateEncodingRuntimeException extends RuntimeException {
+        public CertificateEncodingRuntimeException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
 }

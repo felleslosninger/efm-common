@@ -104,6 +104,10 @@
         <module>config</module>
         <module>security</module>
         <module>webservice-tools</module>
+        <module>annotation</module>
+        <module>domain</module>
+        <module>validation</module>
+        <module>io</module>
     </modules>
 
     <dependencyManagement>
@@ -132,6 +136,27 @@
                 <groupId>no.difi.move-common</groupId>
                 <artifactId>webservice-tools</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>no.difi.move-common</groupId>
+                <artifactId>annotation</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>no.difi.move-common</groupId>
+                <artifactId>domain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>no.difi.move-common</groupId>
+                <artifactId>validation</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>no.difi.commons</groupId>
+                <artifactId>commons-certvalidator</artifactId>
+                <version>2.1.1</version>
             </dependency>
 
             <dependency>
@@ -322,6 +347,12 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
+                                <configuration>
+                                    <gpgArguments>
+                                        <arg>--pinentry-mode</arg>
+                                        <arg>loopback</arg>
+                                    </gpgArguments>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
