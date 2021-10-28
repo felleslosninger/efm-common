@@ -108,6 +108,7 @@
         <module>domain</module>
         <module>validation</module>
         <module>io</module>
+        <module>certvalidator</module>
     </modules>
 
     <dependencyManagement>
