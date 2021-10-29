@@ -1,6 +1,5 @@
 package no.difi.move.common.oauth;
 
-import org.springframework.http.client.reactive.ClientHttpConnector;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.security.oauth2.client.*;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
@@ -9,7 +8,6 @@ import org.springframework.security.oauth2.client.registration.InMemoryClientReg
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.util.annotation.Nullable;
 
 public class JwtWebClient {
 
