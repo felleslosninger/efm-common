@@ -23,7 +23,7 @@ public class JwtWebClient {
                 .build();
     }
 
-    public static WebClient create(String baseUrl, String registrationId, JwtTokenClient jwtTokenClient, ReactorClientHttpConnector connector) {
+    public static WebClient createWithReactorClientConnector(String baseUrl, String registrationId, JwtTokenClient jwtTokenClient, ReactorClientHttpConnector connector) {
         ServletOAuth2AuthorizedClientExchangeFilterFunction filter = getAuthorizedFilter(registrationId, jwtTokenClient);
         filter.setDefaultClientRegistrationId(registrationId);
 

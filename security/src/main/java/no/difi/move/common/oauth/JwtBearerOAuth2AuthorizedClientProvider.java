@@ -28,7 +28,6 @@ public class JwtBearerOAuth2AuthorizedClientProvider implements OAuth2Authorized
     private Clock clock = Clock.systemUTC();
 
     @Override
-    @Synchronized
     @Nullable
     @Synchronized
     public OAuth2AuthorizedClient authorize(OAuth2AuthorizationContext context) {
