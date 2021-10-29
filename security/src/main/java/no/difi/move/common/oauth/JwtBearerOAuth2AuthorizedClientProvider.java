@@ -2,6 +2,7 @@ package no.difi.move.common.oauth;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
 import org.springframework.security.oauth2.client.OAuth2AuthorizationContext;
@@ -27,6 +28,7 @@ public class JwtBearerOAuth2AuthorizedClientProvider implements OAuth2Authorized
     private Clock clock = Clock.systemUTC();
 
     @Override
+    @Synchronized
     @Nullable
     public OAuth2AuthorizedClient authorize(OAuth2AuthorizationContext context) {
         Assert.notNull(context, "context cannot be null");
@@ -47,7 +49,7 @@ public class JwtBearerOAuth2AuthorizedClientProvider implements OAuth2Authorized
         JwtBearerGrantRequest jwtBearerGrantRequest = new JwtBearerGrantRequest(clientRegistration);
         OAuth2AccessTokenResponse tokenResponse = tokenResponseClient.getTokenResponse(jwtBearerGrantRequest);
 
-        return new OAuth2AuthorizedClient(clientRegistration, context.getPrincipal().getName(), tokenResponse.getAccessToken());
+        return new OAuth2AuthorizedClient(clientRegistration, clientRegistration.getRegistrationId(), tokenResponse.getAccessToken());
     }
 
     private boolean isExpired(AbstractOAuth2Token token) {
