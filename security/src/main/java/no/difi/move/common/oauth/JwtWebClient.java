@@ -7,12 +7,14 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.web.reactive.function.client.WebClient;
 
 public class JwtWebClient {
 
     public static WebClient create(String baseUrl, String registrationId, JwtTokenClient jwtTokenClient) {
         ServletOAuth2AuthorizedClientExchangeFilterFunction filter = getAuthorizedFilter(registrationId, jwtTokenClient);
+        filter.setDefaultOAuth2AuthorizedClient(true);
         filter.setDefaultClientRegistrationId(registrationId);
 
         return WebClient.builder()
@@ -21,7 +23,7 @@ public class JwtWebClient {
                 .build();
     }
 
-    public static WebClient createWithReactorClientConnector(String baseUrl, String registrationId, JwtTokenClient jwtTokenClient, ReactorClientHttpConnector connector) {
+    public static WebClient create(String baseUrl, String registrationId, JwtTokenClient jwtTokenClient, ReactorClientHttpConnector connector) {
         ServletOAuth2AuthorizedClientExchangeFilterFunction filter = getAuthorizedFilter(registrationId, jwtTokenClient);
         filter.setDefaultClientRegistrationId(registrationId);
 
@@ -34,22 +36,22 @@ public class JwtWebClient {
 
     private static ServletOAuth2AuthorizedClientExchangeFilterFunction getAuthorizedFilter(String registrationId, JwtTokenClient jwtTokenClient) {
         ClientRegistration clientRegistration = ClientRegistration.withRegistrationId(registrationId)
-                .authorizationGrantType(AuthorizationGrantType.JWT_BEARER)
-                .build();
+            .clientAuthenticationMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT)
+            .authorizationGrantType(AuthorizationGrantType.JWT_BEARER)
+            .build();
         ClientRegistrationRepository registrationRepository = new InMemoryClientRegistrationRepository(clientRegistration);
         JwtBearerAccessTokenResponseClient responseClient = new JwtBearerAccessTokenResponseClient(jwtTokenClient);
         JwtBearerOAuth2AuthorizedClientProvider clientProvider = new JwtBearerOAuth2AuthorizedClientProvider(responseClient);
-        OAuth2AuthorizedClientService authorizedClientService = new InMemoryOAuth2AuthorizedClientService(registrationRepository);
+        OAuth2AuthorizedClientService authorizedClientService = new SyncedInMemoryOAuth2AuthorizedClientService(registrationRepository);
+        SyncedOauth2AuthorizedClientManager clientManager
+            = new SyncedOauth2AuthorizedClientManager(registrationRepository, authorizedClientService);
 
-        AuthorizedClientServiceOAuth2AuthorizedClientManager clientManager
-                = new AuthorizedClientServiceOAuth2AuthorizedClientManager(registrationRepository, authorizedClientService);
         OAuth2AuthorizedClientProvider authorizedClientProvider
-                = OAuth2AuthorizedClientProviderBuilder.builder()
-                .provider(clientProvider)
-                .build();
+            = OAuth2AuthorizedClientProviderBuilder.builder()
+            .provider(clientProvider)
+            .build();
         clientManager.setAuthorizedClientProvider(authorizedClientProvider);
+
         return new ServletOAuth2AuthorizedClientExchangeFilterFunction(clientManager);
     }
-
-
 }

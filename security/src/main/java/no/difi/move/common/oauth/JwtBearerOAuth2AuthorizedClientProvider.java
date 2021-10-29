@@ -28,6 +28,7 @@ public class JwtBearerOAuth2AuthorizedClientProvider implements OAuth2Authorized
     private Clock clock = Clock.systemUTC();
 
     @Override
+    @Synchronized
     @Nullable
     @Synchronized
     public OAuth2AuthorizedClient authorize(OAuth2AuthorizationContext context) {
@@ -49,7 +50,7 @@ public class JwtBearerOAuth2AuthorizedClientProvider implements OAuth2Authorized
         JwtBearerGrantRequest jwtBearerGrantRequest = new JwtBearerGrantRequest(clientRegistration);
         OAuth2AccessTokenResponse tokenResponse = tokenResponseClient.getTokenResponse(jwtBearerGrantRequest);
 
-        return new OAuth2AuthorizedClient(clientRegistration, context.getPrincipal().getName(), tokenResponse.getAccessToken());
+        return new OAuth2AuthorizedClient(clientRegistration, clientRegistration.getRegistrationId(), tokenResponse.getAccessToken());
     }
 
     private boolean isExpired(AbstractOAuth2Token token) {
