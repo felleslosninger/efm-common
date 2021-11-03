@@ -1,5 +1,6 @@
 package no.difi.move.common.oauth;
 
+import org.springframework.http.client.reactive.ClientHttpConnector;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.security.oauth2.client.*;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
@@ -23,7 +24,7 @@ public class JwtWebClient {
                 .build();
     }
 
-    public static WebClient createWithReactorClientConnector(String baseUrl, String registrationId, JwtTokenClient jwtTokenClient, ReactorClientHttpConnector connector) {
+    public static WebClient createWithClientHttpConnector(String baseUrl, String registrationId, JwtTokenClient jwtTokenClient, ClientHttpConnector connector) {
         ServletOAuth2AuthorizedClientExchangeFilterFunction filter = getAuthorizedFilter(registrationId, jwtTokenClient);
         filter.setDefaultClientRegistrationId(registrationId);
 
