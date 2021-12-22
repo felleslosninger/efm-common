@@ -1,8 +1,8 @@
 package no.difi.move.common.oauth;
 
-import org.springframework.http.client.reactive.ClientHttpConnector;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.security.oauth2.client.*;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProvider;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
@@ -13,26 +13,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 public class JwtWebClient {
 
-    public static WebClient create(String baseUrl, String registrationId, JwtTokenClient jwtTokenClient) {
+    public static WebClient.Builder builder(String baseUrl, String registrationId, JwtTokenClient jwtTokenClient) {
         ServletOAuth2AuthorizedClientExchangeFilterFunction filter = getAuthorizedFilter(registrationId, jwtTokenClient);
         filter.setDefaultOAuth2AuthorizedClient(true);
         filter.setDefaultClientRegistrationId(registrationId);
 
         return WebClient.builder()
-                .apply(filter.oauth2Configuration())
-                .baseUrl(baseUrl)
-                .build();
-    }
-
-    public static WebClient createWithClientHttpConnector(String baseUrl, String registrationId, JwtTokenClient jwtTokenClient, ClientHttpConnector connector) {
-        ServletOAuth2AuthorizedClientExchangeFilterFunction filter = getAuthorizedFilter(registrationId, jwtTokenClient);
-        filter.setDefaultClientRegistrationId(registrationId);
-
-        return WebClient.builder()
-                .apply(filter.oauth2Configuration())
-                .clientConnector(connector)
-                .baseUrl(baseUrl)
-                .build();
+            .apply(filter.oauth2Configuration())
+            .baseUrl(baseUrl);
     }
 
     private static ServletOAuth2AuthorizedClientExchangeFilterFunction getAuthorizedFilter(String registrationId, JwtTokenClient jwtTokenClient) {
