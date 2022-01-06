@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 
+@SuppressWarnings("unused")
 public class StandardBusinessDocumentUtils {
 
     private StandardBusinessDocumentUtils() {
@@ -51,6 +52,12 @@ public class StandardBusinessDocumentUtils {
         return Optional.of(sbd.getStandardBusinessDocumentHeader())
                 .flatMap(p -> StandardBusinessDocumentHeaderUtils.getScope(p, scopeType));
 
+    }
+
+    public static StandardBusinessDocument addScope(StandardBusinessDocument sbd, Scope scope) {
+        Optional.of(sbd.getStandardBusinessDocumentHeader())
+                .ifPresent(p -> StandardBusinessDocumentHeaderUtils.addScope(p, scope));
+        return sbd;
     }
 
     public static Optional<String> getType(StandardBusinessDocument sbd) {
