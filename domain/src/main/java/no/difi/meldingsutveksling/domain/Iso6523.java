@@ -2,6 +2,7 @@ package no.difi.meldingsutveksling.domain;
 
 import lombok.Value;
 import lombok.With;
+import no.difi.meldingsutveksling.domain.sbdh.Authority;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
@@ -78,6 +79,10 @@ public class Iso6523 implements Serializable {
 
     public Iso6523 toMainOrganization() {
         return Iso6523.of(icd, organizationIdentifier);
+    }
+
+    public String toParticipantIdentifier() {
+        return String.format("%s::%s", Authority.ISO6523_ACTORID_UPIS, this);
     }
 
     public String urlEncode() {
