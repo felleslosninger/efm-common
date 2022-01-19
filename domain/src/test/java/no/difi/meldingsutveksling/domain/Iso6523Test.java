@@ -77,4 +77,9 @@ public class Iso6523Test {
     public void urlEncoding() {
         assertThat(Iso6523.parse("0192:987654321:MP//dummy:1").urlEncode()).isEqualTo("0192%3A987654321%3AMP%2F%2Fdummy%3A1");
     }
+
+    @Test
+    public void toParticipantIdentifier() {
+        assertThat(Iso6523.parse("0192:987654321").toParticipantIdentifier()).isEqualTo("iso6523-actorid-upis::0192:987654321");
+    }
 }
