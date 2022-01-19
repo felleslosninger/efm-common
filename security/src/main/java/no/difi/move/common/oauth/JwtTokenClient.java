@@ -133,13 +133,18 @@ public class JwtTokenClient {
     }
 
     public String generateJWT(JwtTokenInput input) {
-        JWTClaimsSet claims = new JWTClaimsSet.Builder()
+        JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
                 .audience(Optional.ofNullable(input.getAudience()).orElse(config.getAudience()))
                 .issuer(Optional.ofNullable(input.getClientId()).orElse(config.getClientId()))
                 .claim("scope", getScopeString(input))
                 .jwtID(UUID.randomUUID().toString())
                 .issueTime(Date.from(OffsetDateTime.now(DEFAULT_ZONE_ID).toInstant()))
-                .expirationTime(Date.from(OffsetDateTime.now(DEFAULT_ZONE_ID).toInstant().plusSeconds(120)))
+                .expirationTime(Date.from(OffsetDateTime.now(DEFAULT_ZONE_ID).toInstant().plusSeconds(120)));
+
+        Optional.ofNullable(input.getConsumerOrg())
+                .ifPresent(consumerOrg -> builder.claim("consumer_org", consumerOrg));
+
+        JWTClaimsSet claims = builder
                 .build();
 
         SignedJWT signedJWT = new SignedJWT(jwsHeader, claims);
