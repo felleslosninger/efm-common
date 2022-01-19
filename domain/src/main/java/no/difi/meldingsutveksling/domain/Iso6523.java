@@ -2,7 +2,6 @@ package no.difi.meldingsutveksling.domain;
 
 import lombok.Value;
 import lombok.With;
-import no.difi.meldingsutveksling.domain.sbdh.Authority;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
@@ -11,13 +10,16 @@ import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static no.difi.meldingsutveksling.domain.sbdh.Authority.ISO6523_ACTORID_UPIS;
+
 @Value
 public class Iso6523 implements Serializable {
 
     private static final Pattern ORGANIZATION_IDENTIFIER_PATTERN = Pattern.compile("^[^\\s:][^:]{1,33}[^\\s:]$");
     private static final Pattern ORGANIZATION_PART_IDENTIFIER_PATTERN = Pattern.compile("^[^\\s:][^:]{1,33}[^\\s:]$");
     private static final Pattern SOURCE_INDICATOR = Pattern.compile("^\\d$");
-    private static final Pattern ISO6523_PATTERN = Pattern.compile("^(\\d{4}):([^:]{1,35})(?::([^\\s:]{1,35}))?(?::(\\d))?$");
+    private static final Pattern ISO6523_PATTERN = Pattern.compile("^(?<icd>\\d{4}):(?<organizationIdentifier>[^:]{1,35})(?::(?<organizationPartIdentifier>[^\\s:]{1,35}))?(?::(?<sourceIndicator>\\d))?$");
+    private static final Pattern QUALIFIED_IDENTIFIER_PATTERN = Pattern.compile("^" + ISO6523_ACTORID_UPIS + "::(?<icd>\\d{4}):(?<organizationIdentifier>[^:]{1,35})(?::(?<organizationPartIdentifier>[^\\s:]{1,35}))?(?::(?<sourceIndicator>\\d))?$");
 
     @With ICD icd;
     String organizationIdentifier;
@@ -57,12 +59,24 @@ public class Iso6523 implements Serializable {
 
     public static Iso6523 parse(String identifier) {
         Matcher matcher = ISO6523_PATTERN.matcher(identifier);
+        return parse(identifier, matcher, "Invalid ISO6523 value: '%s'");
+    }
 
+    public static Iso6523 parseQualifiedIdentifier(String identifier) {
+        Matcher matcher = QUALIFIED_IDENTIFIER_PATTERN.matcher(identifier);
+        return parse(identifier, matcher, "Invalid qualified identifier: '%s'");
+    }
+
+    private static Iso6523 parse(String identifier, Matcher matcher, String message) {
         if (matcher.matches()) {
-            return new Iso6523(ICD.parse(matcher.group(1)), matcher.group(2), matcher.group(3), matcher.group(4));
+            return new Iso6523(
+                    ICD.parse(matcher.group("icd")),
+                    matcher.group("organizationIdentifier"),
+                    matcher.group("organizationPartIdentifier"),
+                    matcher.group("sourceIndicator"));
         }
 
-        throw new IllegalArgumentException(String.format("Invalid ISO6523 value: '%s'", identifier));
+        throw new IllegalArgumentException(String.format(message, identifier));
     }
 
     public static boolean isValid(String inidentifier) {
@@ -81,8 +95,8 @@ public class Iso6523 implements Serializable {
         return Iso6523.of(icd, organizationIdentifier);
     }
 
-    public String toParticipantIdentifier() {
-        return String.format("%s::%s", Authority.ISO6523_ACTORID_UPIS, this);
+    public String getQualifiedIdentifier() {
+        return String.format("%s::%s", ISO6523_ACTORID_UPIS, this);
     }
 
     public String urlEncode() {

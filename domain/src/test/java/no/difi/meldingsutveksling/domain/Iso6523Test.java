@@ -19,6 +19,17 @@ public class Iso6523Test {
     }
 
     @Test
+    public void parseQualifiedIdentifier() {
+        assertThat(Iso6523.parseQualifiedIdentifier("iso6523-actorid-upis::0192:987654321")).isEqualTo(Iso6523.of(ICD.NO_ORG, "987654321"));
+        assertThatThrownBy(() -> Iso6523.parseQualifiedIdentifier("0192:987654321"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Invalid qualified identifier: '0192:987654321'");
+
+        assertThat(Iso6523.parseQualifiedIdentifier("iso6523-actorid-upis::0192:987654321:MP//dummy:1")).isEqualTo(Iso6523.of(ICD.NO_ORG, "987654321", "MP//dummy", "1"));
+        assertThat(Iso6523.parseQualifiedIdentifier("iso6523-actorid-upis::0192:987654321:MP//Vergemålsetaten:1")).isEqualTo(Iso6523.of(ICD.NO_ORG, "987654321", "MP//Vergemålsetaten", "1"));
+    }
+
+    @Test
     public void isValid() {
         assertThat(Iso6523.isValid("0192:987654321")).isTrue();
         assertThat(Iso6523.isValid("0192:fiken")).isTrue();
@@ -79,7 +90,7 @@ public class Iso6523Test {
     }
 
     @Test
-    public void toParticipantIdentifier() {
-        assertThat(Iso6523.parse("0192:987654321").toParticipantIdentifier()).isEqualTo("iso6523-actorid-upis::0192:987654321");
+    public void getQualifiedIdentifier() {
+        assertThat(Iso6523.parse("0192:987654321").getQualifiedIdentifier()).isEqualTo("iso6523-actorid-upis::0192:987654321");
     }
 }
