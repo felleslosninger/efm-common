@@ -95,6 +95,10 @@ public class Iso6523 implements Serializable {
         return Iso6523.of(icd, organizationIdentifier);
     }
 
+    public String getAuthority() {
+        return ISO6523_ACTORID_UPIS;
+    }
+
     public String getQualifiedIdentifier() {
         return String.format("%s::%s", ISO6523_ACTORID_UPIS, this);
     }
