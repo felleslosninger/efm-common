@@ -22,9 +22,9 @@ public class Iso6523 implements Serializable {
     private static final Pattern QUALIFIED_IDENTIFIER_PATTERN = Pattern.compile("^" + ISO6523_ACTORID_UPIS + "::(?<icd>\\d{4}):(?<organizationIdentifier>[^:]{1,35})(?::(?<organizationPartIdentifier>[^\\s:]{1,35}))?(?::(?<sourceIndicator>\\d))?$");
 
     @With ICD icd;
-    String organizationIdentifier;
-    String organizationPartIdentifier;
-    String sourceIndicator;
+    @With String organizationIdentifier;
+    @With String organizationPartIdentifier;
+    @With String sourceIndicator;
 
     private Iso6523(ICD icd, String organizationIdentifier, String organizationPartIdentifier, String sourceIndicator) {
         this.icd = icd;
@@ -35,6 +35,10 @@ public class Iso6523 implements Serializable {
 
     public static Iso6523 of(ICD icd, String organizationIdentifier) {
         return of(icd, organizationIdentifier, null, null);
+    }
+
+    public static Iso6523 of(ICD icd, String organizationIdentifier, String organizationPartIdentifier) {
+        return of(icd, organizationIdentifier, organizationPartIdentifier, null);
     }
 
     public static Iso6523 of(ICD icd, String organizationIdentifier, String organizationPartIdentifier, String sourceIndicator) {

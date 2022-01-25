@@ -14,6 +14,7 @@ public class Iso6523Test {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Invalid ISO6523 value: '0192 :987654321'");
 
+        assertThat(Iso6523.parse("0192:987654321:MP//dummy")).isEqualTo(Iso6523.of(ICD.NO_ORG, "987654321", "MP//dummy", null));
         assertThat(Iso6523.parse("0192:987654321:MP//dummy:1")).isEqualTo(Iso6523.of(ICD.NO_ORG, "987654321", "MP//dummy", "1"));
         assertThat(Iso6523.parse("0192:987654321:MP//Vergemålsetaten:1")).isEqualTo(Iso6523.of(ICD.NO_ORG, "987654321", "MP//Vergemålsetaten", "1"));
     }
