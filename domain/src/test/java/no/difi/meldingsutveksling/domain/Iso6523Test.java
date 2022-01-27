@@ -24,7 +24,7 @@ public class Iso6523Test {
         assertThat(Iso6523.parseQualifiedIdentifier("iso6523-actorid-upis::0192:987654321")).isEqualTo(Iso6523.of(ICD.NO_ORG, "987654321"));
         assertThatThrownBy(() -> Iso6523.parseQualifiedIdentifier("0192:987654321"))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Invalid qualified identifier: '0192:987654321'");
+                .hasMessage("Invalid qualified identifier = '0192:987654321'. Expected <authoriyy>::<identifier>");
 
         assertThat(Iso6523.parseQualifiedIdentifier("iso6523-actorid-upis::0192:987654321:MP//dummy:1")).isEqualTo(Iso6523.of(ICD.NO_ORG, "987654321", "MP//dummy", "1"));
         assertThat(Iso6523.parseQualifiedIdentifier("iso6523-actorid-upis::0192:987654321:MP//Vergemålsetaten:1")).isEqualTo(Iso6523.of(ICD.NO_ORG, "987654321", "MP//Vergemålsetaten", "1"));
@@ -39,6 +39,18 @@ public class Iso6523Test {
         assertThat(Iso6523.isValid("0007:19571003-6970 001")).isTrue();
 
         assertThat(Iso6523.isValid("0192A987654321")).isFalse();
+    }
+
+    @Test
+    public void isValidQualifiedIdentifier() {
+        assertThat(Iso6523.isValidQualifiedIdentifier("0192:987654321")).isFalse();
+        assertThat(Iso6523.isValidQualifiedIdentifier("iso6523-actorid-upis::0192:987654321")).isTrue();
+        assertThat(Iso6523.isValidQualifiedIdentifier("iso6523-actorid-upis::0192:fiken")).isTrue();
+        assertThat(Iso6523.isValidQualifiedIdentifier("iso6523-actorid-upis::9908:CSAMED-01")).isTrue();
+        assertThat(Iso6523.isValidQualifiedIdentifier("iso6523-actorid-upis::0007:000000-0000")).isTrue();
+        assertThat(Iso6523.isValidQualifiedIdentifier("iso6523-actorid-upis::0007:19571003-6970 001")).isTrue();
+
+        assertThat(Iso6523.isValidQualifiedIdentifier("iso6523-actorid-upis::0192A987654321")).isFalse();
     }
 
     @Test
@@ -93,5 +105,10 @@ public class Iso6523Test {
     @Test
     public void getQualifiedIdentifier() {
         assertThat(Iso6523.parse("0192:987654321").getQualifiedIdentifier()).isEqualTo("iso6523-actorid-upis::0192:987654321");
+    }
+
+    @Test
+    public void getAuthority() {
+        assertThat(Iso6523.parse("0192:987654321").getAuthority()).isEqualTo("iso6523-actorid-upis");
     }
 }
