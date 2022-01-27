@@ -109,7 +109,8 @@ public class PersonIdentifier implements PartnerIdentifier {
         }
 
         if (year >= 1940) {
-            return ThreadLocalRandom.current().nextInt(900, 1000);
+            int x = ThreadLocalRandom.current().nextInt(0, 600);
+            return x < 500 ? x : x + 400;
         }
 
         return ThreadLocalRandom.current().nextInt(0, 500);
