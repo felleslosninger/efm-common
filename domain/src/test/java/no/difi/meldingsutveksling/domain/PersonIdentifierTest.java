@@ -1,8 +1,8 @@
 package no.difi.meldingsutveksling.domain;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-import java.lang.annotation.Repeatable;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -12,6 +12,18 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 public class PersonIdentifierTest {
+
+    @Test
+    public void getIdentifier() {
+        Assertions.assertThat(PersonIdentifier.parse("08089409382").getIdentifier())
+                .isEqualTo("08089409382");
+    }
+
+    @Test
+    public void getPrimaryIdentifier() {
+        Assertions.assertThat(PersonIdentifier.parse("08089409382").getPrimaryIdentifier())
+                .isEqualTo("08089409382");
+    }
 
     @Test
     public void parse() {

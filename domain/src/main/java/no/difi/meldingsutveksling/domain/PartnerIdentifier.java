@@ -39,6 +39,10 @@ public interface PartnerIdentifier extends Serializable {
 
     String getIdentifier();
 
+    default String getPrimaryIdentifier() {
+        return getIdentifier();
+    }
+
     default boolean hasOrganizationPartIdentifier() {
         return false;
     }

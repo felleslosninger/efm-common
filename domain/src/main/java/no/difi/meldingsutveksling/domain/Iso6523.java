@@ -82,6 +82,11 @@ public class Iso6523 implements PartnerIdentifier {
     }
 
     @Override
+    public String getPrimaryIdentifier() {
+        return getOrganizationIdentifier();
+    }
+
+    @Override
     public boolean hasOrganizationPartIdentifier() {
         return organizationPartIdentifier != null;
     }

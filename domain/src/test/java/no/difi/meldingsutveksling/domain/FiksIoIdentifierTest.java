@@ -10,6 +10,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class FiksIoIdentifierTest {
 
     @Test
+    public void getIdentifier() {
+        assertThat(FiksIoIdentifier.parse("0232c524-cb9b-4e9e-916d-318a5696184e").getIdentifier())
+                .isEqualTo("0232c524-cb9b-4e9e-916d-318a5696184e");
+    }
+
+    @Test
+    public void getPrimaryIdentifier() {
+        assertThat(FiksIoIdentifier.parse("0232c524-cb9b-4e9e-916d-318a5696184e").getPrimaryIdentifier())
+                .isEqualTo("0232c524-cb9b-4e9e-916d-318a5696184e");
+    }
+
+    @Test
     public void of() {
         assertThat(FiksIoIdentifier.of(UUID.fromString("0232c524-cb9b-4e9e-916d-318a5696184e")))
                 .extracting(FiksIoIdentifier::getIdentifier)
@@ -44,12 +56,6 @@ public class FiksIoIdentifierTest {
     public void getUUID() {
         assertThat(FiksIoIdentifier.parse("0232c524-cb9b-4e9e-916d-318a5696184e").getUUID())
                 .isEqualTo(UUID.fromString("0232c524-cb9b-4e9e-916d-318a5696184e"));
-    }
-
-    @Test
-    public void getIdentifier() {
-        assertThat(FiksIoIdentifier.parse("0232c524-cb9b-4e9e-916d-318a5696184e").getIdentifier())
-                .isEqualTo("0232c524-cb9b-4e9e-916d-318a5696184e");
     }
 
     @Test

@@ -9,7 +9,7 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PartnerIdentifierUtil {
+class PartnerIdentifierUtil {
 
     private static final Pattern QUALIFIED_IDENTIFIER_PATTERN = Pattern.compile("^(?<authority>.+)::(?<identifier>.*)");
 

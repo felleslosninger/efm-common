@@ -8,6 +8,18 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 public class Iso6523Test {
 
     @Test
+    public void getIdentifier() {
+        assertThat(Iso6523.parse("0192:987654321").getIdentifier()).isEqualTo("0192:987654321");
+        assertThat(Iso6523.parse("0192:987654321:MP//Vergemålsetaten:1").getIdentifier()).isEqualTo("0192:987654321:MP//Vergemålsetaten:1");
+    }
+
+    @Test
+    public void getPrimaryIdentifier() {
+        assertThat(Iso6523.parse("0192:987654321").getPrimaryIdentifier()).isEqualTo("987654321");
+        assertThat(Iso6523.parse("0192:987654321:MP//Vergemålsetaten:1").getPrimaryIdentifier()).isEqualTo("987654321");
+    }
+
+    @Test
     public void parse() {
         assertThat(Iso6523.parse("0192:987654321")).isEqualTo(Iso6523.of(ICD.NO_ORG, "987654321"));
         assertThatThrownBy(() -> Iso6523.parse("0192 :987654321"))
