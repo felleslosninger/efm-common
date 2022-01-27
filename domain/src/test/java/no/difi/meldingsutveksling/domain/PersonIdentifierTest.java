@@ -71,12 +71,14 @@ public class PersonIdentifierTest {
 
     @Test
     public void random() {
-        assertThat(PersonIdentifier.isValid(PersonIdentifier.random().getIdentifier())).isTrue();
-        assertThat(PersonIdentifier.random(Gender.MALE).getGender()).isEqualTo(Gender.MALE);
-        assertThat(PersonIdentifier.random(Gender.FEMALE).getGender()).isEqualTo(Gender.FEMALE);
-        assertThat(PersonIdentifier.random(LocalDate.parse("1975-03-20"), Gender.MALE))
-                .satisfies(personIdentifier -> assertThat(personIdentifier.getDateOfBirth()).isEqualTo("1975-03-20"))
-                .satisfies(personIdentifier -> assertThat(personIdentifier.getGender()).isEqualTo(Gender.MALE));
+        for (int i = 0; i < 100; ++i) {
+            assertThat(PersonIdentifier.isValid(PersonIdentifier.random().getIdentifier())).isTrue();
+            assertThat(PersonIdentifier.random(Gender.MALE).getGender()).isEqualTo(Gender.MALE);
+            assertThat(PersonIdentifier.random(Gender.FEMALE).getGender()).isEqualTo(Gender.FEMALE);
+            assertThat(PersonIdentifier.random(LocalDate.parse("1975-03-20"), Gender.MALE))
+                    .satisfies(personIdentifier -> assertThat(personIdentifier.getDateOfBirth()).isEqualTo("1975-03-20"))
+                    .satisfies(personIdentifier -> assertThat(personIdentifier.getGender()).isEqualTo(Gender.MALE));
+        }
     }
 
     @Test

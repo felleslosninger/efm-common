@@ -68,15 +68,13 @@ public class PersonIdentifier implements PartnerIdentifier {
             identifier = getRandomIdentifier(dateOfBirth, gender);
         }
 
-        return new PersonIdentifier(identifier);
+        return PersonIdentifier.parse(identifier);
     }
 
     private static String getRandomIdentifier(LocalDate dateOfBirth, Gender gender) {
-        int individualnumber = ThreadLocalRandom.current().nextInt(0, 500) * 2 + ((gender == Gender.MALE) ? 1 : 0);
-
         String identifierWithoutCheckDigits = String.format("%s%03d",
                 dateOfBirth.format(DateTimeFormatter.ofPattern("ddMMyy")),
-                individualnumber);
+                getRandomIndividualNumber(dateOfBirth, gender));
 
         int checkDigit1 = PartnerIdentifierUtil.modulo11(identifierWithoutCheckDigits, WEIGHTS1);
 
@@ -91,6 +89,30 @@ public class PersonIdentifier implements PartnerIdentifier {
         }
 
         return String.format("%s%d%d", identifierWithoutCheckDigits, checkDigit1, checkDigit2);
+    }
+
+    private static int getRandomIndividualNumber(LocalDate dateOfBirth, Gender gender) {
+        int randomIndividualNumber = getRandomIndividualNumber(dateOfBirth);
+        if (randomIndividualNumber % 2 == 1) --randomIndividualNumber;
+        return randomIndividualNumber + ((gender == Gender.MALE) ? 1 : 0);
+    }
+
+    private static int getRandomIndividualNumber(LocalDate dateOfBirth) {
+        int year = dateOfBirth.getYear();
+
+        if (year >= 2000) {
+            return ThreadLocalRandom.current().nextInt(500, 1000);
+        }
+
+        if (year < 1900) {
+            return ThreadLocalRandom.current().nextInt(500, 750);
+        }
+
+        if (year >= 1940) {
+            return ThreadLocalRandom.current().nextInt(900, 1000);
+        }
+
+        return ThreadLocalRandom.current().nextInt(0, 500);
     }
 
     String identifier;
