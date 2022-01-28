@@ -10,11 +10,15 @@ package no.difi.meldingsutveksling.domain.sbdh;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import no.difi.meldingsutveksling.domain.PartnerIdentifier;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.*;
+import java.time.OffsetDateTime;
+import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
 
 
 /**
@@ -55,5 +59,73 @@ public class StandardBusinessDocument {
     @JsonIgnore
     public <T> Optional<T> getBusinessMessage(Class<T> clazz) {
         return clazz.isInstance(any) ? Optional.of(clazz.cast(any)) : Optional.empty();
+    }
+
+    @JsonIgnore
+    public Optional<String> getMessageId() {
+        return Optional.ofNullable(standardBusinessDocumentHeader.getDocumentIdentification())
+                .flatMap(p -> Optional.ofNullable(p.getInstanceIdentifier()));
+    }
+
+    @JsonIgnore
+    public Optional<String> getDocumentType() {
+        return Optional.ofNullable(standardBusinessDocumentHeader.getDocumentIdentification())
+                .flatMap(p -> Optional.ofNullable(p.getStandard()));
+    }
+
+    @JsonIgnore
+    public Set<Scope> getScopes() {
+        return Optional.ofNullable(standardBusinessDocumentHeader.getBusinessScope())
+                .flatMap(p -> Optional.ofNullable(p.getScope()))
+                .orElseGet(Collections::emptySet);
+    }
+
+    @JsonIgnore
+    public Optional<Scope> getScope(ScopeType scopeType) {
+        return standardBusinessDocumentHeader.getScopes()
+                .stream()
+                .filter(scope -> scopeType.toString().equals(scope.getType()) || scopeType.name().equals(scope.getType()))
+                .findAny();
+    }
+
+    @JsonIgnore
+    public void addScope(Scope scope) {
+        Optional.ofNullable(standardBusinessDocumentHeader.getBusinessScope()).ifPresent(p -> p.addScopes(scope));
+    }
+
+    @JsonIgnore
+    public Optional<String> getConversationId() {
+        return standardBusinessDocumentHeader.getConversationId();
+    }
+
+    @JsonIgnore
+    public Optional<String> getType() {
+        return Optional.ofNullable(standardBusinessDocumentHeader.getDocumentIdentification())
+                .flatMap(p -> Optional.ofNullable(p.getType()));
+    }
+
+    @JsonIgnore
+    public Optional<OffsetDateTime> getExpectedResponseDateTime() {
+        return standardBusinessDocumentHeader.getExpectedResponseDateTime();
+    }
+
+    @JsonIgnore
+    public PartnerIdentifier getSenderIdentifier() {
+        return standardBusinessDocumentHeader.getSenderIdentifier();
+    }
+
+    @JsonIgnore
+    public StandardBusinessDocumentHeader setSenderIdentifier(PartnerIdentifier identifier) {
+        return standardBusinessDocumentHeader.setSenderIdentifier(identifier);
+    }
+
+    @JsonIgnore
+    public PartnerIdentifier getReceiverIdentifier() {
+        return standardBusinessDocumentHeader.getReceiverIdentifier();
+    }
+
+    @JsonIgnore
+    public StandardBusinessDocumentHeader setReceiverdentifier(PartnerIdentifier identifier) {
+        return standardBusinessDocumentHeader.setReceiverIdentifier(identifier);
     }
 }

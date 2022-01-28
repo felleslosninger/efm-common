@@ -10,6 +10,7 @@ package no.difi.meldingsutveksling.domain.sbdh;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import no.difi.meldingsutveksling.domain.PartnerIdentifier;
 import no.difi.meldingsutveksling.validation.group.ValidationGroups;
 
 import javax.validation.Valid;
@@ -21,6 +22,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import java.time.OffsetDateTime;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -116,15 +119,109 @@ public class StandardBusinessDocumentHeader {
     }
 
     @JsonIgnore
-    public Optional<Partner> getFirstSender() {
+    public Optional<String> getMessageId() {
+        return Optional.ofNullable(getDocumentIdentification())
+                .flatMap(p -> Optional.ofNullable(p.getInstanceIdentifier()));
+    }
+
+    @JsonIgnore
+    public Optional<String> getDocumentType() {
+        return Optional.ofNullable(getDocumentIdentification())
+                .flatMap(p -> Optional.ofNullable(p.getStandard()));
+    }
+
+    @JsonIgnore
+    public Set<Scope> getScopes() {
+        return Optional.ofNullable(getBusinessScope())
+                .flatMap(p -> Optional.ofNullable(p.getScope()))
+                .orElseGet(Collections::emptySet);
+    }
+
+    @JsonIgnore
+    public Optional<Scope> getScope(ScopeType scopeType) {
+        return getScopes()
+                .stream()
+                .filter(scope -> scopeType.toString().equals(scope.getType()) || scopeType.name().equals(scope.getType()))
+                .findAny();
+    }
+
+    @JsonIgnore
+    public void addScope(Scope scope) {
+        Optional.ofNullable(getBusinessScope()).ifPresent(p -> p.addScopes(scope));
+    }
+
+    @JsonIgnore
+    public Optional<String> getType() {
+        return Optional.ofNullable(getDocumentIdentification())
+                .flatMap(p -> Optional.ofNullable(p.getType()));
+    }
+
+    @JsonIgnore
+    public Optional<OffsetDateTime> getExpectedResponseDateTime() {
+        return getScope(ScopeType.CONVERSATION_ID)
+                .flatMap(p -> Optional.ofNullable(p.getScopeInformation()))
+                .flatMap(p -> p.stream().findFirst())
+                .flatMap(p -> Optional.ofNullable(p.getExpectedResponseDateTime()));
+    }
+
+    @JsonIgnore
+    public Optional<String> getConversationId() {
+        return getScope(ScopeType.CONVERSATION_ID)
+                .map(Scope::getInstanceIdentifier);
+    }
+
+    @JsonIgnore
+    public PartnerIdentifier getSenderIdentifier() {
+        return getFirstSender()
+                .flatMap(p -> Optional.ofNullable(p.getIdentifier()))
+                .flatMap(p -> Optional.ofNullable(p.getValue()))
+                .map(PartnerIdentifier::parse)
+                .orElse(null);
+    }
+
+    @JsonIgnore
+    public StandardBusinessDocumentHeader setSenderIdentifier(PartnerIdentifier identifier) {
+        getSender().clear();
+        addSender(new Partner()
+                .setIdentifier(new PartnerIdentification()
+                        .setAuthority(identifier.getAuthority())
+                        .setValue(identifier.getIdentifier())
+                )
+        );
+
+        return this;
+    }
+
+    @JsonIgnore
+    public PartnerIdentifier getReceiverIdentifier() {
+        return getFirstReceiver()
+                .flatMap(p -> Optional.ofNullable(p.getIdentifier()))
+                .flatMap(p -> Optional.ofNullable(p.getValue()))
+                .map(PartnerIdentifier::parse)
+                .orElse(null);
+    }
+
+    @JsonIgnore
+    public StandardBusinessDocumentHeader setReceiverIdentifier(PartnerIdentifier identifier) {
+        getReceiver().clear();
+        addReceiver(new Partner()
+                .setIdentifier(new PartnerIdentification()
+                        .setAuthority(identifier.getAuthority())
+                        .setValue(identifier.getIdentifier())
+                )
+        );
+
+        return this;
+    }
+
+    private Optional<Partner> getFirstSender() {
         if (sender == null) {
             return Optional.empty();
         }
         return sender.stream().findFirst();
     }
 
-    @JsonIgnore
-    public Optional<Partner> getFirstReceiver() {
+    private Optional<Partner> getFirstReceiver() {
         if (receiver == null) {
             return Optional.empty();
         }
