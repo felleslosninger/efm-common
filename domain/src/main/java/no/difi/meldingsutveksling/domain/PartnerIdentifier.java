@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -85,5 +86,18 @@ public interface PartnerIdentifier extends Serializable {
         } catch (UnsupportedEncodingException e) {
             throw new IllegalArgumentException("UTF-8 encoding not supported", e);
         }
+    }
+
+    default <T extends PartnerIdentifier> T cast(Class<T> clazz) {
+        if (clazz.isInstance(this)) {
+            return clazz.cast(this);
+        }
+
+        throw new ClassCastException(String.format("Could not cast class %s with identifier = '%s' to class %s",
+                this.getClass().getSimpleName(), this, clazz.getSimpleName()));
+    }
+
+    default <T extends PartnerIdentifier> Optional<T> as(Class<T> clazz) {
+        return clazz.isInstance(this) ? Optional.of(clazz.cast(this)) : Optional.empty();
     }
 }
