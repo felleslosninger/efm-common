@@ -61,6 +61,7 @@ import java.util.Set;
         "businessScope"
 })
 @Data
+@SuppressWarnings("unused")
 public class StandardBusinessDocumentHeader {
 
     @XmlElement(name = "HeaderVersion", required = true)

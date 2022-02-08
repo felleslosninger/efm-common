@@ -45,6 +45,7 @@ import java.util.Set;
         "any"
 })
 @Data
+@SuppressWarnings("unused")
 public class StandardBusinessDocument {
 
     @XmlElement(name = "StandardBusinessDocumentHeader")
@@ -115,8 +116,9 @@ public class StandardBusinessDocument {
     }
 
     @JsonIgnore
-    public StandardBusinessDocumentHeader setSenderIdentifier(PartnerIdentifier identifier) {
-        return standardBusinessDocumentHeader.setSenderIdentifier(identifier);
+    public StandardBusinessDocument setSenderIdentifier(PartnerIdentifier identifier) {
+        standardBusinessDocumentHeader.setSenderIdentifier(identifier);
+        return this;
     }
 
     @JsonIgnore
@@ -125,7 +127,8 @@ public class StandardBusinessDocument {
     }
 
     @JsonIgnore
-    public StandardBusinessDocumentHeader setReceiverdentifier(PartnerIdentifier identifier) {
-        return standardBusinessDocumentHeader.setReceiverIdentifier(identifier);
+    public StandardBusinessDocument setReceiverIdentifier(PartnerIdentifier identifier) {
+        standardBusinessDocumentHeader.setReceiverIdentifier(identifier);
+        return this;
     }
 }
