@@ -83,10 +83,8 @@ public class StandardBusinessDocument {
 
     @JsonIgnore
     public Optional<Scope> getScope(ScopeType scopeType) {
-        return standardBusinessDocumentHeader.getScopes()
-                .stream()
-                .filter(scope -> scopeType.toString().equals(scope.getType()) || scopeType.name().equals(scope.getType()))
-                .findAny();
+        return Optional.ofNullable(standardBusinessDocumentHeader)
+                .flatMap(p -> p.getScope(scopeType));
     }
 
     @JsonIgnore
@@ -96,7 +94,9 @@ public class StandardBusinessDocument {
 
     @JsonIgnore
     public Optional<String> getConversationId() {
-        return standardBusinessDocumentHeader.getConversationId();
+        return Optional.ofNullable(standardBusinessDocumentHeader)
+                .map(StandardBusinessDocumentHeader::getConversationId)
+                .orElse(null);
     }
 
     @JsonIgnore
@@ -107,28 +107,41 @@ public class StandardBusinessDocument {
 
     @JsonIgnore
     public Optional<OffsetDateTime> getExpectedResponseDateTime() {
-        return standardBusinessDocumentHeader.getExpectedResponseDateTime();
+        return Optional.ofNullable(standardBusinessDocumentHeader)
+                .flatMap(StandardBusinessDocumentHeader::getExpectedResponseDateTime);
     }
 
     @JsonIgnore
     public PartnerIdentifier getSenderIdentifier() {
-        return standardBusinessDocumentHeader.getSenderIdentifier();
+        return Optional.ofNullable(standardBusinessDocumentHeader)
+                .map(StandardBusinessDocumentHeader::getSenderIdentifier)
+                .orElse(null);
     }
 
     @JsonIgnore
     public StandardBusinessDocument setSenderIdentifier(PartnerIdentifier identifier) {
-        standardBusinessDocumentHeader.setSenderIdentifier(identifier);
+        getOrCreateStandardBusinessDocumentHeader().setSenderIdentifier(identifier);
         return this;
     }
 
     @JsonIgnore
     public PartnerIdentifier getReceiverIdentifier() {
-        return standardBusinessDocumentHeader.getReceiverIdentifier();
+        return Optional.ofNullable(standardBusinessDocumentHeader)
+                .map(StandardBusinessDocumentHeader::getReceiverIdentifier)
+                .orElse(null);
     }
 
     @JsonIgnore
     public StandardBusinessDocument setReceiverIdentifier(PartnerIdentifier identifier) {
-        standardBusinessDocumentHeader.setReceiverIdentifier(identifier);
+        getOrCreateStandardBusinessDocumentHeader().setReceiverIdentifier(identifier);
         return this;
+    }
+
+    private StandardBusinessDocumentHeader getOrCreateStandardBusinessDocumentHeader() {
+        if (standardBusinessDocumentHeader == null) {
+            standardBusinessDocumentHeader = new StandardBusinessDocumentHeader();
+        }
+
+        return standardBusinessDocumentHeader;
     }
 }
