@@ -12,7 +12,7 @@ import java.util.function.Predicate;
 
 import static no.difi.meldingsutveksling.domain.sbdh.Authority.ISO6523_ACTORID_UPIS;
 
-public interface PartnerIdentifier extends Serializable {
+public interface PartnerIdentifier extends Serializable, Comparable<PartnerIdentifier> {
 
     static PartnerIdentifier parse(String identifier) {
         return PartnerIdentifierUtil.parse(identifier, Arrays.<Function<String, PartnerIdentifier>>asList(
@@ -99,5 +99,9 @@ public interface PartnerIdentifier extends Serializable {
 
     default <T extends PartnerIdentifier> Optional<T> as(Class<T> clazz) {
         return clazz.isInstance(this) ? Optional.of(clazz.cast(this)) : Optional.empty();
+    }
+
+    default int compareTo(PartnerIdentifier o) {
+        return getIdentifier().compareTo(o.getIdentifier());
     }
 }
