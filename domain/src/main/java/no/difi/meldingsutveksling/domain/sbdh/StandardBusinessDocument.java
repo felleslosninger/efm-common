@@ -75,6 +75,12 @@ public class StandardBusinessDocument {
     }
 
     @JsonIgnore
+    public Optional<String> getProcess() {
+        return getScope(ScopeType.CONVERSATION_ID)
+                .flatMap(p -> Optional.of(p.getIdentifier()));
+    }
+
+    @JsonIgnore
     public Set<Scope> getScopes() {
         return Optional.ofNullable(standardBusinessDocumentHeader.getBusinessScope())
                 .flatMap(p -> Optional.ofNullable(p.getScope()))
