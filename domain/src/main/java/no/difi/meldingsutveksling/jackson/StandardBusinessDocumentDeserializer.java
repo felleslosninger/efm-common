@@ -18,13 +18,13 @@ public abstract class StandardBusinessDocumentDeserializer extends JsonDeseriali
         return StandardBusinessDocument.class;
     }
 
-    abstract Optional<StandardBusinessDocumentType> getStandardBusinessDocumentType(String typeName);
+    abstract StandardBusinessDocumentType getStandardBusinessDocumentType(String typeName);
 
     @Override
     public StandardBusinessDocument deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         StandardBusinessDocumentHeader header = readObject(p, "standardBusinessDocumentHeader", StandardBusinessDocumentHeader.class);
         StandardBusinessDocumentType type = header.getType()
-                .flatMap(this::getStandardBusinessDocumentType)
+                .map(this::getStandardBusinessDocumentType)
                 .orElseThrow(() -> new IOException("Missing type!"));
         StandardBusinessDocument standardBusinessDocument = new StandardBusinessDocument()
                 .setStandardBusinessDocumentHeader(header)

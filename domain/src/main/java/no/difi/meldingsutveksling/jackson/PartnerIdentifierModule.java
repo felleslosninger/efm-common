@@ -10,7 +10,7 @@ import no.difi.meldingsutveksling.domain.PersonIdentifier;
 public class PartnerIdentifierModule extends SimpleModule {
 
     public PartnerIdentifierModule() {
-        super(PackageVersion.VERSION);
+        super(PartnerIdentifierModule.class.getSimpleName(), PackageVersion.VERSION);
 
         this.addSerializer(PartnerIdentifier.class, new PartnerIdentifierSerializer<>(PartnerIdentifier.class));
         this.addSerializer(Iso6523.class, new PartnerIdentifierSerializer<>(Iso6523.class));
