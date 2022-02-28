@@ -109,6 +109,8 @@
         <module>io</module>
         <module>certvalidator</module>
         <module>properties</module>
+        <module>persistence</module>
+        <module>spring-converter</module>
     </modules>
 
     <dependencyManagement>
