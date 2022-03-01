@@ -1,6 +1,5 @@
 package no.difi.certvalidator;
 
-import lombok.SneakyThrows;
 import no.difi.certvalidator.api.CertificateValidationException;
 import no.difi.certvalidator.lang.ValidatorParsingException;
 
@@ -8,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.cert.X509Certificate;
 
+@SuppressWarnings("unused")
 public class BusinessCertificateValidator {
 
     private static final String VALIDATION_OF_BUSINESS_CERTIFICATE_FAILED = "Validation of business certificate failed!";
@@ -24,7 +24,6 @@ public class BusinessCertificateValidator {
      * @return Validator for validation of business certificates.
      * @throws IllegalStateException when loading of validator is unsuccessful.
      */
-    @SneakyThrows({IllegalStateException.class})
     public static BusinessCertificateValidator of(Enum<?> mode) {
         return of(pathFromEnum(mode));
     }
@@ -37,9 +36,16 @@ public class BusinessCertificateValidator {
      * @return Validator for validation of business certificates.
      * @throws IllegalStateException when loading of validator is unsuccessful.
      */
-    @SneakyThrows({IllegalStateException.class})
     public static BusinessCertificateValidator of(String path) {
-        return new BusinessCertificateValidator(path);
+        try (InputStream inputStream = BusinessCertificateValidator.class.getResourceAsStream(path)) {
+            return new BusinessCertificateValidator(inputStream);
+        } catch (IOException e) {
+            throw new IllegalStateException("Unable to load certificate validator", e);
+        }
+    }
+
+    public static BusinessCertificateValidator of(InputStream inputStream) {
+        return new BusinessCertificateValidator(inputStream);
     }
 
     /**
@@ -59,13 +65,17 @@ public class BusinessCertificateValidator {
     /**
      * Loads the certificate validator by using the path to the recipe file found in class path.
      *
-     * @param path Path to recipe file in class path.
+     * @param inputStream InputStream containing the recipe.
      * @throws IllegalStateException when loading of validator is unsuccessful.
      */
-    private BusinessCertificateValidator(String path) {
-        try (InputStream inputStream = getClass().getResourceAsStream(path)) {
-            this.validator = ValidatorLoader.newInstance().build(inputStream);
-        } catch (IOException | ValidatorParsingException e) {
+    private BusinessCertificateValidator(InputStream inputStream) {
+        validator = getValidator(inputStream);
+    }
+
+    private Validator getValidator(InputStream inputStream) {
+        try {
+            return ValidatorLoader.newInstance().build(inputStream);
+        } catch (ValidatorParsingException e) {
             throw new IllegalStateException("Unable to load certificate validator", e);
         }
     }
