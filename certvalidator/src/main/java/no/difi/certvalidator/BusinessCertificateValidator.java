@@ -44,6 +44,13 @@ public class BusinessCertificateValidator {
         }
     }
 
+    /**
+     * Loads a certificate validator by providing an InputStream containing the recipe.
+     *
+     * @param inputStream InputStream to the to recipe.
+     * @return Validator for validation of business certificates.
+     * @throws IllegalStateException when loading of validator is unsuccessful.
+     */
     public static BusinessCertificateValidator of(InputStream inputStream) {
         return new BusinessCertificateValidator(inputStream);
     }
