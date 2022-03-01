@@ -11,14 +11,14 @@ import java.util.Map;
 
 public class ValidatorLoader {
 
-    private Map<String, Object> objectStorage = new HashMap<>();
+    private final Map<String, Object> objectStorage = new HashMap<>();
 
     public static ValidatorLoader newInstance() {
         return new ValidatorLoader();
     }
 
     private ValidatorLoader() {
-
+        // NOOP
     }
 
     public ValidatorLoader put(String key, Object value) {

@@ -20,7 +20,7 @@ public class ValidatorBuilder {
         return new ValidatorBuilder();
     }
 
-    private List<ValidatorRule> validatorRules = new ArrayList<>();
+    private final List<ValidatorRule> validatorRules = new ArrayList<>();
 
     private ValidatorBuilder() {
         // No action

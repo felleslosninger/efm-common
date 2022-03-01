@@ -37,7 +37,7 @@ public class Validator implements ValidatorRule {
         }
     }
 
-    private ValidatorRule validatorRule;
+    private final ValidatorRule validatorRule;
 
     public Validator(ValidatorRule validatorRule) {
         this.validatorRule = validatorRule;

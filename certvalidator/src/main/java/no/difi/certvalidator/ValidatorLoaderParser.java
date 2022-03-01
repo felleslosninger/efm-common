@@ -20,11 +20,11 @@ import java.util.stream.StreamSupport;
 
 class ValidatorLoaderParser {
 
-    private static JAXBContext jaxbContext;
+    private static final JAXBContext jaxbContext;
 
-    private static List<ValidatorRecipeParser> recipeParser = serviceLoader(ValidatorRecipeParser.class);
+    private static final List<ValidatorRecipeParser> recipeParser = serviceLoader(ValidatorRecipeParser.class);
 
-    private static List<ValidatorRuleParser> ruleParsers = serviceLoader(ValidatorRuleParser.class);
+    private static final List<ValidatorRuleParser> ruleParsers = serviceLoader(ValidatorRuleParser.class);
 
     static {
         try {

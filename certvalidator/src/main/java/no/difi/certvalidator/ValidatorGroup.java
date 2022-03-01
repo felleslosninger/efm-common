@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class ValidatorGroup extends Validator {
 
-    private Map<String, ValidatorRule> rulesMap;
+    private final Map<String, ValidatorRule> rulesMap;
 
     private String name;
 
