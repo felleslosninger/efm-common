@@ -14,7 +14,6 @@ import no.difi.meldingsutveksling.domain.PartnerIdentifier;
 import no.difi.meldingsutveksling.validation.group.ValidationGroups;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.validation.groups.ConvertGroup;
@@ -75,8 +74,7 @@ public class StandardBusinessDocumentHeader {
     private Set<@Valid Partner> sender;
 
     @XmlElement(name = "Receiver", required = true)
-    @NotEmpty
-    @Size(min = 1, max = 1)
+    @Size(max = 1)
     @Valid
     @ConvertGroup(to = ValidationGroups.Partner.Receiver.class)
     private Set<@Valid Partner> receiver;
