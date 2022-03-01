@@ -120,15 +120,21 @@ public class StandardBusinessDocumentHeader {
     }
 
     @JsonIgnore
-    public Optional<String> getMessageId() {
-        return Optional.ofNullable(getDocumentIdentification())
-                .flatMap(p -> Optional.ofNullable(p.getInstanceIdentifier()));
+    public String getMessageId() {
+        return getDocumentIdentification().getInstanceIdentifier();
     }
 
     @JsonIgnore
-    public Optional<String> getDocumentType() {
-        return Optional.ofNullable(getDocumentIdentification())
-                .flatMap(p -> Optional.ofNullable(p.getStandard()));
+    public String getConversationId() {
+        return getScope(ScopeType.CONVERSATION_ID)
+                .map(Scope::getInstanceIdentifier)
+                .orElse(null);
+    }
+
+
+    @JsonIgnore
+    public String getDocumentType() {
+        return getDocumentIdentification().getStandard();
     }
 
     @JsonIgnore
@@ -163,12 +169,6 @@ public class StandardBusinessDocumentHeader {
                 .flatMap(p -> Optional.ofNullable(p.getScopeInformation()))
                 .flatMap(p -> p.stream().findFirst())
                 .flatMap(p -> Optional.ofNullable(p.getExpectedResponseDateTime()));
-    }
-
-    @JsonIgnore
-    public Optional<String> getConversationId() {
-        return getScope(ScopeType.CONVERSATION_ID)
-                .map(Scope::getInstanceIdentifier);
     }
 
     @JsonIgnore

@@ -63,21 +63,26 @@ public class StandardBusinessDocument {
     }
 
     @JsonIgnore
-    public Optional<String> getMessageId() {
-        return Optional.ofNullable(standardBusinessDocumentHeader.getDocumentIdentification())
-                .flatMap(p -> Optional.ofNullable(p.getInstanceIdentifier()));
+    public String getMessageId() {
+        return standardBusinessDocumentHeader.getMessageId();
     }
 
     @JsonIgnore
-    public Optional<String> getDocumentType() {
-        return Optional.ofNullable(standardBusinessDocumentHeader.getDocumentIdentification())
-                .flatMap(p -> Optional.ofNullable(p.getStandard()));
+    public String getConversationId() {
+        return standardBusinessDocumentHeader.getConversationId();
+    }
+
+
+    @JsonIgnore
+    public String getDocumentType() {
+        return standardBusinessDocumentHeader.getDocumentType();
     }
 
     @JsonIgnore
-    public Optional<String> getProcess() {
+    public String getProcess() {
         return getScope(ScopeType.CONVERSATION_ID)
-                .flatMap(p -> Optional.of(p.getIdentifier()));
+                .map(s -> s.identifier)
+                .orElseThrow(() -> new IllegalStateException("SBD missing process"));
     }
 
     @JsonIgnore
@@ -99,16 +104,8 @@ public class StandardBusinessDocument {
     }
 
     @JsonIgnore
-    public Optional<String> getConversationId() {
-        return Optional.ofNullable(standardBusinessDocumentHeader)
-                .map(StandardBusinessDocumentHeader::getConversationId)
-                .orElse(null);
-    }
-
-    @JsonIgnore
-    public Optional<String> getType() {
-        return Optional.ofNullable(standardBusinessDocumentHeader.getDocumentIdentification())
-                .flatMap(p -> Optional.ofNullable(p.getType()));
+    public String getType() {
+        return standardBusinessDocumentHeader.getDocumentIdentification().getType();
     }
 
     @JsonIgnore
