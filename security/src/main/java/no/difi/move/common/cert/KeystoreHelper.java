@@ -8,6 +8,7 @@ import java.security.*;
 import java.security.cert.X509Certificate;
 
 @Slf4j
+@SuppressWarnings("unused")
 public class KeystoreHelper {
 
     private static final String ERR_MISSING_PRIVATE_KEY_OR_PASS = "Problem accessing PrivateKey with alias \"%s\" inadequate access or Password is wrong";
@@ -35,18 +36,27 @@ public class KeystoreHelper {
      * @return the private key
      */
     public PrivateKey loadPrivateKey() {
+        return loadPrivateKey(properties.getAlias());
+    }
+
+    /**
+     * Loads a private key from the keystore by alias
+     *
+     * @return the private key
+     */
+    public PrivateKey loadPrivateKey(String alias) {
         PrivateKey privateKey;
         char[] password = properties.getPassword().toCharArray();
 
         try {
-            privateKey = (PrivateKey) keyStore.getKey(properties.getAlias(), password);
+            privateKey = (PrivateKey) keyStore.getKey(alias, password);
             if (privateKey == null) {
-                throw new IllegalStateException(String.format(ERR_MISSING_PRIVATE_KEY, properties.getAlias()));
+                throw new IllegalStateException(String.format(ERR_MISSING_PRIVATE_KEY, alias));
             }
         } catch (KeyStoreException | NoSuchAlgorithmException e) {
             throw new IllegalStateException(ERR_GENERAL, e);
         } catch (UnrecoverableEntryException e) {
-            throw new IllegalStateException(String.format(ERR_MISSING_PRIVATE_KEY_OR_PASS, properties.getAlias()), e);
+            throw new IllegalStateException(String.format(ERR_MISSING_PRIVATE_KEY_OR_PASS, alias), e);
         }
 
         return privateKey;
@@ -89,7 +99,7 @@ public class KeystoreHelper {
     public class MoveSignaturHelper extends SignatureHelper {
 
         MoveSignaturHelper(KeyStore keyStore, String keyAlias, String keyPassword) {
-            super(properties.getLockProvider() ? keyStore.getProvider() : null);
+            super(Boolean.TRUE.equals(properties.getLockProvider()) ? keyStore.getProvider() : null);
             loadCertificate(keyStore, keyAlias, keyPassword);
         }
     }

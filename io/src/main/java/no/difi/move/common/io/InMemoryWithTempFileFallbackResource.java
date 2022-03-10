@@ -4,6 +4,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.output.DeferredFileOutputStream;
 import org.springframework.core.io.AbstractResource;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.WritableResource;
 
 import java.io.*;
@@ -12,7 +13,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.Objects;
 
 @RequiredArgsConstructor
-public class InMemoryWithTempFileFallbackResource extends AbstractResource implements WritableResource {
+public class InMemoryWithTempFileFallbackResource extends AbstractResource implements WritableResource, AutoCloseable, Resource {
 
     private final DeferredFileOutputStream deferredFileOutputStream;
 
@@ -41,20 +42,21 @@ public class InMemoryWithTempFileFallbackResource extends AbstractResource imple
     @NonNull
     @Override
     public InputStream getInputStream() throws IOException {
-        return deferredFileOutputStream.isInMemory()
-                ? new ByteArrayInputStream(deferredFileOutputStream.getData())
-                : Files.newInputStream(deferredFileOutputStream.getFile().toPath(), StandardOpenOption.READ);
+        if (deferredFileOutputStream.isInMemory()) {
+            return new ByteArrayInputStream(deferredFileOutputStream.getData());
+        }
+
+        return Files.newInputStream(deferredFileOutputStream.getFile().toPath(), StandardOpenOption.READ);
+    }
+
+    @Override
+    public boolean isFile() {
+        return !deferredFileOutputStream.isInMemory();
     }
 
     @Override
     public long contentLength() {
         return deferredFileOutputStream.getByteCount();
-    }
-
-    public void deleteFileIfItExists() throws IOException {
-        if (!deferredFileOutputStream.isInMemory()) {
-            Files.delete(deferredFileOutputStream.getFile().toPath());
-        }
     }
 
     @Override
@@ -69,5 +71,10 @@ public class InMemoryWithTempFileFallbackResource extends AbstractResource imple
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), deferredFileOutputStream);
+    }
+
+    @Override
+    public void close() {
+        ResourceUtils.deleteFileIfItExists(this);
     }
 }
