@@ -28,7 +28,7 @@ import java.util.Set;
 
 /**
  * Java class for Scope complex type.
- *
+ * <p>
  * The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>{@code
@@ -59,7 +59,7 @@ public class Scope {
 
     @XmlElement(name = "Type", required = true)
     @NotNull
-    @OneOf({"ConversationId", "SenderRef", "ReceiverRef"})
+    @OneOf({"JournalpostId", "ConversationId", "SenderRef", "ReceiverRef", "MessageChannel"})
     protected String type;
 
     @XmlElement(name = "InstanceIdentifier", required = true)
