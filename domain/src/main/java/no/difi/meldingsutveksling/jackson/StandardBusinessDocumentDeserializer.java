@@ -8,7 +8,6 @@ import no.difi.meldingsutveksling.domain.sbdh.StandardBusinessDocument;
 import no.difi.meldingsutveksling.domain.sbdh.StandardBusinessDocumentHeader;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @SuppressWarnings("unused")
 public abstract class StandardBusinessDocumentDeserializer extends JsonDeserializer<StandardBusinessDocument> {
@@ -22,21 +21,33 @@ public abstract class StandardBusinessDocumentDeserializer extends JsonDeseriali
 
     @Override
     public StandardBusinessDocument deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-        StandardBusinessDocumentHeader header = readObject(p, "standardBusinessDocumentHeader", StandardBusinessDocumentHeader.class);
-        StandardBusinessDocumentType type = header.getType()
-                .map(this::getStandardBusinessDocumentType)
-                .orElseThrow(() -> new IOException("Missing type!"));
-        StandardBusinessDocument standardBusinessDocument = new StandardBusinessDocument()
-                .setStandardBusinessDocumentHeader(header)
-                .setAny(readObject(p, type.getFieldName(), type.getValueType()));
+        StandardBusinessDocument sbd = new StandardBusinessDocument();
+        if ("standardBusinessDocumentHeader".equals(p.nextFieldName())) {
+            StandardBusinessDocumentHeader header = readObject(p, "standardBusinessDocumentHeader", StandardBusinessDocumentHeader.class);
+            StandardBusinessDocumentType type = header.getType()
+                    .map(this::getStandardBusinessDocumentType)
+                    .orElseThrow(() -> new IOException("Missing type!"));
+            sbd.setStandardBusinessDocumentHeader(header)
+                    .setAny(readObject(p, type.getFieldName(), type.getValueType()));
+        } else {
+            StandardBusinessDocumentType type = getStandardBusinessDocumentType(p.currentName());
+            Object businessMsg = readObject(p, type.getFieldName(), type.getValueType());
+            StandardBusinessDocumentHeader header = readObject(p, "standardBusinessDocumentHeader", StandardBusinessDocumentHeader.class);
+            sbd.setStandardBusinessDocumentHeader(header)
+                    .setAny(businessMsg);
+        }
         assertToken(p, JsonToken.END_OBJECT);
-        return standardBusinessDocument;
+        return sbd;
+
     }
 
     private <T> T readObject(JsonParser p, String fieldName, Class<T> valueType) throws IOException {
         assertFieldName(p, fieldName);
+        p.nextToken();
         assertToken(p, JsonToken.START_OBJECT);
-        return p.readValueAs(valueType);
+        T value = p.readValueAs(valueType);
+        p.nextToken();
+        return value;
     }
 
     private void assertFieldName(JsonParser parser, String expected) throws IOException {
@@ -46,8 +57,8 @@ public abstract class StandardBusinessDocumentDeserializer extends JsonDeseriali
         }
     }
 
-    private void assertToken(JsonParser parser, JsonToken expected) throws IOException {
-        JsonToken token = parser.nextToken();
+    private void assertToken(JsonParser parser, JsonToken expected) {
+        JsonToken token = parser.currentToken();
         if (token != expected) {
             throw new IllegalArgumentException(String.format("Expected token %s, but found %s", expected, token));
         }

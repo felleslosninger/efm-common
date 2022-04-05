@@ -15,7 +15,6 @@ import no.difi.meldingsutveksling.validation.UUID;
 import no.difi.meldingsutveksling.xml.OffsetDateTimeAdapter;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
@@ -80,7 +79,6 @@ public class DocumentIdentification implements Serializable {
     @XmlSchemaType(name = "dateTime")
     @XmlJavaTypeAdapter(OffsetDateTimeAdapter.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    @Past
     protected OffsetDateTime creationDateAndTime;
 
 }
