@@ -12,8 +12,10 @@ import java.io.File;
 @RequiredArgsConstructor
 public class InMemoryWithTempFileFallbackResourceFactory {
 
-    int threshold;
-    int initialBufferSize;
+    @Builder.Default
+    int threshold = 1000000;
+    @Builder.Default
+    int initialBufferSize = 100000;
     File directory;
 
     public InMemoryWithTempFileFallbackResource getResource(String prefix, String suffix) {
