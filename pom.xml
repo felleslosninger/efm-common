@@ -94,7 +94,7 @@
         <xstream.version>1.4.18</xstream.version>
         <bouncycastle.version>1.67</bouncycastle.version>
         <commons-asic.version>0.9.3</commons-asic.version>
-        <spring-security-oath.version>2.3.6.RELEASE</spring-security-oath.version>
+        <spring-security-oath.version>2.5.1.RELEASE</spring-security-oath.version>
     </properties>
 
     <modules>
