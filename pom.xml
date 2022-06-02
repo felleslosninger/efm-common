@@ -11,7 +11,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.6</version>
+        <version>2.6.7</version>
         <relativePath />
     </parent>
 
@@ -111,6 +111,7 @@
         <module>properties</module>
         <module>persistence</module>
         <module>spring-converter</module>
+        <module>ad</module>
     </modules>
 
     <dependencyManagement>
@@ -178,6 +179,11 @@
                 <version>2.8.0</version>
             </dependency>
             <dependency>
+                <groupId>com.microsoft.azure</groupId>
+                <artifactId>adal4j</artifactId>
+                <version>1.6.7</version>
+            </dependency>
+            <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
@@ -235,6 +241,12 @@
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
                 <version>${mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.github.tomakehurst</groupId>
+                <artifactId>wiremock-jre8</artifactId>
+                <version>2.33.2</version>
                 <scope>test</scope>
             </dependency>
             <dependency>

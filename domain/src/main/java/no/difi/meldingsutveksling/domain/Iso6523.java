@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import static no.difi.meldingsutveksling.domain.sbdh.Authority.ISO6523_ACTORID_UPIS;
 
 @Value
-public class Iso6523 implements PartnerIdentifier {
+public class Iso6523 implements PartnerIdentifier, OrganizationIdentifier {
 
     private static final Pattern ORGANIZATION_IDENTIFIER_PATTERN = Pattern.compile("^[^\\s:][^:]{1,33}[^\\s:]$");
     private static final Pattern ORGANIZATION_PART_IDENTIFIER_PATTERN = Pattern.compile("^[^\\s:][^:]{1,33}[^\\s:]$");
@@ -94,6 +94,11 @@ public class Iso6523 implements PartnerIdentifier {
     @Override
     public boolean hasSourceIndicator() {
         return sourceIndicator != null;
+    }
+
+    @Override
+    public String getQualifiedIdentifier() {
+        return PartnerIdentifier.super.getQualifiedIdentifier();
     }
 
     public Iso6523 toMainOrganization() {
