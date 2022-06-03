@@ -1,0 +1,10 @@
+{
+  "ver": "1.0",
+  "account_type": "Federated",
+  "domain_name": "difi.no",
+  "federation_protocol": "WSTrust",
+  "federation_metadata_url": "https://localhost:?/adfs/services/trust/mex",
+  "federation_active_auth_url": "https://localhost:?/adfs/services/trust/2005/usernamemixed",
+  "cloud_instance_name": "microsoftonline.com",
+  "cloud_audience_urn": "urn:federation:MicrosoftOnline"
+}
