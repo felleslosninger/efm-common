@@ -123,7 +123,6 @@ public class JwtTokenClient {
 
         ResponseEntity<JwtTokenResponse> response = restTemplate.exchange(config.getTokenUri(), HttpMethod.POST,
                 httpEntity, JwtTokenResponse.class);
-        log.info("Response: {}", response);
 
         return response.getBody();
     }
