@@ -5,7 +5,7 @@ import org.apache.commons.io.input.AutoCloseInputStream;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.WritableResource;
 
-import javax.activation.DataSource;
+import jakarta.activation.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
