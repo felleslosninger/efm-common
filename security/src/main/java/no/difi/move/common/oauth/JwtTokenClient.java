@@ -154,7 +154,15 @@ public class JwtTokenClient {
         }
 
         String serializedJwt = signedJWT.serialize();
-        log.info("SerializedJWT: {}", serializedJwt);
+
+        String[] chunks = serializedJwt.split("\\.");
+
+        java.util.Base64.Decoder decoder = java.util.Base64.getUrlDecoder();
+
+        String payload = new String(decoder.decode(chunks[1]));
+
+        log.info("Payload: {}", payload);
+        log.debug("SerializedJWT: {}", serializedJwt);
 
         return serializedJwt;
     }
