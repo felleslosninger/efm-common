@@ -289,9 +289,9 @@
             <plugin>
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
-                <version>1.4.3</version>
+                <version>8.1.2</version>
                 <configuration>
-                    <format>XML</format>
+                    <format>HTML</format>
                 </configuration>
             </plugin>
             <plugin>
