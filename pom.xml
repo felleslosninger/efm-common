@@ -81,7 +81,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring.cloud.version>2021.0.0</spring.cloud.version>
+        <spring.cloud.version>2021.0.5</spring.cloud.version>
         <logback.version>1.2.3</logback.version>
         <commons-lang.version>2.3</commons-lang.version>
         <xmlsec.version>2.1.7</xmlsec.version>
