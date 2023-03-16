@@ -86,7 +86,7 @@
         <xmlsec.version>3.0.1</xmlsec.version>
         <nimbus.jwt.version>9.31</nimbus.jwt.version>
         <guava.version>31.1-jre</guava.version>
-        <xstream.version>1.4.19</xstream.version>
+        <xstream.version>1.4.20</xstream.version>
         <bouncycastle.version>1.70</bouncycastle.version>
         <commons-asic.version>0.9.3</commons-asic.version>
         <spring-security-oauth.version>2.5.2.RELEASE</spring-security-oauth.version>
