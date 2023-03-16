@@ -85,8 +85,6 @@
         <commons-lang.version>3.12.0</commons-lang.version>
         <xmlsec.version>3.0.1</xmlsec.version>
         <nimbus.jwt.version>9.31</nimbus.jwt.version>
-        <springfox.version>2.9.2</springfox.version>
-        <swagger.version>1.5.20</swagger.version>
         <guava.version>30.0-jre</guava.version>
         <xstream.version>1.4.19</xstream.version>
         <bouncycastle.version>1.70</bouncycastle.version>
@@ -184,31 +182,6 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger2</artifactId>
-                <version>${springfox.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger-ui</artifactId>
-                <version>${springfox.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-bean-validators</artifactId>
-                <version>${springfox.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-annotations</artifactId>
-                <version>${swagger.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-models</artifactId>
-                <version>${swagger.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.nimbusds</groupId>
