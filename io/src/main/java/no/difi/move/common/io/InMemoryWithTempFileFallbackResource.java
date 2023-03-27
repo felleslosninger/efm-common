@@ -2,6 +2,7 @@ package no.difi.move.common.io;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.output.DeferredFileOutputStream;
 import org.springframework.core.io.AbstractResource;
 import org.springframework.core.io.Resource;
@@ -13,6 +14,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.Objects;
 
 @RequiredArgsConstructor
+@Slf4j
 public class InMemoryWithTempFileFallbackResource extends AbstractResource implements WritableResource, AutoCloseable, Resource {
 
     private final DeferredFileOutputStream deferredFileOutputStream;
@@ -75,6 +77,16 @@ public class InMemoryWithTempFileFallbackResource extends AbstractResource imple
 
     @Override
     public void close() {
-        ResourceUtils.deleteFileIfItExists(this);
+        try {
+            deferredFileOutputStream.close();
+        } catch (IOException e) {
+            log.debug("Could not close deferred file output stream", e);
+        }
+
+        try {
+            ResourceUtils.deleteFileIfItExists(this);
+        } catch (IllegalStateException e) {
+            log.warn(String.format("Unable to delete file with name=%s", deferredFileOutputStream.getFile().getName()), e);
+        }
     }
 }
