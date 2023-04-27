@@ -90,7 +90,7 @@
         <bouncycastle.version>1.70</bouncycastle.version>
         <commons-asic.version>0.11.0</commons-asic.version>
         <spring-security-oauth.version>2.5.2.RELEASE</spring-security-oauth.version>
-        <snakeyaml.version>2.0</snakeyaml.version>
+        <snakeyaml.version>1.33</snakeyaml.version>
     </properties>
 
     <modules>
