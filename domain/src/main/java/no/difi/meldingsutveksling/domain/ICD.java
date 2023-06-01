@@ -118,6 +118,6 @@ public enum ICD {
     }
 
     public boolean isNorway() {
-        return this == ICD.NO_ORGNR || this == ICD.NO_ORG;
+        return this == ICD.NO_ORG;
     }
 }
