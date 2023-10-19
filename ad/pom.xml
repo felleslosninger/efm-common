@@ -38,6 +38,11 @@
             <groupId>com.microsoft.azure</groupId>
             <artifactId>adal4j</artifactId>
         </dependency>
+        <dependency>
+            <!-- erstatning for sårbar avhengighet i com.microsoft.azure:adal4j:1.6.7 -->
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
 
         <!-- TEST -->
         <dependency>
