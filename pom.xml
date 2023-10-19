@@ -12,7 +12,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.12</version>
+        <version>2.7.16</version>
         <relativePath/>
     </parent>
 
@@ -55,10 +55,10 @@
             <id>ossrh</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
             <releases>
-                <enabled>false</enabled>
+                <enabled>true</enabled>
             </releases>
             <snapshots>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </snapshots>
         </repository>
         <repository>
@@ -68,7 +68,7 @@
                 <enabled>true</enabled>
             </releases>
             <snapshots>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </snapshots>
         </repository>
         <repository>
@@ -81,16 +81,16 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring.cloud.version>2021.0.5</spring.cloud.version>
+        <spring.cloud.version>2021.0.8</spring.cloud.version>
         <commons-lang.version>3.12.0</commons-lang.version>
         <xmlsec.version>3.0.1</xmlsec.version>
         <nimbus.jwt.version>9.31</nimbus.jwt.version>
-        <guava.version>31.1-jre</guava.version>
+        <guava.version>32.1.3-jre</guava.version>
         <xstream.version>1.4.20</xstream.version>
-        <bouncycastle.version>1.70</bouncycastle.version>
-        <commons-asic.version>0.11.0</commons-asic.version>
+        <bouncycastle.version>1.76</bouncycastle.version>
+        <commons-asic.version>0.12.0</commons-asic.version>
         <spring-security-oauth.version>2.5.2.RELEASE</spring-security-oauth.version>
-        <snakeyaml.version>1.33</snakeyaml.version>
+        <snakeyaml.version>2.2</snakeyaml.version>
     </properties>
 
     <modules>
@@ -178,6 +178,31 @@
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>adal4j</artifactId>
                 <version>1.6.7</version>
+                <exclusions>
+                    <exclusion>
+                        <!-- com.microsoft.azure:adal4j:1.6.7 er siste versjon og vart publisert 30. april 2021 med sårbar avhengighet -->
+                        <groupId>com.google.code.gson</groupId>
+                        <artifactId>gson</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <!-- com.microsoft.azure:adal4j:1.6.7 er siste versjon og vart publisert 30. april 2021 med sårbar avhengighet -->
+                        <groupId>org.testng</groupId>
+                        <artifactId>testng</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <!-- erstatning for sårbar avhengighet i com.microsoft.azure:adal4j:1.6.7 -->
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>2.8.9</version>
+            </dependency>
+            <dependency>
+                <!-- erstatning for sårbar avhengighet i com.microsoft.azure:adal4j:1.6.7 -->
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>7.5.1</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
@@ -190,13 +215,6 @@
                 <version>${nimbus.jwt.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring.cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
             <dependency>
                 <groupId>org.apache.santuario</groupId>
                 <artifactId>xmlsec</artifactId>
@@ -226,30 +244,71 @@
             </dependency>
             <dependency>
                 <groupId>org.bouncycastle</groupId>
-                <artifactId>bcprov-jdk15on</artifactId>
+                <artifactId>bcprov-jdk18on</artifactId>
                 <version>${bouncycastle.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.bouncycastle</groupId>
-                <artifactId>bcpkix-jdk15on</artifactId>
+                <artifactId>bcpkix-jdk18on</artifactId>
                 <version>${bouncycastle.version}</version>
             </dependency>
             <dependency>
                 <groupId>no.difi.commons</groupId>
                 <artifactId>commons-asic</artifactId>
                 <version>${commons-asic.version}</version>
-                <type>jar</type>
             </dependency>
             <dependency>
                 <groupId>org.springframework.security.oauth</groupId>
                 <artifactId>spring-security-oauth2</artifactId>
                 <version>${spring-security-oauth.version}</version>
-                <type>jar</type>
+                <exclusions>
+                    <exclusion>
+                        <!-- org.springframework.security.oauth:spring-security-oauth2:2.5.2.RELEASE er siste versjon og vart publisert 21. april 2022 med sårbar avhengighet -->
+                        <groupId>org.springframework.security</groupId>
+                        <artifactId>spring-security-crypto</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <!-- erstatning for sårbar avhengighet i org.springframework.security.oauth:spring-security-oauth2:2.5.2.RELEASE -->
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-crypto</artifactId>
+                <version>5.8.8</version>
             </dependency>
             <dependency>
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
                 <version>${snakeyaml.version}</version>
+            </dependency>
+            <dependency>
+                <!-- https://github.com/klakegg/pkix-ocsp -->
+                <groupId>net.klakegg.pkix</groupId>
+                <artifactId>pkix-ocsp</artifactId>
+                <version>0.9.1</version>
+                <exclusions>
+                    <exclusion>
+                        <!-- net.klakegg.pkix:pkix-ocsp:0.9.1 er siste versjon og vart publisert 2. mars 2020 med sårbar avhengighet -->
+                        <groupId>org.apache.httpcomponents</groupId>
+                        <artifactId>httpclient</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <!-- net.klakegg.pkix:pkix-ocsp:0.9.1 er siste versjon og vart publisert 2. mars 2020 med sårbar avhengighet -->
+                        <groupId>org.bouncycastle</groupId>
+                        <artifactId>bcpkix-jdk15on</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <!-- erstatning for sårbar avhengighet i net.klakegg.pkix:pkix-ocsp:0.9.1 -->
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.5.14</version>
+            </dependency>
+            <dependency>
+                <!-- erstatning for sårbar avhengighet i net.klakegg.pkix:pkix-ocsp:0.9.1 -->
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcpkix-jdk18on</artifactId>
+                <version>1.76</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -259,7 +318,7 @@
             <plugin>
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
-                <version>8.1.2</version>
+                <version>8.4.0</version>
                 <configuration>
                     <format>HTML</format>
                 </configuration>

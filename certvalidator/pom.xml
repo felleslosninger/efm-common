@@ -12,18 +12,16 @@
     <dependencies>
         <dependency>
             <groupId>org.bouncycastle</groupId>
-            <artifactId>bcpkix-jdk15on</artifactId>
+            <artifactId>bcpkix-jdk18on</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>6.14.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -41,7 +39,16 @@
         <dependency>
             <groupId>net.klakegg.pkix</groupId>
             <artifactId>pkix-ocsp</artifactId>
-            <version>0.9.1</version>
+        </dependency>
+        <dependency>
+            <!-- erstatning for sårbar avhengighet i net.klakegg.pkix:pkix-ocsp:0.9.1 -->
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+        <dependency>
+            <!-- erstatning for sårbar avhengighet i net.klakegg.pkix:pkix-ocsp:0.9.1 -->
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk18on</artifactId>
         </dependency>
 
         <dependency>
