@@ -13,6 +13,8 @@ import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
+
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
 public class KeystoreProviderTest {
@@ -34,18 +36,15 @@ public class KeystoreProviderTest {
 
     @Test
     public void testLoadKeyStore() throws KeystoreProviderException, IOException {
-        when(properties.getType()).thenReturn("JKS");
-        when(properties.getPassword()).thenReturn("changeit");
-        when(properties.getPath()).thenReturn(mock(Resource.class));
-        when(properties.getPath().getInputStream()).thenReturn(mock(InputStream.class));
-        when(properties.getPath().getFilename()).thenReturn("filename");
-
-        try {
+        KeystoreProperties properties = new KeystoreProperties();
+        properties.setType("JKS");
+        properties.setAlias("987464291");
+        properties.setPassword("changeit");
+        properties.setPath(new FileSystemResource("resources/expired-987464291.jks"));
+       
             KeyStore keyStore = KeystoreProvider.loadKeyStore(properties);
             assertNotNull(keyStore);
-        } catch (KeystoreProviderException e) {
-            fail("Should not throw exception");
-        }
+        
     }
 
 
