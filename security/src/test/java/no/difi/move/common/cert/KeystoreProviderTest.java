@@ -33,9 +33,9 @@ public class KeystoreProviderTest {
     }
 
     @Test
-    public void testLoadKeyStoreB64() throws KeystoreProviderException, IOException {
+    public void testLoadKeyStore() throws KeystoreProviderException, IOException {
         when(properties.getType()).thenReturn("JKS");
-        when(properties.getPassword()).thenReturn("password");
+        when(properties.getPassword()).thenReturn("changeit");
         when(properties.getPath()).thenReturn(mock(Resource.class));
         when(properties.getPath().getInputStream()).thenReturn(mock(InputStream.class));
         when(properties.getPath().getFilename()).thenReturn("filename");
