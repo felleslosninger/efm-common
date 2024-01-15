@@ -43,11 +43,11 @@
         <repository>
             <id>github</id>
             <name>GitHub felleslosninger Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/felleslosninger/efm-service-registry</url>
+            <url>https://maven.pkg.github.com/felleslosninger/efm-common</url>
         </repository>
         <snapshotRepository>
             <id>github</id>
-            <url>https://maven.pkg.github.com/felleslosninger/efm-service-registry</url>
+            <url>https://maven.pkg.github.com/felleslosninger/efm-common</url>
         </snapshotRepository>
     </distributionManagement>
 
