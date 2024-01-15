@@ -1,6 +1,8 @@
 package no.difi.move.common.cert;
 
 import no.difi.move.common.config.KeystoreProperties;
+import org.apache.commons.codec.binary.Base64InputStream;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
@@ -32,6 +34,8 @@ public class KeystoreProvider {
 
             if (path == null || "none".equalsIgnoreCase(path.getFilename())) {
                 keyStore.load(null, password.toCharArray());
+            } else if (path instanceof ByteArrayResource) {
+                keyStore.load(new Base64InputStream(path.getInputStream()), password.toCharArray());
             } else {
                 keyStore.load(path.getInputStream(), password.toCharArray());
             }
