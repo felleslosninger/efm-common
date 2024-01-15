@@ -20,3 +20,6 @@ jobs:
     with:
       java-version: 11
     secrets: inherit
+
+
+    # TODO: Husk å legge til push til maven central/sonatype om det fremdeles skal være aktuelt.
