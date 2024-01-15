@@ -8,7 +8,6 @@ import no.difi.certvalidator.util.KeyStoreCertificateBucket;
 import no.difi.certvalidator.util.SimpleCertificateBucket;
 import org.mockito.Mockito;
 import org.testng.annotations.Test;
-import sun.security.x509.X509CertImpl;
 
 import java.security.cert.X509Certificate;
 

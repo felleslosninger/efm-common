@@ -28,7 +28,7 @@ public abstract  class X509TestGenerator {
 
     protected X509Certificate createX509Certificate(LocalDateTime from, LocalDateTime to) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException, CertificateException, OperatorCreationException, CertIOException {
         String domainName = "test";
-        return createX509Certificate(null, "CN=" + domainName + ", OU=None, O=None L=None, C=None", null, from, to);
+        return createX509Certificate(null, "CN=" + domainName + ", OU=None, O=None, L=None, C=None", null, from, to);
     }
 
     protected X509Certificate createX509Certificate(String subject, X509ExtensionCustom custom, LocalDateTime from, LocalDateTime to) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException, CertificateException, OperatorCreationException, CertIOException {
@@ -49,7 +49,8 @@ public abstract  class X509TestGenerator {
         if(issuer != null)
             issuerName = new X500Name(issuer.getSubjectX500Principal().getName());
         else
-            issuerName = new X500Name("CN=" + "test" + ", OU=None, O=None L=None, C=None");
+            issuerName = new X500Name("CN=test, OU=None, O=None, L=None, C=None");
+
 
         SubjectPublicKeyInfo subjPubKeyInfo = new SubjectPublicKeyInfo(ASN1Sequence.getInstance(RSAPubKey.getEncoded()));
 
@@ -77,7 +78,7 @@ public abstract  class X509TestGenerator {
 
     protected X509Certificate createX509Certificate(X509ExtensionCustom x509ExtensionCustom) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException, CertificateException, OperatorCreationException, CertIOException {
         String domainName = "test";
-        return createX509Certificate("CN=" + domainName + ", OU=None, O=None L=None, C=None", x509ExtensionCustom, LocalDateTime.now().minusYears(1), LocalDateTime.now().plusYears(1));
+        return createX509Certificate("CN=" + domainName + ", OU=None, O=None, L=None, C=None", x509ExtensionCustom, LocalDateTime.now().minusYears(1), LocalDateTime.now().plusYears(1));
     }
 
     protected X509Certificate createX509Certificate() throws NoSuchAlgorithmException, SignatureException, InvalidKeyException, CertificateException, OperatorCreationException, CertIOException {
