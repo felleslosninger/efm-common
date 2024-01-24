@@ -4,6 +4,7 @@ import no.difi.move.common.config.KeystoreProperties;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.web.context.support.ServletContextResource;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -37,8 +38,7 @@ public class KeystoreProvider {
 
         try {
             KeyStore keyStore = KeyStore.getInstance(type);
-
-            if (path instanceof ByteArrayResource) {
+            if (path instanceof ByteArrayResource || path instanceof ServletContextResource){
                 byte[] contentBytes = IOUtils.toByteArray(path.getInputStream());
                 String content = new String(contentBytes);
                 // Check if the content starts with "base64:"
