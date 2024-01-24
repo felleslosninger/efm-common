@@ -19,5 +19,4 @@ public class KeystoreProperties {
      * keyStore for crypto operations on the keys from the keystore.
      */
     private Boolean lockProvider = false;
-
 }
