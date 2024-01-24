@@ -35,6 +35,8 @@ public class KeystoreProvider {
 
         try {
             KeyStore keyStore = KeyStore.getInstance(type);
+            System.out.println("path: " + path);
+            System.out.println("path type: " + path.getClass());
             if (path instanceof ByteArrayResource) {
                 byte[] contentBytes = IOUtils.toByteArray(path.getInputStream());
                 String content = new String(contentBytes);
