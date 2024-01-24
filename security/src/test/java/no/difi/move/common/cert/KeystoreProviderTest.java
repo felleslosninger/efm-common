@@ -7,11 +7,12 @@ import org.springframework.core.io.Resource;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.KeyStore;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class KeystoreProviderTest {
 
@@ -31,28 +32,13 @@ public class KeystoreProviderTest {
     }
 
     @Test
-    void testLoadEmptyKeyStore() throws KeystoreProviderException {
+    void testLoadKeyStoreFromBase64() throws KeystoreProviderException, IOException {
         KeystoreProperties properties = new KeystoreProperties();
         properties.setAlias(ALIAS);
         properties.setPassword(PASSWORD);
-        properties.setPath(null);
+        Resource resource = new ByteArrayResource(Files.readAllBytes(Paths.get("src/test/java/no/difi/move/common/cert/resources/encoded-987464291")));
+        properties.setPath(resource);
         properties.setType(TYPE);
-        KeyStore keyStore = KeystoreProvider.loadKeyStore(properties);
-        assertNotNull(keyStore);
-    }
-
-
-    @Test
-    void testLoadKeyStoreFromBase64EncodedFile() throws KeystoreProviderException, IOException {
-        String base64EncodedContent = new String(Files.readAllBytes(Paths.get("src/test/java/no/difi/move/common/cert/resources/encoded-987464291")), StandardCharsets.UTF_8);
-        Resource keystoreResource = new ByteArrayResource(base64EncodedContent.getBytes());
-
-        KeystoreProperties properties = new KeystoreProperties();
-        properties.setAlias(ALIAS);
-        properties.setPassword(PASSWORD);
-        properties.setPath(keystoreResource);
-        properties.setType(TYPE);
-
         KeyStore keyStore = KeystoreProvider.loadKeyStore(properties);
         assertNotNull(keyStore);
     }
