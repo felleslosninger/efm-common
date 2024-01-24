@@ -29,14 +29,15 @@ public class KeystoreProvider {
         String type = properties.getType();
         String password = properties.getPassword();
         Resource path = properties.getPath();
+        System.out.println("path: " + path);
+        System.out.println("path type: " + path.getClass());
 
         // Create an instance of KeystoreResourceLoader
         KeystoreResourceLoader keystoreResourceLoader = new KeystoreResourceLoader();
 
         try {
             KeyStore keyStore = KeyStore.getInstance(type);
-            System.out.println("path: " + path);
-            System.out.println("path type: " + path.getClass());
+
             if (path instanceof ByteArrayResource) {
                 byte[] contentBytes = IOUtils.toByteArray(path.getInputStream());
                 String content = new String(contentBytes);
