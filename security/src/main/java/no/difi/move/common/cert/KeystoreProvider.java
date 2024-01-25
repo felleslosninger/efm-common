@@ -1,8 +1,6 @@
 package no.difi.move.common.cert;
 
 import no.difi.move.common.config.KeystoreProperties;
-import org.apache.commons.io.IOUtils;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.context.support.ServletContextResource;
 
@@ -38,13 +36,12 @@ public class KeystoreProvider {
 
         try {
             KeyStore keyStore = KeyStore.getInstance(type);
-            if (path instanceof ByteArrayResource || path instanceof ServletContextResource){
-                byte[] contentBytes = IOUtils.toByteArray(path.getInputStream());
-                String content = new String(contentBytes);
+            if (path instanceof ServletContextResource){
+                String pathString = ((ServletContextResource) path).getPath().toString();
                 // Check if the content starts with "base64:"
-                if (content.startsWith("base64:")) {
+                if (pathString.startsWith("/base64:")) {
                     // Use KeystoreResourceLoader to load the keystore from base64 content
-                    keyStore.load(keystoreResourceLoader.getResource(content).getInputStream(), password.toCharArray());
+                    keyStore.load(keystoreResourceLoader.getResource(pathString).getInputStream(), password.toCharArray());
                     return keyStore;
                 }
             } else if (path != null && path.exists()) {
@@ -67,5 +64,4 @@ public class KeystoreProvider {
     public KeyStore getKeyStore() {
         return keystore;
     }
-
 }

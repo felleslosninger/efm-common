@@ -26,7 +26,7 @@ public class KeystoreResourceLoader extends DefaultResourceLoader {
      */
     private void addBase64ResourceLoader() {
         this.addProtocolResolver((location, resourceLoader) -> {
-            if (location.startsWith("base64:")) {
+            if (location.startsWith("/base64:")) {
                 return new InputStreamResource(new ByteArrayInputStream(Base64.getDecoder().decode(location.substring(location.indexOf(":") + 1).trim().getBytes())));
             } else {
                 return null;
