@@ -1,7 +1,6 @@
 package no.difi.move.common.cert;
 
 import no.difi.move.common.config.KeystoreProperties;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.context.support.ServletContextResource;

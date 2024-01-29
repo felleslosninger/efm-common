@@ -41,7 +41,7 @@ public class KeystoreProvider {
                 // Check if the content starts with "base64:"
                 if (pathString.startsWith("/base64:")) {
                     // Use KeystoreResourceLoader to load the keystore from base64 content
-                    keyStore.load(keystoreResourceLoader.getResource(pathString).getInputStream(), password.toCharArray());
+                    keyStore.load(keystoreResourceLoader.getResource(pathString.substring(1)).getInputStream(), password.toCharArray());
                     return keyStore;
                 }
             } else if (path != null && path.exists()) {
