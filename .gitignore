@@ -3,6 +3,9 @@
 
 pom.xml.versionsBackup
 
+# OS generated files #
+.DS_store
+
 # Created by .ignore support plugin (hsz.mobi)
 ### Java template
 *.class
