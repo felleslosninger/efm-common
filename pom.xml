@@ -43,11 +43,6 @@
     <profiles>
         <profile>
             <id>new-platform</id>
-            <activation>
-                <property>
-                    <name>new-platform</name> <!-- Activate if 'new-platform' property is set -->
-                </property>
-            </activation>
             <distributionManagement>
                 <repository>
                     <id>github</id>
@@ -94,11 +89,6 @@
         </profile>
         <profile>
             <id>old-platform-distribution</id>
-            <activation>
-                <property>
-                    <name>!new-platform</name> <!-- Activate if 'new-platform' property is not set -->
-                </property>
-            </activation>
             <distributionManagement>
                 <snapshotRepository>
                     <id>ossrh</id>
