@@ -28,4 +28,4 @@ jobs:
     secrets: inherit
 
 
-    # TODO: Husk å legge til push til maven central/sonatype om det fremdeles skal være aktuelt.
+    # TODO: Husk å legge til push til maven central/sonatype om det fremdeles skal være aktuelt..
