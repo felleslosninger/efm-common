@@ -10,7 +10,7 @@ on:
       profile:
         description: 'Build profile'
         required: true
-        default: 'new platform'
+        default: 'new-platform'
   push:
     branches:
       - '*'
@@ -24,7 +24,7 @@ jobs:
     with:
       java-version: 8
       sbom-path: .
-      profile:  ${{ github.event.inputs.profile }}
+      profile: ${{ github.event.inputs.profile }}
     secrets: inherit
 
 
