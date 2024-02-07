@@ -52,11 +52,11 @@
                 <repository>
                     <id>github</id>
                     <name>GitHub felleslosninger Apache Maven Packages</name>
-                    <url>https://maven.pkg.github.com/felleslosninger/efm-service-registry</url>
+                    <url>https://maven.pkg.github.com/felleslosninger/efm-common</url>
                 </repository>
                 <snapshotRepository>
                     <id>github</id>
-                    <url>https://maven.pkg.github.com/felleslosninger/efm-service-registry</url>
+                    <url>https://maven.pkg.github.com/felleslosninger/efm-common</url>
                 </snapshotRepository>
             </distributionManagement>
 
@@ -95,7 +95,6 @@
         <profile>
             <id>old-platform-distribution</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
                 <property>
                     <name>!new-platform</name> <!-- Activate if 'new-platform' property is not set -->
                 </property>
@@ -163,18 +162,6 @@
         </profile>
     </profiles>
 
-    <distributionManagement>
-        <repository>
-            <id>github</id>
-            <name>GitHub felleslosninger Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/felleslosninger/efm-common</url>
-        </repository>
-        <snapshotRepository>
-            <id>github</id>
-            <url>https://maven.pkg.github.com/felleslosninger/efm-common</url>
-        </snapshotRepository>
-    </distributionManagement>
-
     <repositories>
         <repository>
             <id>github</id>
@@ -190,7 +177,7 @@
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
-        </repository>        
+        </repository>
         <repository>
             <id>MavenArtifactFeed</id>
             <url>https://pkgs.dev.azure.com/dificloud/_packaging/MavenArtifactFeed/maven/v1</url>
