@@ -24,7 +24,7 @@ jobs:
     with:
       java-version: 8
       sbom-path: .
-      profile: ${{ github.event.inputs.profile }}
+      profile: new-platform
     secrets: inherit
 
 
