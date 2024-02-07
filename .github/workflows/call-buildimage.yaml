@@ -7,6 +7,10 @@ on:
         description: 'Log level'     
         required: true
         default: 'warning'
+      profile:
+        description: 'Build profile'
+        required: true
+        default: 'new platform'
   push:
     branches:
       - '*'
@@ -20,6 +24,7 @@ jobs:
     with:
       java-version: 8
       sbom-path: .
+      profile:  ${{ github.event.inputs.profile }}
     secrets: inherit
 
 
