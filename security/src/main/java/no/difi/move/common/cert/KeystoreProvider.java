@@ -2,8 +2,11 @@ package no.difi.move.common.cert;
 
 import no.difi.move.common.config.KeystoreProperties;
 import org.springframework.core.io.Resource;
+import org.springframework.web.context.support.ServletContextResource;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -27,16 +30,29 @@ public class KeystoreProvider {
         String password = properties.getPassword();
         Resource path = properties.getPath();
 
+        KeystoreResourceLoader keystoreResourceLoader = new KeystoreResourceLoader();
+
         try {
             KeyStore keyStore = KeyStore.getInstance(type);
 
-            if (path == null || "none".equalsIgnoreCase(path.getFilename())) {
-                keyStore.load(null, password.toCharArray());
+            if (path instanceof ServletContextResource) {
+                String pathString = ((ServletContextResource) path).getPath().toString();
+                if (pathString.startsWith("/base64:")) {
+                    // Load the keystore from base64 content
+                    try (InputStream inputStream = keystoreResourceLoader.getResource(pathString.substring(1)).getInputStream()) {
+                        keyStore.load(inputStream, password.toCharArray());
+                        return keyStore;
+                    }
+                }
+            } else if (path != null && path.exists()) {
+                // Load the keystore from file
+                try (InputStream fileInputStream = new FileInputStream(path.getFile())) {
+                    keyStore.load(fileInputStream, password.toCharArray());
+                    return keyStore;
+                }
             } else {
-                keyStore.load(path.getInputStream(), password.toCharArray());
+                throw new KeystoreProviderException("No keystore file found at " + path.getFile());
             }
-
-            return keyStore;
         } catch (KeyStoreException e) {
             throw new KeystoreProviderException("Unable to load KeyStore", e);
         } catch (IOException e) {
@@ -44,10 +60,11 @@ public class KeystoreProvider {
         } catch (CertificateException | NoSuchAlgorithmException e) {
             throw new KeystoreProviderException("Unable to load keystore file", e);
         }
+        return null;
     }
+
 
     public KeyStore getKeyStore() {
         return keystore;
     }
-
 }
