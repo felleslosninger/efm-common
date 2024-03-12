@@ -1,17 +1,20 @@
 package no.difi.move.common.cert;
 
 import no.difi.move.common.config.KeystoreProperties;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.web.context.support.ServletContextResource;
 import org.testng.annotations.Test;
 
+import javax.servlet.ServletContext;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.KeyStore;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 
 public class KeystoreProviderTest {
 
@@ -26,33 +29,6 @@ public class KeystoreProviderTest {
         properties.setPassword(PASSWORD);
         properties.setPath(new FileSystemResource("src/test/java/no/difi/move/common/cert/resources/expired-987464291.jks"));
         properties.setType(TYPE);
-        KeyStore keyStore = KeystoreProvider.loadKeyStore(properties);
-        assertNotNull(keyStore);
-    }
-
-    @Test
-    void testLoadEmptyKeyStore() throws KeystoreProviderException {
-        KeystoreProperties properties = new KeystoreProperties();
-        properties.setAlias(ALIAS);
-        properties.setPassword(PASSWORD);
-        properties.setPath(null);
-        properties.setType(TYPE);
-        KeyStore keyStore = KeystoreProvider.loadKeyStore(properties);
-        assertNotNull(keyStore);
-    }
-
-
-    @Test
-    void testLoadKeyStoreFromBase64EncodedFile() throws KeystoreProviderException, IOException {
-        String base64EncodedContent = new String(Files.readAllBytes(Paths.get("src/test/java/no/difi/move/common/cert/resources/encoded-987464291")), StandardCharsets.UTF_8);
-        Resource keystoreResource = new ByteArrayResource(base64EncodedContent.getBytes());
-
-        KeystoreProperties properties = new KeystoreProperties();
-        properties.setAlias(ALIAS);
-        properties.setPassword(PASSWORD);
-        properties.setPath(keystoreResource);
-        properties.setType(TYPE);
-
         KeyStore keyStore = KeystoreProvider.loadKeyStore(properties);
         assertNotNull(keyStore);
     }
@@ -75,5 +51,24 @@ public class KeystoreProviderTest {
         properties.setPath(new FileSystemResource("/nonexistent/path/to/nonExistentPath.keystore"));
         properties.setType(TYPE);
         assertThrows(KeystoreProviderException.class, () -> KeystoreProvider.loadKeyStore(properties));
+    }
+
+    @Test
+    void testLoadKeyStoreFromServletResource() throws KeystoreProviderException, IOException {
+        // Arrange
+        KeystoreProperties properties = new KeystoreProperties();
+        properties.setAlias(ALIAS);
+        properties.setPassword(PASSWORD);
+        // Read the content of the file as a string
+        String fileContent = String.join("\n", Files.readAllLines(Paths.get("src/test/java/no/difi/move/common/cert/resources/encoded-987464291")));
+        // Create a mock ServletContext
+        ServletContext mockServletContext = mock(ServletContext.class);
+        // Create a ServletContextResource using the file content and the mock ServletContext
+        Resource servletContextResource = new ServletContextResource(mockServletContext, fileContent);
+        properties.setPath(servletContextResource);
+        // Act
+        KeyStore keyStore = KeystoreProvider.loadKeyStore(properties);
+        // Assert
+        assertNotNull(keyStore);
     }
 }

@@ -1,0 +1,31 @@
+name: CI Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'warning'
+      profile:
+        description: 'Build profile'
+        required: true
+        default: 'new-platform'
+  push:
+    branches:
+      - '*'
+  pull_request:
+    types: [ ]  # Empty list ensures PRs are not triggered. Trigger nytt bygg.
+
+jobs:
+
+  build-install-and-deploy-libs:
+    uses: felleslosninger/github-workflows/.github/workflows/ci-maven-install-deploy-lib.yml@efm-tilpasninger-2
+    with:
+      java-version: 8
+      sbom-path: .
+      profile: new-platform
+    secrets: inherit
+
+
+    # TODO: Husk å legge til push til maven central/sonatype om det fremdeles skal være aktuelt..
