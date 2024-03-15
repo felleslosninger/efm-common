@@ -191,7 +191,7 @@
         <spring.cloud.version>2021.0.8</spring.cloud.version>
         <commons-lang.version>3.14.0</commons-lang.version>
         <xmlsec.version>3.0.3</xmlsec.version>
-        <nimbus.jwt.version>9.31</nimbus.jwt.version>
+        <nimbus.jwt.version>9.37.3</nimbus.jwt.version>
         <guava.version>32.1.3-jre</guava.version>
         <xstream.version>1.4.20</xstream.version>
         <bouncycastle.version>1.77</bouncycastle.version>
