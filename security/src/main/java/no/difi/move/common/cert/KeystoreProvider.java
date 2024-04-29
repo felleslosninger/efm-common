@@ -1,6 +1,7 @@
 package no.difi.move.common.cert;
 
 import no.difi.move.common.config.KeystoreProperties;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.context.support.ServletContextResource;
 
@@ -36,6 +37,7 @@ public class KeystoreProvider {
             KeyStore keyStore = KeyStore.getInstance(type);
 
             if (path instanceof ServletContextResource) {
+                // TODO can be removed when all applications have included Base64ResourceLoaderProcessor to their context
                 String pathString = ((ServletContextResource) path).getPath().toString();
                 if (pathString.startsWith("/base64:")) {
                     // Load the keystore from base64 content
@@ -44,6 +46,9 @@ public class KeystoreProvider {
                         return keyStore;
                     }
                 }
+            } else if (path instanceof ByteArrayResource) {
+                keyStore.load(path.getInputStream(), password.toCharArray());
+                return keyStore;
             } else if (path != null && path.exists()) {
                 // Load the keystore from file
                 try (InputStream fileInputStream = new FileInputStream(path.getFile())) {
