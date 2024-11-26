@@ -12,7 +12,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.16</version>
+        <version>3.0.0</version>
         <relativePath/>
     </parent>
 
@@ -190,7 +190,7 @@
         <maven.compiler.release>21</maven.compiler.release>
         <java.version>21</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring.cloud.version>2021.0.8</spring.cloud.version>
+        <spring.cloud.version>2022.0.0</spring.cloud.version>
         <commons-lang.version>3.14.0</commons-lang.version>
         <xmlsec.version>3.0.3</xmlsec.version>
         <nimbus.jwt.version>9.31</nimbus.jwt.version>
@@ -199,6 +199,7 @@
         <bouncycastle.version>1.77</bouncycastle.version>
         <commons-asic.version>0.12.0</commons-asic.version>
         <spring-security-oauth.version>2.5.2.RELEASE</spring-security-oauth.version>
+        <!-- to do check this ^ for deprication https://github.com/spring-attic/spring-security-oauth/blob/main/README.md -->
         <snakeyaml.version>2.2</snakeyaml.version>
     </properties>
 

@@ -2,9 +2,10 @@ package no.difi.meldingsutveksling.persistence.type;
 
 import no.difi.meldingsutveksling.domain.Iso6523;
 import org.hibernate.type.descriptor.WrapperOptions;
-import org.hibernate.type.descriptor.java.AbstractTypeDescriptor;
+import org.hibernate.type.descriptor.java.AbstractClassJavaType;
 
-public class Iso6523TypeDescriptor extends AbstractTypeDescriptor<Iso6523> {
+
+public class Iso6523TypeDescriptor extends AbstractClassJavaType<Iso6523> {
     public static final Iso6523TypeDescriptor INSTANCE = new Iso6523TypeDescriptor();
 
     public Iso6523TypeDescriptor() {
@@ -16,7 +17,7 @@ public class Iso6523TypeDescriptor extends AbstractTypeDescriptor<Iso6523> {
         return value.toString();
     }
 
-    @Override
+    //@Override todo check if this is important
     public Iso6523 fromString(String string) {
         return Iso6523.parse(string);
     }

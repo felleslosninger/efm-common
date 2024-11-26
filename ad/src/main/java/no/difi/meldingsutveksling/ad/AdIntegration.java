@@ -104,7 +104,9 @@ public class AdIntegration {
     private ClientHttpRequestFactory getClientHttpRequestFactory(AdIntegrationInput input) {
         HttpComponentsClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory();
         clientHttpRequestFactory.setConnectTimeout(input.getConnectTimeout());
-        clientHttpRequestFactory.setReadTimeout(input.getReadTimeout());
+
+        // todo this no longer has any effect and is depricated
+        // clientHttpRequestFactory.setReadTimeout(input.getReadTimeout());
         input.httpClient().ifPresent(clientHttpRequestFactory::setHttpClient);
         return clientHttpRequestFactory;
     }

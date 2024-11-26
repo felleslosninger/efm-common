@@ -13,8 +13,8 @@ import lombok.RequiredArgsConstructor;
 import no.difi.meldingsutveksling.validation.SenderValue;
 import no.difi.meldingsutveksling.validation.group.ValidationGroups;
 
-import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.xml.bind.annotation.*;
 import java.io.Serializable;
 
 /**
