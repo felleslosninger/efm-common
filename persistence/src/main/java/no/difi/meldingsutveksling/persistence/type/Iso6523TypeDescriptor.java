@@ -17,7 +17,6 @@ public class Iso6523TypeDescriptor extends AbstractClassJavaType<Iso6523> {
         return value.toString();
     }
 
-    //@Override todo check if this is important
     public Iso6523 fromString(String string) {
         return Iso6523.parse(string);
     }
