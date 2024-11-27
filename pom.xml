@@ -188,7 +188,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring.cloud.version>2021.0.8</spring.cloud.version>
+        <spring.cloud.version>2023.0.4</spring.cloud.version>
         <commons-lang.version>3.14.0</commons-lang.version>
         <xmlsec.version>3.0.3</xmlsec.version>
         <nimbus.jwt.version>9.31</nimbus.jwt.version>
