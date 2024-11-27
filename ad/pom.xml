@@ -17,8 +17,6 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.30</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -47,7 +45,6 @@
         </dependency>
 
         <!-- TEST -->
-        <!-- spring boot no longer includes some java x libraries so need standalone to include those-->
         <dependency>
             <groupId>com.github.tomakehurst</groupId>
             <artifactId>wiremock-jre8-standalone</artifactId>
