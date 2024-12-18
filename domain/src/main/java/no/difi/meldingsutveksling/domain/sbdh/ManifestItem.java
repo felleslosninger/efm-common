@@ -10,8 +10,8 @@ package no.difi.meldingsutveksling.domain.sbdh;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.xml.bind.annotation.*;
 
 
 /**

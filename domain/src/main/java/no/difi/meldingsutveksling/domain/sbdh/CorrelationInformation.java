@@ -12,9 +12,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import no.difi.meldingsutveksling.xml.OffsetDateTimeAdapter;
 
-import javax.validation.constraints.Future;
-import javax.xml.bind.annotation.*;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.validation.constraints.Future;
+import jakarta.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.OffsetDateTime;
 
 

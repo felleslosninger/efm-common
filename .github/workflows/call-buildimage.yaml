@@ -22,7 +22,7 @@ jobs:
   build-install-and-deploy-libs:
     uses: felleslosninger/github-workflows/.github/workflows/ci-maven-install-deploy-lib.yml@efm-tilpasninger-2
     with:
-      java-version: 8
+      java-version: 21
       sbom-path: .
       profile: new-platform
     secrets: inherit
