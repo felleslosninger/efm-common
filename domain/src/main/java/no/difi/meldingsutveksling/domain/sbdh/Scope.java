@@ -15,13 +15,13 @@ import lombok.ToString;
 import no.difi.meldingsutveksling.validation.OneOf;
 import no.difi.meldingsutveksling.validation.SbdScopeConditionalInstanceIdentifierUuid;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.HashSet;
 import java.util.Set;
 

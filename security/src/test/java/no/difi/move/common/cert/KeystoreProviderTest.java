@@ -6,7 +6,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.web.context.support.ServletContextResource;
 import org.testng.annotations.Test;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;

@@ -5,5 +5,5 @@
 // Generated on: 2014.11.25 at 12:23:12 PM CET 
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
+@jakarta.xml.bind.annotation.XmlSchema(namespace = "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader", elementFormDefault = jakarta.xml.bind.annotation.XmlNsForm.QUALIFIED)
 package no.difi.meldingsutveksling.domain.sbdh;

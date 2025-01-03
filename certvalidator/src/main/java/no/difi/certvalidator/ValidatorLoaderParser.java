@@ -10,8 +10,8 @@ import no.difi.certvalidator.rule.*;
 import no.difi.certvalidator.structure.Junction;
 import no.difi.certvalidator.util.CachedValidatorRule;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import javax.xml.transform.stream.StreamSource;
 import java.io.InputStream;
 import java.util.*;

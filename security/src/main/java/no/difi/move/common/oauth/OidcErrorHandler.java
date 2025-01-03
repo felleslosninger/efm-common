@@ -1,5 +1,6 @@
 package no.difi.move.common.oauth;
 
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.http.HttpStatus;
@@ -16,17 +17,18 @@ import java.nio.charset.StandardCharsets;
 public class OidcErrorHandler extends DefaultResponseErrorHandler {
 
     @Override
-    protected void handleError(ClientHttpResponse response, HttpStatus statusCode) throws IOException {
+    public void handleError(ClientHttpResponse response) throws IOException {
         log.error("Response from token provider: " + IOUtils.toString(response.getBody(), StandardCharsets.UTF_8));
-        switch (statusCode.series()) {
+        var status = HttpStatus.valueOf(response.getStatusCode().value());
+        switch (status.series()) {
             case CLIENT_ERROR:
-                throw new HttpClientErrorException(statusCode, response.getStatusText(),
+                throw new HttpClientErrorException(status, response.getStatusText(),
                         response.getHeaders(), getResponseBody(response), getCharset(response));
             case SERVER_ERROR:
-                throw new HttpServerErrorException(statusCode, response.getStatusText(),
+                throw new HttpServerErrorException(status, response.getStatusText(),
                         response.getHeaders(), getResponseBody(response), getCharset(response));
             default:
-                throw new RestClientException("Unknown status code [" + statusCode + "]");
+                throw new RestClientException("Unknown status code [" + status + "]");
         }
     }
 }

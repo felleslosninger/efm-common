@@ -1,6 +1,6 @@
 package no.difi.meldingsutveksling.ad;
 
-import org.apache.http.client.HttpClient;
+import org.apache.hc.client5.http.classic.HttpClient;
 
 import java.util.Optional;
 
@@ -20,7 +20,7 @@ public interface AdIntegrationInput {
 
     String getUsernamePrefix();
 
-    default Optional<HttpClient> httpClient() {
+    default Optional<org.apache.hc.client5.http.classic.HttpClient> httpClient() {
         return Optional.empty();
     }
 }
