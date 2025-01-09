@@ -72,16 +72,6 @@
                     <url>https://jitpack.io</url>
                 </repository>
                 <repository>
-                    <id>MavenArtifactFeed</id>
-                    <url>https://pkgs.dev.azure.com/dificloud/_packaging/MavenArtifactFeed/maven/v1</url>
-                    <releases>
-                        <enabled>true</enabled>
-                    </releases>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                </repository>
-                <repository>
                     <id>Jsch</id>
                     <url>http://jsch.sf.net/maven2/</url>
                 </repository>
@@ -103,16 +93,6 @@
                 <repository>
                     <id>ossrh</id>
                     <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-                    <releases>
-                        <enabled>true</enabled>
-                    </releases>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                </repository>
-                <repository>
-                    <id>MavenArtifactFeed</id>
-                    <url>https://pkgs.dev.azure.com/dificloud/_packaging/MavenArtifactFeed/maven/v1</url>
                     <releases>
                         <enabled>true</enabled>
                     </releases>
@@ -167,16 +147,6 @@
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
-        </repository>
-        <repository>
-            <id>MavenArtifactFeed</id>
-            <url>https://pkgs.dev.azure.com/dificloud/_packaging/MavenArtifactFeed/maven/v1</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
         </repository>
         <repository>
             <id>Jsch</id>
