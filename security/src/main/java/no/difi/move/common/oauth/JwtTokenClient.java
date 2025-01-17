@@ -87,7 +87,7 @@ public class JwtTokenClient {
                 .accept(MediaType.APPLICATION_JSON)
                 .body(body, LinkedMultiValueMap.class)
                 .retrieve()
-                .onStatus(HttpStatus::isError, e -> e.bodyToMono(String.class)
+                .onStatus(HttpStatusCode::isError, e -> e.bodyToMono(String.class)
                         .flatMap(s -> Mono.error(new JwtTokenException("http status: " + e.statusCode() + ", body: " + s)))
                 )
                 .bodyToMono(JwtTokenResponse.class)

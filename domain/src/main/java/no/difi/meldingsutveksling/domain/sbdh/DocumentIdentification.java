@@ -14,9 +14,9 @@ import no.difi.meldingsutveksling.validation.MessageType;
 import no.difi.meldingsutveksling.validation.UUID;
 import no.difi.meldingsutveksling.xml.OffsetDateTimeAdapter;
 
-import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.*;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.validation.constraints.NotNull;
+import jakarta.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 
