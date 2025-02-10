@@ -15,7 +15,7 @@ package no.difi.move.common.oauth;
 
 public class Oauth2JwtAccessTokenProvider {} /*implements AccessTokenProvider {
 
-    // FIXME denne blir kanskje brukt av klienter rundt om, trenger vi en erstatter eller kan de benytte JwtTokenClient direkte?
+    // FIXME denne blir kanskje brukt av klienter rundt om, disse må skrives om når Spring Security 2.5.x ikke lenger er tilgjengelig
 
     private final JwtTokenClient jwtTokenClient;
 
