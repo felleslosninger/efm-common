@@ -6,9 +6,8 @@ Har ikke lenger støtte for den eldre (og deprecated) Spring Security 2.5.x.
 Det betyr i praksis at `Oauth2JwtAccessTokenProvider` er fjernet fra `security` modulen og klienter som baserte seg på denne  
 må skrive seg om til nyere Spring Security og f.eks. benytte [JwtTokenClient.java](security/src/main/java/no/difi/move/common/oauth/JwtTokenClient.java) direkte.
 
-Modulen `ad` vurderes fjernet - den var antagelig `kun` benyttet i Move Admin Web og dermed ingen "common modul".  Den 
-baserte seg dessuten på ADAL4J som ikke lenger er støttet av Microsoft og som uansett må skrives om.  Modulen fjernes
-fra common applikasjoner som trenger Entra ID / Azure AD autentisering kan se på [Microsoft Authentication Library - MSAL4J]https://learn.microsoft.com/en-us/entra/msal/java/advanced/migrate-adal-msal-java)
+Modulen `ad` har blitt fjernet, den har berre vore i bruk i Organization-registry og move-admin, men er blitt ertsatta av
+midlertidig hardkoda innloggingsfunksjonalitet.   Finst ein oppgåve på å erstatte pålogging med Entra ID : https://digdir.atlassian.net/browse/MOVE-2184
 
 Modulen `cloud` vurders fjernet - usikker på om noen i det hele tatt benytter den.
 
