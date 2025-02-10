@@ -17,7 +17,8 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring.cloud.version}</version>
+                <version>2022.0.0</version>
+                <!-- FIXME 2024.0.0 -->
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
