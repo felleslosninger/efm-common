@@ -21,7 +21,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.StreamUtils;
 
-
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -32,7 +31,6 @@ import java.util.Optional;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-
 
 @Slf4j
 @WireMockTest(httpsEnabled = true)

@@ -32,33 +32,43 @@
         <dependency>
             <groupId>org.apache.httpcomponents.client5</groupId>
             <artifactId>httpclient5</artifactId>
+            <version>5.4.2</version>
         </dependency>
         <dependency>
+            <!-- FIXME ADAL4J må skrives om til MSAL4J -->
+            <!-- com.microsoft.azure:adal4j:1.6.7 er siste versjon og vart publisert 30. april 2021 med sårbar avhengighet -->
             <groupId>com.microsoft.azure</groupId>
             <artifactId>adal4j</artifactId>
+            <version>1.6.7</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.code.gson</groupId>
+                    <artifactId>gson</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.testng</groupId>
+                    <artifactId>testng</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <!-- erstatning for sårbar avhengighet i com.microsoft.azure:adal4j:1.6.7 -->
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
+            <version>2.12.1</version>
         </dependency>
 
         <!-- TEST -->
-        <dependency>
-            <groupId>org.wiremock</groupId>
-            <artifactId>wiremock-standalone</artifactId>
-            <scope>test</scope>
-        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
-                </exclusion>
-            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.wiremock</groupId>
+            <artifactId>wiremock-standalone</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>

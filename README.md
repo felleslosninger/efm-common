@@ -12,11 +12,12 @@ fra common applikasjoner som trenger Entra ID / Azure AD autentisering kan se p�
 
 Modulen `cloud` vurders fjernet - usikker på om noen i det hele tatt benytter den.
 
-## Andre endringer i v2.x.y
+## Andre POTENSIELLE endringer i v2.x.y (work in progress)
 - 🚧 Generell oppgradering av alle avhengigheter og plugins
 - 🚧 Erstattet [klakegg ocsp](https://github.com/klakegg/pkix-ocsp) med XXX
 - 🚧 Byttet fra `org.codehaus.mojo:jaxb2-maven-plugin` til YYY
 - 🚧 Endret fra tomakehurst jre8 wiremock til nyeste offisielle
+- 🚧 Bruker vi service loader noe sted, den er ikke vedlikeholdt lenger https://github.com/kohsuke/metainf-services 
 
 ## Bygge alle moduler lokalt
 Testet og bygget med OpenJDK 21.0.5 og Maven 3.9.9.

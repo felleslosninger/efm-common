@@ -18,4 +18,5 @@ public class BCHelper {
 
         PROVIDER = Security.getProvider(BouncyCastleProvider.PROVIDER_NAME);
     }
+
 }

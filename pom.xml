@@ -66,7 +66,6 @@
         <java.version>21</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bouncycastle.version>1.80</bouncycastle.version>
         <commons-asic.version>1.0.0-SNAPSHOT</commons-asic.version>
     </properties>
 
@@ -142,29 +141,11 @@
             </dependency>
 
             <dependency>
-                <!-- FIXME ADAL4J må skrives om til MSAL4J -->
-                <groupId>com.microsoft.azure</groupId>
-                <artifactId>adal4j</artifactId>
-                <version>1.6.7</version>
-                <exclusions>
-                    <exclusion>
-                        <!-- com.microsoft.azure:adal4j:1.6.7 er siste versjon og vart publisert 30. april 2021 med sårbar avhengighet -->
-                        <groupId>com.google.code.gson</groupId>
-                        <artifactId>gson</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <!-- com.microsoft.azure:adal4j:1.6.7 er siste versjon og vart publisert 30. april 2021 med sårbar avhengighet -->
-                        <groupId>org.testng</groupId>
-                        <artifactId>testng</artifactId>
-                    </exclusion>
-                </exclusions>
+                <groupId>no.difi.commons</groupId>
+                <artifactId>commons-asic</artifactId>
+                <version>${commons-asic.version}</version>
             </dependency>
-            <dependency>
-                <!-- erstatning for sårbar avhengighet i com.microsoft.azure:adal4j:1.6.7 -->
-                <groupId>com.google.code.gson</groupId>
-                <artifactId>gson</artifactId>
-                <version>2.12.1</version>
-            </dependency>
+
             <dependency>
                 <groupId>net.logstash.logback</groupId>
                 <artifactId>logstash-logback-encoder</artifactId>
@@ -212,50 +193,13 @@
                 <version>1.4.21</version>
             </dependency>
             <dependency>
-                <groupId>org.bouncycastle</groupId>
-                <artifactId>bcprov-jdk18on</artifactId>
-                <version>${bouncycastle.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.difi.commons</groupId>
-                <artifactId>commons-asic</artifactId>
-                <version>${commons-asic.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
                 <version>2.3</version>
             </dependency>
-            <dependency>
-                <!-- https://github.com/klakegg/pkix-ocsp -->
-                <groupId>net.klakegg.pkix</groupId>
-                <artifactId>pkix-ocsp</artifactId>
-                <version>0.9.1</version>
-                <exclusions>
-                    <exclusion>
-                        <!-- net.klakegg.pkix:pkix-ocsp:0.9.1 er siste versjon og vart publisert 2. mars 2020 med sårbar avhengighet -->
-                        <groupId>org.apache.httpcomponents</groupId>
-                        <artifactId>httpclient</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <!-- net.klakegg.pkix:pkix-ocsp:0.9.1 er siste versjon og vart publisert 2. mars 2020 med sårbar avhengighet -->
-                        <groupId>org.bouncycastle</groupId>
-                        <artifactId>bcpkix-jdk15on</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <!-- erstatning for sårbar avhengighet i net.klakegg.pkix:pkix-ocsp:0.9.1 -->
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>4.5.14</version>
-            </dependency>
-            <dependency>
-                <!-- erstatning for sårbar avhengighet i net.klakegg.pkix:pkix-ocsp:0.9.1 -->
-                <groupId>org.bouncycastle</groupId>
-                <artifactId>bcpkix-jdk18on</artifactId>
-                <version>${bouncycastle.version}</version>
-            </dependency>
+
+            <!-- test avhengigheter -->
+
             <dependency>
                 <groupId>org.wiremock</groupId>
                 <artifactId>wiremock-standalone</artifactId>
@@ -263,7 +207,6 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-            <!-- erstatning for sårbar avhengighet i com.microsoft.azure:adal4j:1.6.7 -->
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
                 <version>7.10.2</version>
