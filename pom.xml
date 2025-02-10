@@ -83,7 +83,6 @@
         <module>properties</module>
         <module>persistence</module>
         <module>spring-converter</module>
-        <module>ad</module>
     </modules>
 
     <dependencyManagement>
@@ -145,6 +144,8 @@
                 <artifactId>commons-asic</artifactId>
                 <version>${commons-asic.version}</version>
             </dependency>
+
+            <!-- resterende avhengigheter -->
 
             <dependency>
                 <groupId>net.logstash.logback</groupId>
