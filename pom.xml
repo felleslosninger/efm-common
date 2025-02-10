@@ -68,7 +68,6 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <bouncycastle.version>1.80</bouncycastle.version>
         <commons-asic.version>1.0.0-SNAPSHOT</commons-asic.version>
-        <spring-security-oauth.version>2.5.2.RELEASE</spring-security-oauth.version>
     </properties>
 
     <modules>
@@ -142,26 +141,8 @@
                 <version>2.2.1</version>
             </dependency>
 
-            <!-- new spring security oauth2
-
             <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-oauth2-client</artifactId>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-oauth2-client</artifactId>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-oauth2-core</artifactId>
-            </dependency>
-            -->
-
-            <!-- ADAL4J må skrives om til MSAL4J -->
-            <dependency>
+                <!-- FIXME ADAL4J må skrives om til MSAL4J -->
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>adal4j</artifactId>
                 <version>1.6.7</version>
@@ -240,24 +221,6 @@
                 <artifactId>commons-asic</artifactId>
                 <version>${commons-asic.version}</version>
             </dependency>
-            <!-- org.springframework.security.oauth:spring-security-oauth2:2.5.2.RELEASE er siste versjon og vart publisert 21. april 2022 med sårbar avhengighet -->
-            <!-- erstatning for sårbar avhengighet i org.springframework.security.oauth:spring-security-oauth2:2.5.2.RELEASE -->
-            <dependency>
-                <groupId>org.springframework.security.oauth</groupId>
-                <artifactId>spring-security-oauth2</artifactId>
-                <version>${spring-security-oauth.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework.security</groupId>
-                        <artifactId>spring-security-crypto</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-crypto</artifactId>
-                <version>6.4.2</version>
-            </dependency>
             <dependency>
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
@@ -299,16 +262,8 @@
                 <version>3.10.0</version>
                 <scope>test</scope>
             </dependency>
-            <!--
             <dependency>
-                <groupId>com.github.tomakehurst</groupId>
-                <artifactId>wiremock-jre8</artifactId>
-                <version>2.35.2</version>
-                <scope>test</scope>
-            </dependency>
-            -->
             <!-- erstatning for sårbar avhengighet i com.microsoft.azure:adal4j:1.6.7 -->
-            <dependency>
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
                 <version>7.10.2</version>

@@ -1,19 +1,21 @@
 package no.difi.move.common.oauth;
 
-import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
-import org.springframework.security.oauth2.client.resource.UserApprovalRequiredException;
-import org.springframework.security.oauth2.client.resource.UserRedirectRequiredException;
-import org.springframework.security.oauth2.client.token.AccessTokenProvider;
-import org.springframework.security.oauth2.client.token.AccessTokenRequest;
-import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
-import org.springframework.security.oauth2.common.OAuth2RefreshToken;
+//import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
+//import org.springframework.security.oauth2.client.resource.UserApprovalRequiredException;
+//import org.springframework.security.oauth2.client.resource.UserRedirectRequiredException;
+//import org.springframework.security.oauth2.client.token.AccessTokenProvider;
+//import org.springframework.security.oauth2.client.token.AccessTokenRequest;
+//import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
+//import org.springframework.security.oauth2.common.OAuth2AccessToken;
+//import org.springframework.security.oauth2.common.OAuth2RefreshToken;
+//
+//import java.time.Instant;
+//import java.util.Collections;
+//import java.util.Date;
 
-import java.time.Instant;
-import java.util.Collections;
-import java.util.Date;
+public class Oauth2JwtAccessTokenProvider {} /*implements AccessTokenProvider {
 
-public class Oauth2JwtAccessTokenProvider implements AccessTokenProvider {
+    // FIXME denne blir kanskje brukt av klienter rundt om, trenger vi en erstatter eller kan de benytte JwtTokenClient direkte?
 
     private final JwtTokenClient jwtTokenClient;
 
@@ -48,4 +50,6 @@ public class Oauth2JwtAccessTokenProvider implements AccessTokenProvider {
     public boolean supportsRefresh(OAuth2ProtectedResourceDetails resource) {
         return false;
     }
+
 }
+*/

@@ -108,4 +108,5 @@ public class AdIntegration {
         input.httpClient().ifPresent(clientHttpRequestFactory::setHttpClient);
         return clientHttpRequestFactory;
     }
+
 }

@@ -65,51 +65,28 @@
             <artifactId>nimbus-jose-jwt</artifactId>
         </dependency>
 
-        <!-- spring security 6
-
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-oauth2-client</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-oauth2-core</artifactId>
-        </dependency>
+        <!-- use spring security versions aligned with spring boot
+             spring security 6 can also be used directly thru BOM
+             https://docs.spring.io/spring-security/reference/getting-spring-security.html#getting-maven-no-boot -->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-client</artifactId>
         </dependency>
 
-        -->
-
-        <!-- erstatning for sårbar avhengighet i org.springframework.security.oauth:spring-security-oauth2:2.5.2.RELEASE -->
         <dependency>
-            <groupId>org.springframework.security.oauth</groupId>
-            <artifactId>spring-security-oauth2</artifactId>
-        </dependency>
-        <dependency>
-            <!-- erstatning for sårbar avhengighet i org.springframework.security.oauth:spring-security-oauth2:2.5.2.RELEASE -->
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-crypto</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-oauth2-client</artifactId>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.servlet</groupId>
-            <artifactId>jakarta.servlet-api</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
