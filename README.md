@@ -14,7 +14,7 @@ Contains modules used by more than one DIFI Move project.
 - Modulen `spring-converter` ble besluttet fjernet, den har ikke blitt tatt i bruk og det er andre varianter lokalt i applikasjonene.
   Søk etter `Iso6523Converter` på github ga heller ingen indikjasjon på at den var i bruk.
 
-- Modulen `cloud` oppgradert til `Spring Cloud 2024.0.0`, men modulen kan vurders fjernet (usikker på om / hvor den benyttes).
+- Modulen `cloud` ble  til `Spring Cloud 2024.0.0`, men modulen kan vurders fjernet (usikker på om / hvor den benyttes).
   Spring Cloud Security står på lista over teknologi som skal fjernes.
 
 ## Andre POTENSIELLE endringer i v2.x.y (work in progress)

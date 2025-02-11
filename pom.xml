@@ -71,7 +71,6 @@
 
     <modules>
         <module>audit</module>
-        <module>cloud</module>
         <module>config</module>
         <module>security</module>
         <module>webservice-tools</module>
@@ -91,12 +90,12 @@
 
             <dependency>
                 <groupId>no.difi.move-common</groupId>
-                <artifactId>audit</artifactId>
+                <artifactId>annotation</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>no.difi.move-common</groupId>
-                <artifactId>cloud</artifactId>
+                <artifactId>audit</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -112,11 +111,6 @@
             <dependency>
                 <groupId>no.difi.move-common</groupId>
                 <artifactId>webservice-tools</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.difi.move-common</groupId>
-                <artifactId>annotation</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -278,6 +272,9 @@
                         <goals>
                             <goal>jar</goal>
                         </goals>
+                        <configuration>
+                            <doclint>none</doclint>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
