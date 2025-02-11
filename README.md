@@ -9,7 +9,9 @@ må skrive seg om til nyere Spring Security og f.eks. benytte [JwtTokenClient.ja
 Modulen `ad` har blitt fjernet, den har berre vore i bruk i Organization-registry og move-admin, men er blitt ertsatta av
 midlertidig hardkoda innloggingsfunksjonalitet.   Finst ein oppgåve på å erstatte pålogging med Entra ID : https://digdir.atlassian.net/browse/MOVE-2184
 
-Modulen `cloud` vurders fjernet - usikker på om noen i det hele tatt benytter den.
+Modulen `cloud` oppgradert til `Spring Cloud 2024.0.0`, men modulen kan vurders fjernet (usikker på om / hvor den benyttes)
+
+Modulen `spring-converter` virker ikke å være i bruk, søkte etter `Iso6523Converter` på github, fant ingen.  Bør dobbeltsjekkes før den evt slettes.
 
 ## Andre POTENSIELLE endringer i v2.x.y (work in progress)
 - 🚧 Generell oppgradering av alle avhengigheter og plugins
