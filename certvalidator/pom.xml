@@ -92,6 +92,25 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.jvnet.jaxb</groupId>
+                <artifactId>jaxb-maven-plugin</artifactId>
+                <version>4.0.8</version>
+                <executions>
+                    <execution>
+                        <id>xsd-generate</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <schemaDirectory>${basedir}/src/main/xsd</schemaDirectory>
+                    <bindingDirectory>${basedir}/src/main/xjb</bindingDirectory>
+                </configuration>
+            </plugin>
+            <!--
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jaxb2-maven-plugin</artifactId>
                 <version>3.2.0</version>
@@ -107,6 +126,7 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
+            -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>properties-maven-plugin</artifactId>

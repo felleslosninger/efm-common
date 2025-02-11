@@ -14,17 +14,16 @@ Contains modules used by more than one DIFI Move project.
 - Modulen `spring-converter` ble besluttet fjernet, den har ikke blitt tatt i bruk og det er andre varianter lokalt i applikasjonene.
   Søk etter `Iso6523Converter` på github ga heller ingen indikjasjon på at den var i bruk.
 
-- Modulen `cloud` ble  til `Spring Cloud 2024.0.0`, men modulen kan vurders fjernet (usikker på om / hvor den benyttes).
-  Spring Cloud Security står på lista over teknologi som skal fjernes.
+- Modulen `cloud` ble besluttet fjernet, Spring Cloud Config står på lista over "teknologi" vi migrere vekk fra.
 
-## Andre POTENSIELLE endringer i v2.x.y (work in progress)
+## Andre endringer i v2.x.y
 - 🚧 Generell oppgradering av alle avhengigheter og plugins
-- 🚧 Endret fra `org.codehaus.mojo:jaxb2-maven-plugin` til YYY
-- 🚧 Endret fra tomakehurst jre8 wiremock til nyeste offisielle
+- 🚧 Byttet fra `org.codehaus.mojo:jaxb2-maven-plugin` til `org.jvnet.jaxb:jaxb-maven-plugin` for XML Schema kodegenerering
+- 🚧 Endret fra tomakehurst-jre8 wiremock til nyeste offisielle fra org.wiremock
 
-## Fremtidige endringer for `certvalidator` (ikke løst pr februar 2025)
-- 🚧 Erstatte [klakegg ocsp](https://github.com/klakegg/pkix-ocsp), den er ikke oppdatert på mange år
-- 🚧 Evaluer om vi trenger service loader biblioteket (det er dårlig vedlikeholdt https://github.com/kohsuke/metainf-services)
+## Fremtidige endringer for `certvalidator` modulen (ikke gjennomført pr februar 2025)
+- 🤔 Erstatte OCSP funskjonalitet i [klakegg ocsp](https://github.com/klakegg/pkix-ocsp), den er ikke oppdatert på mange år
+- 🤔 Samtidig med OCSP endringer, vurdere om vi trenger [service loader biblioteket](https://github.com/kohsuke/metainf-services)
 
 ## Bygge alle moduler lokalt
 Testet og bygget med OpenJDK 21.0.5 og Maven 3.9.9.
