@@ -225,7 +225,7 @@
                 <!-- erstatning for sårbar avhengighet i org.springframework.security.oauth:spring-security-oauth2:2.5.2.RELEASE -->
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-crypto</artifactId>
-                <version>5.8.8</version>
+                <version>6.4.2</version>
             </dependency>
             <dependency>
                 <groupId>org.yaml</groupId>
