@@ -17,9 +17,9 @@ Contains modules used by more than one DIFI Move project.
 - Modulen `cloud` ble besluttet fjernet, Spring Cloud Config står på lista over "teknologi" vi migrere vekk fra.
 
 ## Andre endringer i v2.x.y
-- 🚧 Generell oppgradering av alle avhengigheter og plugins
-- 🚧 Byttet fra `org.codehaus.mojo:jaxb2-maven-plugin` til `org.jvnet.jaxb:jaxb-maven-plugin` for XML Schema kodegenerering
-- 🚧 Endret fra tomakehurst-jre8 wiremock til nyeste offisielle fra org.wiremock
+- ✅ Generell oppgradering av alle avhengigheter og plugins
+- ✅ Byttet fra `org.codehaus.mojo:jaxb2-maven-plugin` til `org.jvnet.jaxb:jaxb-maven-plugin` for XML Schema kodegenerering
+- ✅ Endret fra tomakehurst-jre8 wiremock til nyeste offisielle fra org.wiremock
 
 ## Fremtidige endringer for `certvalidator` modulen (ikke gjennomført pr februar 2025)
 - 🤔 Erstatte [OCSP funskjonaliteten](https://digdir.atlassian.net/browse/MOVE-4337) fra [klakegg ocsp](https://github.com/klakegg/pkix-ocsp), den er ikke oppdatert på mange år
