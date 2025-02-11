@@ -4,13 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       logLevel:
-        description: 'Log level'     
+        description: 'Log level'
         required: true
         default: 'warning'
       profile:
         description: 'Build profile'
-        required: true
-        default: 'new-platform'
+        required: false
   push:
     branches:
       - '*'
@@ -24,5 +23,4 @@ jobs:
     with:
       java-version: 21
       sbom-path: .
-      profile: new-platform
     secrets: inherit
