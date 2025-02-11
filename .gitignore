@@ -2,7 +2,11 @@
 *.ipr
 .idea
 
+
+# Maven specific files
 pom.xml.versionsBackup
+pom.xml.releaseBackup
+release.properties
 
 # OS generated files #
 .DS_store

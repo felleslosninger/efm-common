@@ -26,6 +26,3 @@ jobs:
       sbom-path: .
       profile: new-platform
     secrets: inherit
-
-
-    # TODO: Husk å legge til push til maven central/sonatype om det fremdeles skal være aktuelt..
