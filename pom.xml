@@ -44,7 +44,7 @@
         <guava.version>32.1.3-jre</guava.version>
         <xstream.version>1.4.20</xstream.version>
         <bouncycastle.version>1.77</bouncycastle.version>
-        <commons-asic.version>0.12.0</commons-asic.version>
+        <commons-asic.version>1.0.0</commons-asic.version>
         <spring-security-oauth.version>2.5.2.RELEASE</spring-security-oauth.version>
         <!-- to do check this ^ for deprication https://github.com/spring-attic/spring-security-oauth/blob/main/README.md -->
         <snakeyaml.version>2.3</snakeyaml.version>
