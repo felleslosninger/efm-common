@@ -324,7 +324,7 @@
         </repository>
         <repository>
             <id>github</id>
-            <url>https://maven.pkg.github.com/felleslosninger/*</url>
+            <url>https://maven.pkg.github.com/felleslosninger/efm-common</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
@@ -344,7 +344,7 @@
     </distributionManagement>
 
     <scm>
-        <developerConnection>scm:git:git@github.com:felleslosninger/*</developerConnection>
+        <developerConnection>scm:git:git@github.com:felleslosninger/efm-common</developerConnection>
         <tag>2.0.1</tag>
     </scm>
 
