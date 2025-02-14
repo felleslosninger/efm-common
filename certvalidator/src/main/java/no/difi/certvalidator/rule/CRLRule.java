@@ -69,4 +69,5 @@ public class CRLRule extends AbstractRule {
             throw new CertificateValidationException(e.getMessage(), e);
         }
     }
+
 }

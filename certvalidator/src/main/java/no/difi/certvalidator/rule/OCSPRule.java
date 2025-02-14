@@ -46,4 +46,5 @@ public class OCSPRule extends AbstractRule {
             throw new CertificateValidationException(e.getMessage(), e);
         }
     }
+
 }

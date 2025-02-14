@@ -97,4 +97,5 @@ public class PrincipalNameRule extends AbstractRule {
     public enum Principal {
         SUBJECT, ISSUER
     }
+
 }
