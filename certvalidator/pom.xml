@@ -6,7 +6,7 @@
     <parent>
         <groupId>no.difi.move-common</groupId>
         <artifactId>parent</artifactId>
-        <version>2.0.2-SNAPSHOT</version>
+        <version>2.0.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>certvalidator</artifactId>
@@ -17,73 +17,18 @@
             <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-
-        <!-- FIXME denne bør erstattes på sikt https://github.com/klakegg/pkix-ocsp -->
-
-        <dependency>
-            <groupId>net.klakegg.pkix</groupId>
-            <artifactId>pkix-ocsp</artifactId>
-            <version>0.9.1</version>
-            <exclusions>
-                <!-- net.klakegg.pkix:pkix-ocsp:0.9.1 er siste versjon og vart publisert 2. mars 2020 med sårbar avhengighet -->
-                <exclusion>
-                    <groupId>org.apache.httpcomponents</groupId>
-                    <artifactId>httpclient</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.bouncycastle</groupId>
-                    <artifactId>bcpkix-jdk15on</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.14</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcpkix-jdk18on</artifactId>
-            <version>1.80</version>
-        </dependency>
-
-        <dependency>
-            <groupId>jakarta.xml.bind</groupId>
-            <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>4.0.2</version>
-        </dependency>
-        <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
             <version>4.0.5</version>
         </dependency>
         <dependency>
-            <groupId>org.kohsuke.metainf-services</groupId>
-            <artifactId>metainf-services</artifactId>
-            <version>1.11</version>
-            <scope>provided</scope>
+            <groupId>no.idporten.seid2</groupId>
+            <artifactId>idporten-seid2-certificate-validator</artifactId>
+            <version>1.12.0</version>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

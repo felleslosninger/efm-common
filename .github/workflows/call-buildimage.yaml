@@ -1,20 +1,8 @@
 name: CI Workflow
 
 on:
-  workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'
-        required: true
-        default: 'warning'
-      profile:
-        description: 'Build profile'
-        required: false
   push:
-    branches:
-      - '*'
-  pull_request:
-    types: [ ]  # Empty list ensures PRs are not triggered. Trigger nytt bygg.
+    branches: [ main ]
 
 jobs:
 
