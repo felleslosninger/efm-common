@@ -1,10 +1,10 @@
 package no.difi.move.common.cert;
 
 import no.difi.move.common.config.KeystoreProperties;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.context.support.ServletContextResource;
-import org.testng.annotations.Test;
 
 import jakarta.servlet.ServletContext;
 import java.io.IOException;
