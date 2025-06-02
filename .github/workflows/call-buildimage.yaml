@@ -1,21 +1,8 @@
 name: CI Workflow
 
 on:
-  workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'     
-        required: true
-        default: 'warning'
-      profile:
-        description: 'Build profile'
-        required: true
-        default: 'new-platform'
   push:
-    branches:
-      - '*'
-  pull_request:
-    types: [ ]  # Empty list ensures PRs are not triggered. Trigger nytt bygg.
+    branches: [ main ]
 
 jobs:
 
@@ -24,5 +11,4 @@ jobs:
     with:
       java-version: 21
       sbom-path: .
-      profile: new-platform
     secrets: inherit
