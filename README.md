@@ -21,10 +21,6 @@ Contains modules used by more than one DIFI Move project.
 - ✅ Byttet fra `org.codehaus.mojo:jaxb2-maven-plugin` til `org.jvnet.jaxb:jaxb-maven-plugin` for XML Schema kodegenerering
 - ✅ Endret fra tomakehurst-jre8 wiremock til nyeste offisielle fra org.wiremock
 
-## Fremtidige endringer for `certvalidator` modulen (ikke gjennomført pr februar 2025)
-- 🤔 Erstatte [OCSP funskjonaliteten](https://digdir.atlassian.net/browse/MOVE-4337) fra [klakegg ocsp](https://github.com/klakegg/pkix-ocsp), den er ikke oppdatert på mange år
-- 🤔 Samtidig med [OCSP endringer](https://digdir.atlassian.net/browse/MOVE-4337), vurdere om vi trenger [service loader biblioteket](https://github.com/kohsuke/metainf-services)
-
 ## Bygge alle moduler lokalt
 Testet og bygget med OpenJDK 21.0.5 og Maven 3.9.9.
 
