@@ -3,7 +3,6 @@ package no.difi.move.common.cert;
 import no.difi.move.common.config.KeystoreProperties;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.web.context.support.ServletContextResource;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -31,22 +30,10 @@ public class KeystoreProvider {
         String password = properties.getPassword();
         Resource path = properties.getPath();
 
-        KeystoreResourceLoader keystoreResourceLoader = new KeystoreResourceLoader();
-
         try {
             KeyStore keyStore = KeyStore.getInstance(type);
 
-            if (path instanceof ServletContextResource) {
-                // TODO can be removed when all applications have included Base64ResourceLoaderProcessor to their context
-                String pathString = ((ServletContextResource) path).getPath().toString();
-                if (pathString.startsWith("/base64:")) {
-                    // Load the keystore from base64 content
-                    try (InputStream inputStream = keystoreResourceLoader.getResource(pathString.substring(1)).getInputStream()) {
-                        keyStore.load(inputStream, password.toCharArray());
-                        return keyStore;
-                    }
-                }
-            } else if (path instanceof ByteArrayResource) {
+            if (path instanceof ByteArrayResource) {
                 keyStore.load(path.getInputStream(), password.toCharArray());
                 return keyStore;
             } else if (path != null && path.exists()) {
@@ -65,7 +52,6 @@ public class KeystoreProvider {
         } catch (CertificateException | NoSuchAlgorithmException e) {
             throw new KeystoreProviderException("Unable to load keystore file", e);
         }
-        return null;
     }
 
 
