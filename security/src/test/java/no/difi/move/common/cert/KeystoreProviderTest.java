@@ -2,15 +2,15 @@ package no.difi.move.common.cert;
 
 import no.difi.move.common.config.KeystoreProperties;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.web.context.support.ServletContextResource;
 
-import jakarta.servlet.ServletContext;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.KeyStore;
+import java.util.Base64;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -54,18 +54,17 @@ public class KeystoreProviderTest {
     }
 
     @Test
-    void testLoadKeyStoreFromServletResource() throws KeystoreProviderException, IOException {
+    void testLoadKeyStoreFromByteArrayResource() throws KeystoreProviderException, IOException {
         // Arrange
         KeystoreProperties properties = new KeystoreProperties();
         properties.setAlias(ALIAS);
         properties.setPassword(PASSWORD);
         // Read the content of the file as a string
         String fileContent = String.join("\n", Files.readAllLines(Paths.get("src/test/java/no/difi/move/common/cert/resources/encoded-987464291")));
-        // Create a mock ServletContext
-        ServletContext mockServletContext = mock(ServletContext.class);
-        // Create a ServletContextResource using the file content and the mock ServletContext
-        Resource servletContextResource = new ServletContextResource(mockServletContext, fileContent);
-        properties.setPath(servletContextResource);
+        // Create a ByteArrayResource using the decoded file content without prefix.
+        fileContent = fileContent.substring("Base64:".length());
+        Resource byteArrayResource = new ByteArrayResource(Base64.getDecoder().decode(fileContent));
+        properties.setPath(byteArrayResource);
         // Act
         KeyStore keyStore = KeystoreProvider.loadKeyStore(properties);
         // Assert
