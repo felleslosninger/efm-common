@@ -1,5 +1,5 @@
-# DIFI Move Commons 
-Contains modules used by more than one DIFI Move project.
+# efm-common
+Contains modules used by more than one eFormidling project.
 
 ## Breaking Changes i v 2.x.y
 - Modulen `security` har ikke lenger støtte for den eldre (og deprecated) Spring Security 2.5.x.
