@@ -1,8 +1,9 @@
 package no.difi.certvalidator;
 
-import no.digdir.certvalidator.ValidatorBuilder;
-import no.digdir.certvalidator.rule.ExpirationRule;
-import no.digdir.certvalidator.rule.SigningRule;
+import no.idporten.validator.certificate.ValidatorBuilder;
+import no.idporten.validator.certificate.rule.ExpirationRule;
+import no.idporten.validator.certificate.rule.SigningRule;
+
 import no.idporten.seid2.CertificateAuthoritiesProperties;
 import no.idporten.seid2.Environment;
 import no.idporten.seid2.SEID2CertificateValidator;
@@ -47,7 +48,7 @@ public class BusinessCertificateValidatorFactory {
     }
 
     private BusinessCertificateValidator SetupSelfSigned(){
-        no.digdir.certvalidator.Validator validator = ValidatorBuilder.newInstance()
+        no.idporten.validator.certificate.Validator validator = ValidatorBuilder.newInstance()
             .addRule(new ExpirationRule())
             .addRule(new SigningRule(SigningRule.Kind.SELF_SIGNED_ONLY))
             .build();
