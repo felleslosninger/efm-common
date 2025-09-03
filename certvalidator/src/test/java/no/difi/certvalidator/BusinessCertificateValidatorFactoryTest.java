@@ -1,7 +1,7 @@
 package no.difi.certvalidator;
 
-import no.digdir.certvalidator.api.CertificateValidationException;
-import no.digdir.certvalidator.api.FailedValidationException;
+import no.idporten.validator.certificate.api.CertificateValidationException;
+import no.idporten.validator.certificate.api.FailedValidationException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
