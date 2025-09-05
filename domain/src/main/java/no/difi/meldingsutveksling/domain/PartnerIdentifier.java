@@ -16,7 +16,7 @@ public interface PartnerIdentifier extends Serializable, Comparable<PartnerIdent
 
     static PartnerIdentifier parse(String identifier) {
         return PartnerIdentifierUtil.parse(identifier, Arrays.<Function<String, PartnerIdentifier>>asList(
-                Iso6523::parse, PersonIdentifier::parse, FiksIoIdentifier::parse));
+                Iso6523::parse, PersonIdentifier::parse, FiksIoIdentifier::parse,NhnIdentifier::parse));
     }
 
     static PartnerIdentifier parseQualifiedIdentifier(String identifier) {

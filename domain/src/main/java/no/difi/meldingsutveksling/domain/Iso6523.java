@@ -59,11 +59,16 @@ public class Iso6523 implements PartnerIdentifier, OrganizationIdentifier {
     public static Iso6523 parse(String identifier) {
         Matcher matcher = ISO6523_PATTERN.matcher(identifier);
         if (matcher.matches()) {
+            var organizationPartIdentifier = matcher.group("organizationPartIdentifier");
+            var sourceIndicator = matcher.group("sourceIndicator");
+            if ((organizationPartIdentifier + ":" + sourceIndicator).equals("0:0")) {
+                throw new  IllegalArgumentException("NHN format");
+            }
             return new Iso6523(
                     ICD.parse(matcher.group("icd")),
                     matcher.group("organizationIdentifier"),
-                    matcher.group("organizationPartIdentifier"),
-                    matcher.group("sourceIndicator"));
+                    organizationPartIdentifier,
+                    sourceIndicator);
         }
 
         throw new IllegalArgumentException(String.format("Invalid ISO6523 value: '%s'", identifier));
