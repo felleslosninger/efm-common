@@ -10,7 +10,9 @@ package no.difi.meldingsutveksling.domain.sbdh;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import no.difi.meldingsutveksling.domain.OrganizationIdentifier;
 import no.difi.meldingsutveksling.domain.PartnerIdentifier;
+import no.difi.meldingsutveksling.domain.PersonIdentifier;
 import no.difi.meldingsutveksling.validation.group.ValidationGroups;
 
 import jakarta.validation.Valid;

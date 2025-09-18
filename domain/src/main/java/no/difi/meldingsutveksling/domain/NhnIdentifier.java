@@ -1,7 +1,11 @@
 package no.difi.meldingsutveksling.domain;
 
 
+import java.util.regex.Pattern;
+
 public class NhnIdentifier implements PartnerIdentifier {
+
+    private static final Pattern ORGANIZATION_PART_IDENTIFIER_PATTERN = Pattern.compile("^[^\\s:][^:]{1,33}[^\\s:]$");
 
     private String identifier;
     private String herId1;
@@ -40,6 +44,14 @@ public class NhnIdentifier implements PartnerIdentifier {
         } else {
             return herId1 + ":" + herId2;
         }
+    }
+
+    public boolean isFastlegeIdentifier() {
+        return PersonIdentifier.isValid(identifier);
+    }
+
+    public boolean isNhnPartnerIdentifier() {
+       return no.idporten.validators.orgnr.OrgnrValidator.isValid(identifier);
     }
 
     @Override
