@@ -1,14 +1,11 @@
 package no.difi.move.common.oauth;
 
 import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.crypto.RSASSASigner;
-import com.nimbusds.jose.util.Base64;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.extern.slf4j.Slf4j;
-import no.difi.move.common.cert.KeystoreHelper;
 import org.springframework.http.*;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.retry.annotation.Backoff;
@@ -21,7 +18,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
-import java.security.cert.CertificateEncodingException;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -42,43 +38,27 @@ public class JwtTokenClient {
         this.config = config;
         this.wc = WebClient.create(config.getTokenUri());
 
-        KeystoreHelper keystoreHelper = new KeystoreHelper(config.getKeystore());
-        this.jwsHeader = getJwsHeader(keystoreHelper);
-        this.signer = getSigner(keystoreHelper);
-    }
-
-    private JWSHeader getJwsHeader(KeystoreHelper keystoreHelper) {
-        return new JWSHeader.Builder(JWSAlgorithm.RS256)
-                .x509CertChain(getCertChain(keystoreHelper))
-                .build();
-    }
-
-    private List<Base64> getCertChain(KeystoreHelper keystoreHelper) {
-        try {
-            return Collections.singletonList(Base64.encode(keystoreHelper.getX509Certificate().getEncoded()));
-        } catch (CertificateEncodingException e) {
-            log.error("Could not get encoded certificate", e);
-            throw new CertificateEncodingRuntimeException("Could not get encoded certificate", e);
-        }
-    }
-
-    private RSASSASigner getSigner(KeystoreHelper keystoreHelper) {
-        RSASSASigner s = new RSASSASigner(keystoreHelper.loadPrivateKey());
-        if (keystoreHelper.shouldLockProvider()) {
-            s.getJCAContext().setProvider(keystoreHelper.getKeyStore().getProvider());
-        }
-        return s;
+        this.jwsHeader = JwtHeaderAndSignerFactory.getJwsHeader(config);
+        this.signer = JwtHeaderAndSignerFactory.getSigner(config);
     }
 
     public Mono<JwtTokenResponse> fetchTokenMono() {
-        return fetchTokenMono(new JwtTokenInput());
+        return fetchTokenMono(new JwtTokenInput(), null);
     }
 
-    public Mono<JwtTokenResponse> fetchTokenMono(JwtTokenInput input) {
+    public Mono<JwtTokenResponse> fetchTokenMono(JwtTokenInput input){
+        return fetchTokenMonoInternal(input, null);
+    }
+
+    public Mono<JwtTokenResponse> fetchTokenMono(JwtTokenInput input, JwtTokenAdditionalClaims additionalClaims){
+        return fetchTokenMonoInternal(input, additionalClaims);
+    }
+
+    private Mono<JwtTokenResponse> fetchTokenMonoInternal(JwtTokenInput input, JwtTokenAdditionalClaims additionalClaims) {
         Mono<LinkedMultiValueMap<String, String>> body = Mono.fromSupplier(() -> {
             LinkedMultiValueMap<String, String> fields = new LinkedMultiValueMap<>();
             fields.add("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
-            fields.add("assertion", generateJWT(input));
+            fields.add("assertion", generateJWT(input, additionalClaims));
             return fields;
         });
 
@@ -101,18 +81,30 @@ public class JwtTokenClient {
     @Retryable(value = HttpClientErrorException.class, maxAttempts = Integer.MAX_VALUE,
             backoff = @Backoff(delay = 5000, maxDelay = 1000 * 60 * 60, multiplier = 3))
     public JwtTokenResponse fetchToken() {
-        return fetchToken(new JwtTokenInput());
+        return fetchToken(new JwtTokenInput(), null);
+    }
+
+    @Retryable(value = HttpClientErrorException.class, maxAttempts = Integer.MAX_VALUE,
+        backoff = @Backoff(delay = 5000, maxDelay = 1000 * 60 * 60, multiplier = 3))
+    public JwtTokenResponse fetchToken(JwtTokenInput input) {
+        return fetchTokenInternal(input, null);
+    }
+
+    @Retryable(value = HttpClientErrorException.class, maxAttempts = Integer.MAX_VALUE,
+        backoff = @Backoff(delay = 5000, maxDelay = 1000 * 60 * 60, multiplier = 3))
+    public JwtTokenResponse fetchToken(JwtTokenInput input, JwtTokenAdditionalClaims additionalClaims) {
+        return fetchTokenInternal(input, additionalClaims);
     }
 
     @Retryable(value = HttpClientErrorException.class, maxAttempts = Integer.MAX_VALUE,
             backoff = @Backoff(delay = 5000, maxDelay = 1000 * 60 * 60, multiplier = 3))
-    public JwtTokenResponse fetchToken(JwtTokenInput input) {
+    private JwtTokenResponse fetchTokenInternal(JwtTokenInput input, JwtTokenAdditionalClaims additionalClaims) {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setErrorHandler(new OidcErrorHandler());
 
         LinkedMultiValueMap<String, String> attrMap = new LinkedMultiValueMap<>();
         attrMap.add("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
-        attrMap.add("assertion", generateJWT(input));
+        attrMap.add("assertion", generateJWT(input, additionalClaims));
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -132,6 +124,14 @@ public class JwtTokenClient {
     }
 
     public String generateJWT(JwtTokenInput input) {
+        return generateJWTInternal(input, null);
+    }
+
+    public String generateJWT(JwtTokenInput input, JwtTokenAdditionalClaims additionalClaims) {
+        return generateJWTInternal(input, additionalClaims);
+    }
+
+    private String generateJWTInternal(JwtTokenInput input, JwtTokenAdditionalClaims additionalClaims) {
         JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
                 .audience(Optional.ofNullable(input.getAudience()).orElse(config.getAudience()))
                 .issuer(Optional.ofNullable(input.getClientId()).orElse(config.getClientId()))
@@ -142,6 +142,11 @@ public class JwtTokenClient {
 
         Optional.ofNullable(input.getConsumerOrg())
                 .ifPresent(consumerOrg -> builder.claim("consumer_org", consumerOrg));
+
+
+        if (additionalClaims != null) {
+            additionalClaims.getClaims().forEach(builder::claim);
+        }
 
         JWTClaimsSet claims = builder
                 .build();
@@ -170,11 +175,5 @@ public class JwtTokenClient {
     private String getScopeString(JwtTokenInput input) {
         List<String> scopes = Optional.ofNullable(input.getScopes()).orElse(config.getScopes());
         return scopes.stream().reduce((a, b) -> a + " " + b).orElse("");
-    }
-
-    public static class CertificateEncodingRuntimeException extends RuntimeException {
-        public CertificateEncodingRuntimeException(String message, Throwable cause) {
-            super(message, cause);
-        }
     }
 }
