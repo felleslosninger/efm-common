@@ -1,6 +1,8 @@
 package no.difi.meldingsutveksling.domain;
 
 
+import no.idporten.validators.identifier.PersonIdentifierValidator;
+
 import java.util.regex.Pattern;
 
 public class NhnIdentifier implements PartnerIdentifier {
@@ -47,7 +49,8 @@ public class NhnIdentifier implements PartnerIdentifier {
     }
 
     public boolean isFastlegeIdentifier() {
-        return PersonIdentifier.isValid(identifier);
+        PersonIdentifierValidator.setSyntheticPersonIdentifiersAllowed(true);
+        return PersonIdentifierValidator.isValid(identifier);
     }
 
     public boolean isNhnPartnerIdentifier() {
