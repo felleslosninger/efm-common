@@ -6,7 +6,7 @@
     <parent>
         <groupId>no.difi.move-common</groupId>
         <artifactId>parent</artifactId>
-        <version>2.0.4-SNAPSHOT</version>
+        <version>2.0.6-SNAPSHOT</version>
     </parent>
 
     <artifactId>security</artifactId>
@@ -14,13 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-tomcat</artifactId>
-                </exclusion>
-            </exclusions>
+            <artifactId>spring-boot-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

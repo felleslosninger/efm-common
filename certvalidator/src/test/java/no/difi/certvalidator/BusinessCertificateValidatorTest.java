@@ -1,6 +1,6 @@
 package no.difi.certvalidator;
 
-import no.digdir.certvalidator.api.CertificateValidationException;
+import no.idporten.validator.certificate.api.CertificateValidationException;
 import no.idporten.seid2.SEID2CertificateValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
