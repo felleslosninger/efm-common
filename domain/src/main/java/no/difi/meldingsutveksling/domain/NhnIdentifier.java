@@ -5,7 +5,7 @@ import no.idporten.validators.identifier.PersonIdentifierValidator;
 
 import java.util.regex.Pattern;
 
-public class NhnIdentifier implements PartnerIdentifier {
+public final class NhnIdentifier implements PartnerIdentifier {
 
     private static final Pattern ORGANIZATION_PART_IDENTIFIER_PATTERN = Pattern.compile("^[^\\s:][^:]{1,33}[^\\s:]$");
 
@@ -26,7 +26,7 @@ public class NhnIdentifier implements PartnerIdentifier {
 
     private NhnIdentifier(String identifier,String herId1,String herId2) {
         this.identifier = identifier;
-        this.herId1 = herId1;
+        this.herId1 = herId1 == null ? "0" : herId1;
         this.herId2 = herId2;
     }
 
