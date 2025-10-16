@@ -10,6 +10,7 @@ package no.difi.meldingsutveksling.domain.sbdh;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import no.difi.meldingsutveksling.domain.NhnIdentifier;
 import no.difi.meldingsutveksling.domain.OrganizationIdentifier;
 import no.difi.meldingsutveksling.domain.PartnerIdentifier;
 import no.difi.meldingsutveksling.domain.PersonIdentifier;
@@ -177,15 +178,15 @@ public class StandardBusinessDocumentHeader {
                 .flatMap(p -> Optional.ofNullable(p.getIdentifier()))
                 .flatMap(p -> Optional.ofNullable(p.getValue()))
             .map(p -> {
-                Optional<String> herID1 = this.getScope(ScopeType.SENDER_HERID1).map(Scope::getInstanceIdentifier);
-                Optional<String> herID2 = this.getScope(ScopeType.SENDER_HERID2).map(Scope::getInstanceIdentifier);
-                if (this.getDocumentType().contains("dialogmelding")) {
-                    return p +":" + herID1.orElse("0") + ":" + herID2.orElseThrow();
+                if (getDocumentType().contains("dialogmelding")) {
+                    var herId1 = getScope(ScopeType.SENDER_HERID1).map(Scope::getInstanceIdentifier).orElse("0");
+                    var herId2 = getScope(ScopeType.SENDER_HERID2).map(Scope::getInstanceIdentifier).orElse("0");
+                    var identifier = p.contains(":") ? p.split(":")[1] : p;
+                    return NhnIdentifier.of(identifier, herId1, herId2);
                 }
-                return p;
+                return PartnerIdentifier.parse(p);
             })
-                .map(PartnerIdentifier::parse)
-                .orElse(null);
+            .orElse(null);
     }
 
     @JsonIgnore
@@ -207,14 +208,14 @@ public class StandardBusinessDocumentHeader {
                 .flatMap(p -> Optional.ofNullable(p.getIdentifier()))
                 .flatMap(p -> Optional.ofNullable(p.getValue()))
                 .map(p -> {
-                    Optional<String> herID1 = this.getScope(ScopeType.RECEIVER_HERID1).map(Scope::getInstanceIdentifier);
-                    Optional<String> herID2 = this.getScope(ScopeType.RECEIVER_HERID2).map(Scope::getInstanceIdentifier);
-                    if (this.getDocumentType().contains("dialogmelding")) {
-                        return p +":" + herID1.orElse("0") + ":" + herID2.orElse("0");
+                    if (getDocumentType().contains("dialogmelding")) {
+                        var herID1 = this.getScope(ScopeType.RECEIVER_HERID1).map(Scope::getInstanceIdentifier).orElse("0");
+                        var herID2 = this.getScope(ScopeType.RECEIVER_HERID2).map(Scope::getInstanceIdentifier).orElse("0");
+                        var identifier = p.contains(":") ? p.split(":")[1] : p;
+                        return NhnIdentifier.of(identifier, herID1, herID2);
                     }
-                    return p;
+                    return PartnerIdentifier.parse(p);
                 })
-                .map(PartnerIdentifier::parse)
                 .orElse(null);
     }
 
