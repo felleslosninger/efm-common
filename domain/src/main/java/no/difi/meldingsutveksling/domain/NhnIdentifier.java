@@ -53,12 +53,11 @@ public final class NhnIdentifier implements PartnerIdentifier {
     }
 
     public boolean isFastlegeIdentifier() {
-        PersonIdentifierValidator.setSyntheticPersonIdentifiersAllowed(true);
         return PersonIdentifierValidator.isValid(identifier);
     }
 
     public boolean isNhnPartnerIdentifier() {
-       return no.idporten.validators.orgnr.OrgnrValidator.isValid(identifier);
+        return no.idporten.validators.orgnr.OrgnrValidator.isValid(identifier);
     }
 
     @Override
