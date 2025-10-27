@@ -68,6 +68,7 @@ public enum ICD {
     NL_OIN("9954", "NL:OIN", "Dutch OverheidsIdentificatieNummer"),
     NL_VAT("9944", "NL:VAT", "Netherlands VAT number"),
     NO_ORG("0192", "NO:ORG", "The Brønnøysund Register Centre"),
+    NO_ORGNR("9908", "NO:ORGNR", "Enhetsregisteret ved Brønnøysundregistrene"),
     NO_VAT("9909", "NO:VAT", "Enhetsregisteret ved Brønnøysundregistrene"),
     PL_VAT("9945", "PL:VAT", "Poland VAT number"),
     PT_VAT("9946", "PT:VAT", "Portugal VAT number"),
