@@ -178,10 +178,10 @@ public class StandardBusinessDocumentHeader {
                 .flatMap(p -> Optional.ofNullable(p.getIdentifier()))
                 .flatMap(p -> Optional.ofNullable(p.getValue()))
             .map(p -> {
-                if (getDocumentType().contains("dialogmelding")) {
-                    var herId1 = getScope(ScopeType.SENDER_HERID1).map(Scope::getInstanceIdentifier).orElse("0");
-                    var herId2 = getScope(ScopeType.SENDER_HERID2).map(Scope::getInstanceIdentifier).orElse("0");
-                    var identifier = p.contains(":") ? p.split(":")[1] : p;
+                if (getDocumentType().contains(NhnIdentifier.DIALOGMELDING_TYPE)) {
+                    var herId1 = getScope(ScopeType.SENDER_HERID1).map(Scope::getInstanceIdentifier).orElse(NhnIdentifier.ZERO_HERID);
+                    var herId2 = getScope(ScopeType.SENDER_HERID2).map(Scope::getInstanceIdentifier).orElse(NhnIdentifier.ZERO_HERID);
+                    var identifier = p.contains(NhnIdentifier.IDENTIFIER_SEPARATOR) ? p.split(NhnIdentifier.IDENTIFIER_SEPARATOR)[1] : p;
                     return NhnIdentifier.of(identifier, herId1, herId2);
                 }
                 return PartnerIdentifier.parse(p);
@@ -208,10 +208,10 @@ public class StandardBusinessDocumentHeader {
                 .flatMap(p -> Optional.ofNullable(p.getIdentifier()))
                 .flatMap(p -> Optional.ofNullable(p.getValue()))
                 .map(p -> {
-                    if (getDocumentType().contains("dialogmelding")) {
-                        var herID1 = this.getScope(ScopeType.RECEIVER_HERID1).map(Scope::getInstanceIdentifier).orElse("0");
-                        var herID2 = this.getScope(ScopeType.RECEIVER_HERID2).map(Scope::getInstanceIdentifier).orElse("0");
-                        var identifier = p.contains(":") ? p.split(":")[1] : p;
+                    if (getDocumentType().contains(NhnIdentifier.DIALOGMELDING_TYPE)) {
+                        var herID1 = this.getScope(ScopeType.RECEIVER_HERID1).map(Scope::getInstanceIdentifier).orElse(NhnIdentifier.ZERO_HERID);
+                        var herID2 = this.getScope(ScopeType.RECEIVER_HERID2).map(Scope::getInstanceIdentifier).orElse(NhnIdentifier.ZERO_HERID);
+                        var identifier = p.contains(NhnIdentifier.IDENTIFIER_SEPARATOR) ? p.split(NhnIdentifier.IDENTIFIER_SEPARATOR)[1] : p;
                         return NhnIdentifier.of(identifier, herID1, herID2);
                     }
                     return PartnerIdentifier.parse(p);

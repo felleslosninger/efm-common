@@ -7,6 +7,10 @@ import java.util.regex.Pattern;
 
 public final class NhnIdentifier implements PartnerIdentifier {
 
+    public static String DIALOGMELDING_TYPE = "dialogmelding";
+    public static String IDENTIFIER_SEPARATOR = ":";
+    public static String ZERO_HERID = "0";
+
     private static final Pattern ORGANIZATION_PART_IDENTIFIER_PATTERN = Pattern.compile("^[^\\s:][^:]{1,33}[^\\s:]$");
 
     private String identifier;
