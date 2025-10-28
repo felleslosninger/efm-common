@@ -12,11 +12,11 @@ import java.util.function.Predicate;
 
 import static no.difi.meldingsutveksling.domain.sbdh.Authority.ISO6523_ACTORID_UPIS;
 
-public interface PartnerIdentifier extends Serializable, Comparable<PartnerIdentifier> {
+public sealed interface PartnerIdentifier extends Serializable, Comparable<PartnerIdentifier> permits FiksIoIdentifier, Iso6523, NhnIdentifier, PersonIdentifier {
 
     static PartnerIdentifier parse(String identifier) {
         return PartnerIdentifierUtil.parse(identifier, Arrays.<Function<String, PartnerIdentifier>>asList(
-                Iso6523::parse, PersonIdentifier::parse, FiksIoIdentifier::parse));
+                Iso6523::parse, PersonIdentifier::parse, FiksIoIdentifier::parse,NhnIdentifier::parse));
     }
 
     static PartnerIdentifier parseQualifiedIdentifier(String identifier) {
