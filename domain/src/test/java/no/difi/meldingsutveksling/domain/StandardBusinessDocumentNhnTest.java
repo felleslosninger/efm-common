@@ -7,6 +7,7 @@ import no.difi.meldingsutveksling.domain.sbdh.PartnerIdentification;
 import no.difi.meldingsutveksling.domain.sbdh.Scope;
 import no.difi.meldingsutveksling.domain.sbdh.ScopeType;
 import no.difi.meldingsutveksling.domain.sbdh.StandardBusinessDocumentHeader;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -70,6 +71,24 @@ class StandardBusinessDocumentHeaderTest {
         assertInstanceOf(NhnIdentifier.class, identifier);
         assertEquals("987654321", identifier.getIdentifier());
         assertEquals("0:0", identifier.getPrimaryIdentifier());
+    }
+
+    @Test
+    void whenDocumentTypeIsDialogmelding_andScopesMissing_thenIllegalArgumentException() {
+
+        PartnerIdentification pid = new PartnerIdentification()
+            .setAuthority("iso6523-actorid-upis")
+            .setValue("nhn:987654321");
+        Partner partner = new Partner().setIdentifier(pid);
+        header.setSender(Set.of(partner));
+        header.setReceiver(Set.of(partner));
+
+        try {
+            PartnerIdentifier identifier = header.getReceiverIdentifier();
+            Assertions.fail("Should have thrown IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            Assertions.assertEquals("Dialogmelding requires Receiver HerdId level 2 to be present",e.getMessage());
+        }
     }
 
     @Test
