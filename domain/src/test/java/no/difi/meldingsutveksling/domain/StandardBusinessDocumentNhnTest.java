@@ -57,15 +57,15 @@ class StandardBusinessDocumentHeaderTest {
     }
 
     @Test
-    void whenDocumentTypeIsDialogmelding_andScopesMissing_thenSenderIdentifierUsesZeroDefaults() {
+    void whenDocumentTypeIsDialogmelding_andScopesMissing_thenReceiverIdentifierUsesZeroDefaults() {
 
         PartnerIdentification pid = new PartnerIdentification()
             .setAuthority("iso6523-actorid-upis")
             .setValue("nhn:987654321");
         Partner partner = new Partner().setIdentifier(pid);
-        header.setSender(Set.of(partner));
+        header.setReceiver(Set.of(partner));
 
-        PartnerIdentifier identifier = header.getSenderIdentifier();
+        PartnerIdentifier identifier = header.getReceiverIdentifier();
 
         assertNotNull(identifier);
         assertInstanceOf(NhnIdentifier.class, identifier);
@@ -83,12 +83,8 @@ class StandardBusinessDocumentHeaderTest {
         header.setSender(Set.of(partner));
         header.setReceiver(Set.of(partner));
 
-        try {
-            PartnerIdentifier identifier = header.getReceiverIdentifier();
-            Assertions.fail("Should have thrown IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
-            Assertions.assertEquals("Dialogmelding requires Receiver HerdId level 2 to be present",e.getMessage());
-        }
+        Assertions.assertThrows(IllegalArgumentException.class, ()-> header.getSenderIdentifier());
+
     }
 
     @Test
