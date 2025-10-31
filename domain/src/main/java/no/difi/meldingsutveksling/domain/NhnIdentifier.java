@@ -1,19 +1,23 @@
 package no.difi.meldingsutveksling.domain;
 
 
+import lombok.Value;
+import lombok.With;
 import no.idporten.validators.identifier.PersonIdentifierValidator;
 
 import java.util.regex.Pattern;
 
+@Value
 public final class NhnIdentifier implements PartnerIdentifier {
 
     public static String DIALOGMELDING_TYPE = "dialogmelding";
     public static String IDENTIFIER_SEPARATOR = ":";
     public static String ZERO_HERID = "0";
 
-    private String identifier;
-    private String herId1;
-    private String herId2;
+    @With
+    String identifier;
+    @With String herId1;
+    @With String herId2;
 
     public static NhnIdentifier parse(String identifier) {
         String[] parts = identifier.split(IDENTIFIER_SEPARATOR);
@@ -48,6 +52,14 @@ public final class NhnIdentifier implements PartnerIdentifier {
         } else {
             return herId1 + IDENTIFIER_SEPARATOR + herId2;
         }
+    }
+
+    public String getHerId1() {
+        return herId1;
+    }
+
+    public String getHerId2() {
+        return herId2;
     }
 
     public boolean isFastlegeIdentifier() {

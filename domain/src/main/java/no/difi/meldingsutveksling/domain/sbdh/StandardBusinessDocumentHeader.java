@@ -180,7 +180,7 @@ public class StandardBusinessDocumentHeader {
             .map(p -> {
                 if (getDocumentType().contains(NhnIdentifier.DIALOGMELDING_TYPE)) {
                     var herId1 = getScope(ScopeType.SENDER_HERID1).map(Scope::getInstanceIdentifier).orElse(NhnIdentifier.ZERO_HERID);
-                    var herId2 = getScope(ScopeType.SENDER_HERID2).map(Scope::getInstanceIdentifier).orElse(NhnIdentifier.ZERO_HERID);
+                    var herId2 = getScope(ScopeType.SENDER_HERID2).map(Scope::getInstanceIdentifier).orElseThrow(()-> new IllegalArgumentException("Dialogmelding requires Sender HerdId level 2 to be present"));
                     var identifier = p.contains(NhnIdentifier.IDENTIFIER_SEPARATOR) ? p.split(NhnIdentifier.IDENTIFIER_SEPARATOR)[1] : p;
                     return NhnIdentifier.of(identifier, herId1, herId2);
                 }
@@ -210,7 +210,7 @@ public class StandardBusinessDocumentHeader {
                 .map(p -> {
                     if (getDocumentType().contains(NhnIdentifier.DIALOGMELDING_TYPE)) {
                         var herID1 = this.getScope(ScopeType.RECEIVER_HERID1).map(Scope::getInstanceIdentifier).orElse(NhnIdentifier.ZERO_HERID);
-                        var herID2 = this.getScope(ScopeType.RECEIVER_HERID2).map(Scope::getInstanceIdentifier).orElseThrow(()-> new IllegalArgumentException("Dialogmelding requires Receiver HerdId level 2 to be present"));
+                        var herID2 = this.getScope(ScopeType.RECEIVER_HERID2).map(Scope::getInstanceIdentifier).orElse(NhnIdentifier.ZERO_HERID);
                         var identifier = p.contains(NhnIdentifier.IDENTIFIER_SEPARATOR) ? p.split(NhnIdentifier.IDENTIFIER_SEPARATOR)[1] : p;
                         return NhnIdentifier.of(identifier, herID1, herID2);
                     }
