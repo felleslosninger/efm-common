@@ -3,6 +3,7 @@ package no.difi.webservice.support;
 import net.logstash.logback.marker.LogstashMarker;
 import net.logstash.logback.marker.Markers;
 import no.difi.meldingsutveksling.logging.Audit;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ws.WebServiceMessage;
@@ -18,8 +19,9 @@ import java.util.Optional;
 /**
  * Used to log soap faults from Spring web service template
  */
+@SuppressWarnings("unused")
 public class SoapFaultInterceptorLogger implements ClientInterceptor {
-    private LogstashMarker logMarkers;
+    private final LogstashMarker logMarkers;
     private static final Logger logger = LoggerFactory.getLogger(SoapFaultInterceptorLogger.class);
 
     private SoapFaultInterceptorLogger(LogstashMarker logMarkers) {
@@ -28,6 +30,7 @@ public class SoapFaultInterceptorLogger implements ClientInterceptor {
 
     /**
      * Creates no.difi.webservice.support.SoapFaultInterceptorLogger that uses provided logmarkers when logging faults
+     *
      * @param logMarkers the log markers to be used when logging
      * @return new instance
      */
@@ -37,24 +40,24 @@ public class SoapFaultInterceptorLogger implements ClientInterceptor {
 
     @SuppressWarnings("squid:RedundantThrowsDeclarationCheck")
     @Override
-    public boolean handleRequest(MessageContext messageContext) throws WebServiceClientException {
+    public boolean handleRequest(@NonNull MessageContext messageContext) throws WebServiceClientException {
         return true;
     }
 
     @SuppressWarnings("squid:RedundantThrowsDeclarationCheck")
     @Override
-    public boolean handleResponse(MessageContext messageContext) throws WebServiceClientException {
+    public boolean handleResponse(@NonNull MessageContext messageContext) throws WebServiceClientException {
         return true;
     }
 
     @SuppressWarnings("squid:RedundantThrowsDeclarationCheck")
     @Override
-    public boolean handleFault(MessageContext messageContext) throws WebServiceClientException {
+    public boolean handleFault(@NonNull MessageContext messageContext) throws WebServiceClientException {
         throw new SoapFaultException("Failed to send message");
     }
 
     @SuppressWarnings("squid:MaximumInheritanceDepth")
-    class SoapFaultException extends WebServiceClientException {
+    static class SoapFaultException extends WebServiceClientException {
         public SoapFaultException(String msg) {
             super(msg);
         }
@@ -77,8 +80,8 @@ public class SoapFaultInterceptorLogger implements ClientInterceptor {
 
     @SuppressWarnings("squid:RedundantThrowsDeclarationCheck")
     @Override
-    public void afterCompletion(MessageContext messageContext, Exception ex) throws WebServiceClientException {
-        if (Optional.ofNullable(ex).filter(e -> e instanceof SoapFaultException).isPresent()) {
+    public void afterCompletion(@NonNull MessageContext messageContext, Exception ex) throws WebServiceClientException {
+        if (Optional.ofNullable(ex).filter(SoapFaultException.class::isInstance).isPresent()) {
             final WebServiceMessage response = messageContext.getResponse();
             Audit.error("Failed to send message", logMarkers.and(Markers.append("soap_fault", asString(response.getPayloadSource()))), ex);
         } else if (ex != null) {

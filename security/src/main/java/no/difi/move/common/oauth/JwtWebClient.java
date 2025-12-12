@@ -11,7 +11,12 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.web.reactive.function.client.WebClient;
 
+@SuppressWarnings("unused")
 public class JwtWebClient {
+
+    private JwtWebClient() {
+        // Utility class
+    }
 
     public static WebClient.Builder builder(String baseUrl, String registrationId, JwtTokenClient jwtTokenClient) {
         ServletOAuth2AuthorizedClientExchangeFilterFunction filter = getAuthorizedFilter(registrationId, jwtTokenClient);

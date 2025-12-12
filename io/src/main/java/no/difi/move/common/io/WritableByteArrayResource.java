@@ -1,9 +1,9 @@
 package no.difi.move.common.io;
 
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.springframework.core.io.AbstractResource;
 import org.springframework.core.io.WritableResource;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.util.FastByteArrayOutputStream;
 
 import java.io.InputStream;
@@ -46,11 +46,10 @@ public class WritableByteArrayResource extends AbstractResource implements Writa
         return "Writable byte array resource [" + this.description + "]";
     }
 
-    @NonNull
     @Override
     public boolean equals(@Nullable Object other) {
-        return (this == other || (other instanceof WritableByteArrayResource &&
-                Objects.equals(((WritableByteArrayResource) other).outputStream, this.outputStream)));
+        return (this == other || (other instanceof WritableByteArrayResource resource &&
+            Objects.equals(resource.outputStream, this.outputStream)));
     }
 
     @Override
@@ -65,7 +64,6 @@ public class WritableByteArrayResource extends AbstractResource implements Writa
         return outputStream;
     }
 
-    @NonNull
     public byte[] toByteArray() {
         return outputStream.toByteArray();
     }

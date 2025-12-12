@@ -12,6 +12,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 @Slf4j
+@SuppressWarnings("unused")
 public class Pipe {
 
     private final Executor executor;
@@ -52,8 +53,7 @@ public class Pipe {
     private void handleComplete(Void v, Throwable t) {
         close();
         if (t != null) {
-            if (t instanceof CompletionException) {
-                CompletionException ce = (CompletionException) t;
+            if (t instanceof CompletionException ce) {
                 reject.reject(ce.getCause());
             } else {
                 reject.reject(t);

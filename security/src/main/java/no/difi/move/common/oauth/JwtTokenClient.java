@@ -8,8 +8,7 @@ import com.nimbusds.jwt.SignedJWT;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.http.converter.FormHttpMessageConverter;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
+import org.springframework.resilience.annotation.Retryable;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
@@ -24,6 +23,7 @@ import java.time.ZoneId;
 import java.util.*;
 
 @Slf4j
+@SuppressWarnings("unused")
 public class JwtTokenClient {
 
     public static final TimeZone DEFAULT_TIME_ZONE = TimeZone.getTimeZone("Europe/Oslo");
@@ -46,11 +46,11 @@ public class JwtTokenClient {
         return fetchTokenMono(new JwtTokenInput(), null);
     }
 
-    public Mono<JwtTokenResponse> fetchTokenMono(JwtTokenInput input){
+    public Mono<JwtTokenResponse> fetchTokenMono(JwtTokenInput input) {
         return fetchTokenMonoInternal(input, null);
     }
 
-    public Mono<JwtTokenResponse> fetchTokenMono(JwtTokenInput input, JwtTokenAdditionalClaims additionalClaims){
+    public Mono<JwtTokenResponse> fetchTokenMono(JwtTokenInput input, JwtTokenAdditionalClaims additionalClaims) {
         return fetchTokenMonoInternal(input, additionalClaims);
     }
 
@@ -63,41 +63,37 @@ public class JwtTokenClient {
         });
 
         return wc.post()
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .accept(MediaType.APPLICATION_JSON)
-                .body(body, LinkedMultiValueMap.class)
-                .retrieve()
-                .onStatus(HttpStatusCode::isError, e -> e.bodyToMono(String.class)
-                        .flatMap(s -> Mono.error(new JwtTokenException("http status: " + e.statusCode() + ", body: " + s)))
-                )
-                .bodyToMono(JwtTokenResponse.class)
-                .retryWhen(Retry.backoff(Long.MAX_VALUE, Duration.ofSeconds(2L))
-                        .maxBackoff(Duration.ofMinutes(1L))
-                        .doBeforeRetry(rs -> log.warn("Error connecting to token endpoint, retrying.. " + rs)))
-                .doOnNext(res -> log.info("Response: {}", res.toString()))
-                .cache(r -> Duration.ofSeconds(r.getExpiresIn() - 10L), t -> Duration.ZERO, () -> Duration.ZERO);
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .accept(MediaType.APPLICATION_JSON)
+            .body(body, LinkedMultiValueMap.class)
+            .retrieve()
+            .onStatus(HttpStatusCode::isError, e -> e.bodyToMono(String.class)
+                .flatMap(s -> Mono.error(new JwtTokenException("http status: " + e.statusCode() + ", body: " + s)))
+            )
+            .bodyToMono(JwtTokenResponse.class)
+            .retryWhen(Retry.backoff(Long.MAX_VALUE, Duration.ofSeconds(2L))
+                .maxBackoff(Duration.ofMinutes(1L))
+                .doBeforeRetry(rs -> log.warn("Error connecting to token endpoint, retrying.. {}", rs)))
+            .doOnNext(res -> log.info("Response: {}", res))
+            .cache(r -> Duration.ofSeconds(r.getExpiresIn() - 10L), t -> Duration.ZERO, () -> Duration.ZERO);
     }
 
-    @Retryable(value = HttpClientErrorException.class, maxAttempts = Integer.MAX_VALUE,
-            backoff = @Backoff(delay = 5000, maxDelay = 1000 * 60 * 60, multiplier = 3))
+    @Retryable(value = HttpClientErrorException.class, maxRetries = Integer.MAX_VALUE, delay = 5000, maxDelay = 1000 * 60 * 60, multiplier = 3)
     public JwtTokenResponse fetchToken() {
         return fetchToken(new JwtTokenInput(), null);
     }
 
-    @Retryable(value = HttpClientErrorException.class, maxAttempts = Integer.MAX_VALUE,
-        backoff = @Backoff(delay = 5000, maxDelay = 1000 * 60 * 60, multiplier = 3))
+    @Retryable(value = HttpClientErrorException.class, maxRetries = Integer.MAX_VALUE, delay = 5000, maxDelay = 1000 * 60 * 60, multiplier = 3)
     public JwtTokenResponse fetchToken(JwtTokenInput input) {
         return fetchTokenInternal(input, null);
     }
 
-    @Retryable(value = HttpClientErrorException.class, maxAttempts = Integer.MAX_VALUE,
-        backoff = @Backoff(delay = 5000, maxDelay = 1000 * 60 * 60, multiplier = 3))
+    @Retryable(value = HttpClientErrorException.class, maxRetries = Integer.MAX_VALUE, delay = 5000, maxDelay = 1000 * 60 * 60, multiplier = 3)
     public JwtTokenResponse fetchToken(JwtTokenInput input, JwtTokenAdditionalClaims additionalClaims) {
         return fetchTokenInternal(input, additionalClaims);
     }
 
-    @Retryable(value = HttpClientErrorException.class, maxAttempts = Integer.MAX_VALUE,
-            backoff = @Backoff(delay = 5000, maxDelay = 1000 * 60 * 60, multiplier = 3))
+    @Retryable(value = HttpClientErrorException.class, maxRetries = Integer.MAX_VALUE, delay = 5000, maxDelay = 1000 * 60 * 60, multiplier = 3)
     private JwtTokenResponse fetchTokenInternal(JwtTokenInput input, JwtTokenAdditionalClaims additionalClaims) {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setErrorHandler(new OidcErrorHandler());
@@ -114,7 +110,7 @@ public class JwtTokenClient {
         restTemplate.getMessageConverters().add(formHttpMessageConverter);
 
         ResponseEntity<JwtTokenResponse> response = restTemplate.exchange(config.getTokenUri(), HttpMethod.POST,
-                httpEntity, JwtTokenResponse.class);
+            httpEntity, JwtTokenResponse.class);
 
         return response.getBody();
     }
@@ -133,15 +129,15 @@ public class JwtTokenClient {
 
     private String generateJWTInternal(JwtTokenInput input, JwtTokenAdditionalClaims additionalClaims) {
         JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
-                .audience(Optional.ofNullable(input.getAudience()).orElse(config.getAudience()))
-                .issuer(Optional.ofNullable(input.getClientId()).orElse(config.getClientId()))
-                .claim("scope", getScopeString(input))
-                .jwtID(UUID.randomUUID().toString())
-                .issueTime(Date.from(OffsetDateTime.now(DEFAULT_ZONE_ID).toInstant()))
-                .expirationTime(Date.from(OffsetDateTime.now(DEFAULT_ZONE_ID).toInstant().plusSeconds(120)));
+            .audience(Optional.ofNullable(input.getAudience()).orElse(config.getAudience()))
+            .issuer(Optional.ofNullable(input.getClientId()).orElse(config.getClientId()))
+            .claim("scope", getScopeString(input))
+            .jwtID(UUID.randomUUID().toString())
+            .issueTime(Date.from(OffsetDateTime.now(DEFAULT_ZONE_ID).toInstant()))
+            .expirationTime(Date.from(OffsetDateTime.now(DEFAULT_ZONE_ID).toInstant().plusSeconds(120)));
 
         Optional.ofNullable(input.getConsumerOrg())
-                .ifPresent(consumerOrg -> builder.claim("consumer_org", consumerOrg));
+            .ifPresent(consumerOrg -> builder.claim("consumer_org", consumerOrg));
 
 
         if (additionalClaims != null) {
@@ -149,7 +145,7 @@ public class JwtTokenClient {
         }
 
         JWTClaimsSet claims = builder
-                .build();
+            .build();
 
         SignedJWT signedJWT = new SignedJWT(jwsHeader, claims);
         try {

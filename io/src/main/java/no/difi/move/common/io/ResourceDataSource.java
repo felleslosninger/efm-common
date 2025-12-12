@@ -1,17 +1,18 @@
 package no.difi.move.common.io;
 
+import jakarta.activation.DataSource;
 import lombok.Value;
 import org.apache.commons.io.input.AutoCloseInputStream;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.WritableResource;
 
-import jakarta.activation.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 
 @Value
+@SuppressWarnings("unused")
 public class ResourceDataSource implements DataSource {
 
     Resource resource;
@@ -33,8 +34,7 @@ public class ResourceDataSource implements DataSource {
 
     @Override
     public OutputStream getOutputStream() throws IOException {
-        if (resource instanceof WritableResource) {
-            WritableResource writableResource = (WritableResource) resource;
+        if (resource instanceof WritableResource writableResource) {
             return writableResource.getOutputStream();
         }
         throw new UnsupportedOperationException();

@@ -1,7 +1,7 @@
 package no.difi.move.common.oauth;
 
 import lombok.Synchronized;
-import org.springframework.lang.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.*;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+@SuppressWarnings("unused")
 public class SyncedOauth2AuthorizedClientManager implements OAuth2AuthorizedClientManager {
 
     private static final OAuth2AuthorizedClientProvider DEFAULT_AUTHORIZED_CLIENT_PROVIDER = OAuth2AuthorizedClientProviderBuilder
@@ -37,8 +38,9 @@ public class SyncedOauth2AuthorizedClientManager implements OAuth2AuthorizedClie
     /**
      * Constructs an {@code SyncedOauth2AuthorizedClientManager} using
      * the provided parameters.
+     *
      * @param clientRegistrationRepository the repository of client registrations
-     * @param authorizedClientService the authorized client service
+     * @param authorizedClientService      the authorized client service
      */
     public SyncedOauth2AuthorizedClientManager(
         ClientRegistrationRepository clientRegistrationRepository,
@@ -67,8 +69,7 @@ public class SyncedOauth2AuthorizedClientManager implements OAuth2AuthorizedClie
         OAuth2AuthorizationContext.Builder contextBuilder;
         if (authorizedClient != null) {
             contextBuilder = OAuth2AuthorizationContext.withAuthorizedClient(authorizedClient);
-        }
-        else {
+        } else {
             ClientRegistration clientRegistration = this.clientRegistrationRepository
                 .findByRegistrationId(clientRegistrationId);
             Assert.notNull(clientRegistration,
@@ -77,8 +78,7 @@ public class SyncedOauth2AuthorizedClientManager implements OAuth2AuthorizedClie
                 principal.getName());
             if (authorizedClient != null) {
                 contextBuilder = OAuth2AuthorizationContext.withAuthorizedClient(authorizedClient);
-            }
-            else {
+            } else {
                 contextBuilder = OAuth2AuthorizationContext.withClientRegistration(clientRegistration);
             }
         }
@@ -86,16 +86,14 @@ public class SyncedOauth2AuthorizedClientManager implements OAuth2AuthorizedClie
             contextBuilder);
         try {
             authorizedClient = this.authorizedClientProvider.authorize(authorizationContext);
-        }
-        catch (OAuth2AuthorizationException ex) {
+        } catch (OAuth2AuthorizationException ex) {
             this.authorizationFailureHandler.onAuthorizationFailure(ex, principal, Collections.emptyMap());
             throw ex;
         }
         if (authorizedClient != null) {
             this.authorizationSuccessHandler.onAuthorizationSuccess(authorizedClient, principal,
                 Collections.emptyMap());
-        }
-        else {
+        } else {
             // In the case of re-authorization, the returned `authorizedClient` may be
             // null if re-authorization is not supported.
             // For these cases, return the provided
@@ -110,7 +108,7 @@ public class SyncedOauth2AuthorizedClientManager implements OAuth2AuthorizedClie
     private OAuth2AuthorizationContext buildAuthorizationContext(OAuth2AuthorizeRequest authorizeRequest,
                                                                  Authentication principal, OAuth2AuthorizationContext.Builder contextBuilder) {
         return contextBuilder.principal(principal)
-            .attributes((attributes) -> {
+            .attributes(attributes -> {
                 Map<String, Object> contextAttributes = this.contextAttributesMapper.apply(authorizeRequest);
                 if (!CollectionUtils.isEmpty(contextAttributes)) {
                     attributes.putAll(contextAttributes);
@@ -122,8 +120,9 @@ public class SyncedOauth2AuthorizedClientManager implements OAuth2AuthorizedClie
     /**
      * Sets the {@link OAuth2AuthorizedClientProvider} used for authorizing (or
      * re-authorizing) an OAuth 2.0 Client.
+     *
      * @param authorizedClientProvider the {@link OAuth2AuthorizedClientProvider} used for
-     * authorizing (or re-authorizing) an OAuth 2.0 Client
+     *                                 authorizing (or re-authorizing) an OAuth 2.0 Client
      */
     public void setAuthorizedClientProvider(OAuth2AuthorizedClientProvider authorizedClientProvider) {
         Assert.notNull(authorizedClientProvider, "authorizedClientProvider cannot be null");
@@ -134,9 +133,10 @@ public class SyncedOauth2AuthorizedClientManager implements OAuth2AuthorizedClie
      * Sets the {@code Function} used for mapping attribute(s) from the
      * {@link OAuth2AuthorizeRequest} to a {@code Map} of attributes to be associated to
      * the {@link OAuth2AuthorizationContext#getAttributes() authorization context}.
+     *
      * @param contextAttributesMapper the {@code Function} used for supplying the
-     * {@code Map} of attributes to the {@link OAuth2AuthorizationContext#getAttributes()
-     * authorization context}
+     *                                {@code Map} of attributes to the {@link OAuth2AuthorizationContext#getAttributes()
+     *                                authorization context}
      */
     public void setContextAttributesMapper(
         Function<OAuth2AuthorizeRequest, Map<String, Object>> contextAttributesMapper) {
@@ -151,8 +151,9 @@ public class SyncedOauth2AuthorizedClientManager implements OAuth2AuthorizedClie
      * <p>
      * The default saves {@link OAuth2AuthorizedClient}s in the
      * {@link OAuth2AuthorizedClientService}.
+     *
      * @param authorizationSuccessHandler the {@link OAuth2AuthorizationSuccessHandler}
-     * that handles successful authorizations
+     *                                    that handles successful authorizations
      * @since 5.3
      */
     public void setAuthorizationSuccessHandler(OAuth2AuthorizationSuccessHandler authorizationSuccessHandler) {
@@ -167,10 +168,11 @@ public class SyncedOauth2AuthorizedClientManager implements OAuth2AuthorizedClie
      * <p>
      * A {@link RemoveAuthorizedClientOAuth2AuthorizationFailureHandler} is used by
      * default.
+     *
      * @param authorizationFailureHandler the {@link OAuth2AuthorizationFailureHandler}
-     * that handles authorization failures
-     * @since 5.3
+     *                                    that handles authorization failures
      * @see RemoveAuthorizedClientOAuth2AuthorizationFailureHandler
+     * @since 5.3
      */
     public void setAuthorizationFailureHandler(OAuth2AuthorizationFailureHandler authorizationFailureHandler) {
         Assert.notNull(authorizationFailureHandler, "authorizationFailureHandler cannot be null");

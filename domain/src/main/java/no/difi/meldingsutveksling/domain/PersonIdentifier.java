@@ -14,7 +14,7 @@ import static no.difi.meldingsutveksling.domain.sbdh.Authority.ISO6523_ACTORID_U
 @Value
 public class PersonIdentifier implements PartnerIdentifier {
 
-    private static final Pattern SSN_PATTERN = Pattern.compile("^[01234567][0-9][014589][0-9]{8}$");
+    private static final Pattern SSN_PATTERN = Pattern.compile("^[01234567]\\d[014589]\\d{8}$");
     private static final int[] WEIGHTS1 = {3, 7, 6, 1, 8, 9, 4, 5, 2};
     private static final int[] WEIGHTS2 = {5, 4, 3, 2, 7, 6, 5, 4, 3, 2};
     private static final int MAX_AGE_IN_DAYS = 365 * 110;

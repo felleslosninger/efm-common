@@ -1,9 +1,9 @@
 package no.difi.move.common.io;
 
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.core.io.AbstractResource;
 import org.springframework.core.io.WritableResource;
-import org.springframework.lang.NonNull;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -36,9 +36,8 @@ public class OutputStreamResource extends AbstractResource implements WritableRe
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof OutputStreamResource)) return false;
+        if (!(o instanceof OutputStreamResource that)) return false;
         if (!super.equals(o)) return false;
-        OutputStreamResource that = (OutputStreamResource) o;
         return outputStream.equals(that.outputStream);
     }
 

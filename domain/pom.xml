@@ -21,6 +21,10 @@
             <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
+            <groupId>tools.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
         </dependency>
@@ -32,10 +36,6 @@
             <groupId>no.idporten.validators</groupId>
             <artifactId>idporten-validators</artifactId>
             <version>${idporten-validators.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
         </dependency>
         <dependency>
             <groupId>jakarta.xml.bind</groupId>

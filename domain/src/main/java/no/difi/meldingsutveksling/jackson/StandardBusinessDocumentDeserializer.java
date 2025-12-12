@@ -1,16 +1,18 @@
 package no.difi.meldingsutveksling.jackson;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
 import no.difi.meldingsutveksling.domain.sbdh.StandardBusinessDocument;
 import no.difi.meldingsutveksling.domain.sbdh.StandardBusinessDocumentHeader;
-
-import java.io.IOException;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.JsonToken;
+import tools.jackson.databind.DatabindException;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.ValueDeserializer;
 
 @SuppressWarnings("unused")
-public abstract class StandardBusinessDocumentDeserializer extends JsonDeserializer<StandardBusinessDocument> {
+public abstract class StandardBusinessDocumentDeserializer extends ValueDeserializer<StandardBusinessDocument> {
+
+    public static final String STANDARD_BUSINESS_DOCUMENT_HEADER = "standardBusinessDocumentHeader";
 
     @Override
     public Class<?> handledType() {
@@ -20,28 +22,28 @@ public abstract class StandardBusinessDocumentDeserializer extends JsonDeseriali
     abstract StandardBusinessDocumentType getStandardBusinessDocumentType(String typeName);
 
     @Override
-    public StandardBusinessDocument deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+    public StandardBusinessDocument deserialize(JsonParser p, DeserializationContext ctxt) throws JacksonException {
         StandardBusinessDocument sbd = new StandardBusinessDocument();
-        if ("standardBusinessDocumentHeader".equals(p.nextFieldName())) {
-            StandardBusinessDocumentHeader header = readObject(p, "standardBusinessDocumentHeader", StandardBusinessDocumentHeader.class);
+        if (STANDARD_BUSINESS_DOCUMENT_HEADER.equals(p.nextName())) {
+            StandardBusinessDocumentHeader header = readObject(p, STANDARD_BUSINESS_DOCUMENT_HEADER, StandardBusinessDocumentHeader.class);
             StandardBusinessDocumentType type = header.getType()
-                    .map(this::getStandardBusinessDocumentType)
-                    .orElseThrow(() -> new IOException("Missing type!"));
+                .map(this::getStandardBusinessDocumentType)
+                .orElseThrow(() -> DatabindException.from(p, "Missing type!"));
             sbd.setStandardBusinessDocumentHeader(header)
-                    .setAny(readObject(p, type.getFieldName(), type.getValueType()));
+                .setAny(readObject(p, type.getFieldName(), type.getValueType()));
         } else {
             StandardBusinessDocumentType type = getStandardBusinessDocumentType(p.currentName());
             Object businessMsg = readObject(p, type.getFieldName(), type.getValueType());
-            StandardBusinessDocumentHeader header = readObject(p, "standardBusinessDocumentHeader", StandardBusinessDocumentHeader.class);
+            StandardBusinessDocumentHeader header = readObject(p, STANDARD_BUSINESS_DOCUMENT_HEADER, StandardBusinessDocumentHeader.class);
             sbd.setStandardBusinessDocumentHeader(header)
-                    .setAny(businessMsg);
+                .setAny(businessMsg);
         }
         assertToken(p, JsonToken.END_OBJECT);
         return sbd;
 
     }
 
-    private <T> T readObject(JsonParser p, String fieldName, Class<T> valueType) throws IOException {
+    private <T> T readObject(JsonParser p, String fieldName, Class<T> valueType) {
         assertFieldName(p, fieldName);
         p.nextToken();
         assertToken(p, JsonToken.START_OBJECT);
@@ -50,10 +52,10 @@ public abstract class StandardBusinessDocumentDeserializer extends JsonDeseriali
         return value;
     }
 
-    private void assertFieldName(JsonParser parser, String expected) throws IOException {
-        assertToken(parser, JsonToken.FIELD_NAME);
-        if (!parser.getCurrentName().equals(expected)) {
-            throw new IllegalArgumentException(String.format("Expected to find field named %s, but found %s", expected, parser.getCurrentName()));
+    private void assertFieldName(JsonParser parser, String expected) {
+        assertToken(parser, JsonToken.PROPERTY_NAME);
+        if (!parser.currentName().equals(expected)) {
+            throw new IllegalArgumentException(String.format("Expected to find field named %s, but found %s", expected, parser.currentName()));
         }
     }
 

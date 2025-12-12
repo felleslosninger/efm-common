@@ -1,8 +1,8 @@
 package no.difi.move.common.io;
 
 import lombok.SneakyThrows;
+import org.jspecify.annotations.NonNull;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.lang.NonNull;
 
 import java.io.*;
 import java.nio.ByteBuffer;

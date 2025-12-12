@@ -20,6 +20,10 @@ import java.util.List;
 @Slf4j
 public class JwtHeaderAndSignerFactory {
 
+    private JwtHeaderAndSignerFactory() {
+        // Utility class
+    }
+
     public static RSASSASigner getSigner(JwtTokenConfig config) {
         if (AuthenticationType.JWK.equals(config.getAuthenticationType())) {
             return getSigner(config.getJwk().getPath());
@@ -43,7 +47,7 @@ public class JwtHeaderAndSignerFactory {
         } catch (JOSEException e) {
             var message = "Failed to initialize RSASSASigner";
             log.error(message, e);
-            throw new RuntimeException(message, e);
+            throw new IllegalStateException(message, e);
         }
     }
 

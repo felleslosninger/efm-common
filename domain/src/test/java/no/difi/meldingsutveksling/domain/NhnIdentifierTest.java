@@ -1,16 +1,11 @@
 package no.difi.meldingsutveksling.domain;
 
 import no.idporten.validators.identifier.PersonIdentifierValidator;
-
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-public class NhnIdentifierTest {
+class NhnIdentifierTest {
 
     static {
         PersonIdentifierValidator.setSyntheticPersonIdentifiersAllowed(true);
@@ -18,7 +13,7 @@ public class NhnIdentifierTest {
 
 
     @Test
-    public void whenParsingIdentifierWithThreeParts_thenCreatesExpectedNhnIdentifier() {
+    void whenParsingIdentifierWithThreeParts_thenCreatesExpectedNhnIdentifier() {
         String input = "nhn:12345:6789";
 
         NhnIdentifier id = NhnIdentifier.parse(input);
@@ -28,7 +23,7 @@ public class NhnIdentifierTest {
     }
 
     @Test
-    public void whenParsingIdentifierWithFourParts_thenCreatesExpectedNhnIdentifier() {
+    void whenParsingIdentifierWithFourParts_thenCreatesExpectedNhnIdentifier() {
 
         String input = "nhn:98765:123:456";
 
@@ -39,7 +34,7 @@ public class NhnIdentifierTest {
     }
 
     @Test
-    public void whenParsingIdentifierWithTooFewParts_thenThrowsIllegalArgumentException() {
+    void whenParsingIdentifierWithTooFewParts_thenThrowsIllegalArgumentException() {
 
         String input = "nhn:onlytwo";
 
@@ -52,7 +47,7 @@ public class NhnIdentifierTest {
     }
 
     @Test
-    public void whenUsingFactoryMethod_thenCreatesInstanceWithGivenValues() {
+    void whenUsingFactoryMethod_thenCreatesInstanceWithGivenValues() {
 
         NhnIdentifier id = NhnIdentifier.of("org123", "her1", "her2");
 
@@ -61,7 +56,7 @@ public class NhnIdentifierTest {
     }
 
     @Test
-    public void whenHerId1IsNull_thenPrimaryIdentifierStartsWithZero() {
+    void whenHerId1IsNull_thenPrimaryIdentifierStartsWithZero() {
 
         NhnIdentifier id = NhnIdentifier.of("org123", null, "her2");
 
@@ -123,6 +118,4 @@ public class NhnIdentifierTest {
 
         assertFalse(id.hasOrganizationPartIdentifier());
     }
-
-
 }

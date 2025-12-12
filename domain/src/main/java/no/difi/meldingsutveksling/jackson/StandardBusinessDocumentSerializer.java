@@ -1,13 +1,12 @@
 package no.difi.meldingsutveksling.jackson;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
 import no.difi.meldingsutveksling.domain.sbdh.StandardBusinessDocument;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ValueSerializer;
 
-import java.io.IOException;
-
-public class StandardBusinessDocumentSerializer extends JsonSerializer<StandardBusinessDocument> {
+public class StandardBusinessDocumentSerializer extends ValueSerializer<StandardBusinessDocument> {
 
     @Override
     public Class<StandardBusinessDocument> handledType() {
@@ -15,10 +14,10 @@ public class StandardBusinessDocumentSerializer extends JsonSerializer<StandardB
     }
 
     @Override
-    public void serialize(StandardBusinessDocument value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+    public void serialize(StandardBusinessDocument value, JsonGenerator gen, SerializationContext ctxt) throws JacksonException {
         gen.writeStartObject();
-        gen.writeObjectField("standardBusinessDocumentHeader", value.getStandardBusinessDocumentHeader());
-        gen.writeObjectField(value.getType(), value.getAny());
+        gen.writePOJOProperty("standardBusinessDocumentHeader", value.getStandardBusinessDocumentHeader());
+        gen.writePOJOProperty(value.getType(), value.getAny());
         gen.writeEndObject();
     }
 }

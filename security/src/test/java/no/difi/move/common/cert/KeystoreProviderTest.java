@@ -14,9 +14,8 @@ import java.util.Base64;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
 
-public class KeystoreProviderTest {
+class KeystoreProviderTest {
 
     private static final String ALIAS = "987464291";
     private static final String PASSWORD = "changeit";

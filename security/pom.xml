@@ -31,7 +31,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
+            <artifactId>spring-boot-starter-aspectj</artifactId>
         </dependency>
         <dependency>
             <groupId>no.difi.move-common</groupId>
@@ -40,10 +40,6 @@
         <dependency>
             <groupId>no.difi.commons</groupId>
             <artifactId>commons-asic</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.retry</groupId>
-            <artifactId>spring-retry</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
