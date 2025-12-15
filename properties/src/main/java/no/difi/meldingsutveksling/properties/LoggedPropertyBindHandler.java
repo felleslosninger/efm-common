@@ -1,39 +1,38 @@
 package no.difi.meldingsutveksling.properties;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.introspect.Annotated;
-import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.springframework.boot.context.properties.bind.AbstractBindHandler;
 import org.springframework.boot.context.properties.bind.BindContext;
 import org.springframework.boot.context.properties.bind.BindHandler;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.source.ConfigurationPropertyName;
+import tools.jackson.databind.introspect.Annotated;
+import tools.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import tools.jackson.databind.json.JsonMapper;
 
 @Slf4j
 public class LoggedPropertyBindHandler extends AbstractBindHandler {
 
-    private final ObjectMapper om;
+    private final JsonMapper jsonMapper;
 
     public LoggedPropertyBindHandler(BindHandler parent) {
         super(parent);
-        om = new ObjectMapper();
-        om.setAnnotationIntrospector(new JacksonAnnotationIntrospector() {
+        jsonMapper = JsonMapper.builder().annotationIntrospector(new JacksonAnnotationIntrospector() {
             @Override
             protected boolean _isIgnorable(Annotated a) {
                 return a.getName().toLowerCase().contains("token") ||
                     a.getName().toLowerCase().contains("password");
             }
-        });
+        }).build();
     }
 
     @Override
-    public void onFinish(ConfigurationPropertyName name, Bindable<?> target, BindContext context, Object result) throws Exception {
+    public void onFinish(@NonNull ConfigurationPropertyName name, Bindable<?> target, @NonNull BindContext context, Object result) throws Exception {
         if (target.getAnnotation(LoggedProperty.class) != null) {
-            log.info(String.format("Property set: %s = %s", name, om.writeValueAsString(result)));
+            log.info("Property set: {} = {}", name, jsonMapper.writeValueAsString(result));
         }
 
         super.onFinish(name, target, context, result);
     }
-
 }

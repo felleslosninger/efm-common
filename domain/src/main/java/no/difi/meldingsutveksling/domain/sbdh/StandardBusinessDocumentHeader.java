@@ -9,13 +9,6 @@
 package no.difi.meldingsutveksling.domain.sbdh;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
-import no.difi.meldingsutveksling.domain.NhnIdentifier;
-import no.difi.meldingsutveksling.domain.OrganizationIdentifier;
-import no.difi.meldingsutveksling.domain.PartnerIdentifier;
-import no.difi.meldingsutveksling.domain.PersonIdentifier;
-import no.difi.meldingsutveksling.validation.group.ValidationGroups;
-
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -24,6 +17,11 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlType;
+import lombok.Data;
+import no.difi.meldingsutveksling.domain.NhnIdentifier;
+import no.difi.meldingsutveksling.domain.PartnerIdentifier;
+import no.difi.meldingsutveksling.validation.group.ValidationGroups;
+
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.HashSet;
@@ -55,12 +53,12 @@ import java.util.Set;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "StandardBusinessDocumentHeader", propOrder = {
-        "headerVersion",
-        "sender",
-        "receiver",
-        "documentIdentification",
-        "manifest",
-        "businessScope"
+    "headerVersion",
+    "sender",
+    "receiver",
+    "documentIdentification",
+    "manifest",
+    "businessScope"
 })
 @Data
 @SuppressWarnings("unused")
@@ -128,8 +126,8 @@ public class StandardBusinessDocumentHeader {
     @JsonIgnore
     public String getConversationId() {
         return getScope(ScopeType.CONVERSATION_ID)
-                .map(Scope::getInstanceIdentifier)
-                .orElse(null);
+            .map(Scope::getInstanceIdentifier)
+            .orElse(null);
     }
 
 
@@ -141,16 +139,16 @@ public class StandardBusinessDocumentHeader {
     @JsonIgnore
     public Set<Scope> getScopes() {
         return Optional.ofNullable(getBusinessScope())
-                .flatMap(p -> Optional.ofNullable(p.getScope()))
-                .orElseGet(Collections::emptySet);
+            .flatMap(p -> Optional.ofNullable(p.getScope()))
+            .orElseGet(Collections::emptySet);
     }
 
     @JsonIgnore
     public Optional<Scope> getScope(ScopeType scopeType) {
         return getScopes()
-                .stream()
-                .filter(scope -> scopeType.toString().equals(scope.getType()) || scopeType.name().equals(scope.getType()))
-                .findAny();
+            .stream()
+            .filter(scope -> scopeType.toString().equals(scope.getType()) || scopeType.name().equals(scope.getType()))
+            .findAny();
     }
 
     @JsonIgnore
@@ -161,26 +159,26 @@ public class StandardBusinessDocumentHeader {
     @JsonIgnore
     public Optional<String> getType() {
         return Optional.ofNullable(getDocumentIdentification())
-                .flatMap(p -> Optional.ofNullable(p.getType()));
+            .flatMap(p -> Optional.ofNullable(p.getType()));
     }
 
     @JsonIgnore
     public Optional<OffsetDateTime> getExpectedResponseDateTime() {
         return getScope(ScopeType.CONVERSATION_ID)
-                .flatMap(p -> Optional.ofNullable(p.getScopeInformation()))
-                .flatMap(p -> p.stream().findFirst())
-                .flatMap(p -> Optional.ofNullable(p.getExpectedResponseDateTime()));
+            .flatMap(p -> Optional.ofNullable(p.getScopeInformation()))
+            .flatMap(p -> p.stream().findFirst())
+            .flatMap(p -> Optional.ofNullable(p.getExpectedResponseDateTime()));
     }
 
     @JsonIgnore
     public PartnerIdentifier getSenderIdentifier() {
         return getFirstSender()
-                .flatMap(p -> Optional.ofNullable(p.getIdentifier()))
-                .flatMap(p -> Optional.ofNullable(p.getValue()))
+            .flatMap(p -> Optional.ofNullable(p.getIdentifier()))
+            .flatMap(p -> Optional.ofNullable(p.getValue()))
             .map(p -> {
                 if (getDocumentType().contains(NhnIdentifier.DIALOGMELDING_TYPE)) {
                     var herId1 = getScope(ScopeType.SENDER_HERID1).map(Scope::getInstanceIdentifier).orElse(NhnIdentifier.ZERO_HERID);
-                    var herId2 = getScope(ScopeType.SENDER_HERID2).map(Scope::getInstanceIdentifier).orElseThrow(()-> new IllegalArgumentException("Dialogmelding requires Sender HerdId level 2 to be present"));
+                    var herId2 = getScope(ScopeType.SENDER_HERID2).map(Scope::getInstanceIdentifier).orElseThrow(() -> new IllegalArgumentException("Dialogmelding requires Sender HerdId level 2 to be present"));
                     var identifier = p.contains(NhnIdentifier.IDENTIFIER_SEPARATOR) ? p.split(NhnIdentifier.IDENTIFIER_SEPARATOR)[1] : p;
                     return NhnIdentifier.of(identifier, herId1, herId2);
                 }
@@ -193,10 +191,10 @@ public class StandardBusinessDocumentHeader {
     public StandardBusinessDocumentHeader setSenderIdentifier(PartnerIdentifier identifier) {
         getSender().clear();
         addSender(new Partner()
-                .setIdentifier(new PartnerIdentification()
-                        .setAuthority(identifier.getAuthority())
-                        .setValue(identifier.getIdentifier())
-                )
+            .setIdentifier(new PartnerIdentification()
+                .setAuthority(identifier.getAuthority())
+                .setValue(identifier.getIdentifier())
+            )
         );
 
         return this;
@@ -205,28 +203,28 @@ public class StandardBusinessDocumentHeader {
     @JsonIgnore
     public PartnerIdentifier getReceiverIdentifier() {
         return getFirstReceiver()
-                .flatMap(p -> Optional.ofNullable(p.getIdentifier()))
-                .flatMap(p -> Optional.ofNullable(p.getValue()))
-                .map(p -> {
-                    if (getDocumentType().contains(NhnIdentifier.DIALOGMELDING_TYPE)) {
-                        var herID1 = this.getScope(ScopeType.RECEIVER_HERID1).map(Scope::getInstanceIdentifier).orElse(NhnIdentifier.ZERO_HERID);
-                        var herID2 = this.getScope(ScopeType.RECEIVER_HERID2).map(Scope::getInstanceIdentifier).orElse(NhnIdentifier.ZERO_HERID);
-                        var identifier = p.contains(NhnIdentifier.IDENTIFIER_SEPARATOR) ? p.split(NhnIdentifier.IDENTIFIER_SEPARATOR)[1] : p;
-                        return NhnIdentifier.of(identifier, herID1, herID2);
-                    }
-                    return PartnerIdentifier.parse(p);
-                })
-                .orElse(null);
+            .flatMap(p -> Optional.ofNullable(p.getIdentifier()))
+            .flatMap(p -> Optional.ofNullable(p.getValue()))
+            .map(p -> {
+                if (getDocumentType().contains(NhnIdentifier.DIALOGMELDING_TYPE)) {
+                    var herID1 = this.getScope(ScopeType.RECEIVER_HERID1).map(Scope::getInstanceIdentifier).orElse(NhnIdentifier.ZERO_HERID);
+                    var herID2 = this.getScope(ScopeType.RECEIVER_HERID2).map(Scope::getInstanceIdentifier).orElse(NhnIdentifier.ZERO_HERID);
+                    var identifier = p.contains(NhnIdentifier.IDENTIFIER_SEPARATOR) ? p.split(NhnIdentifier.IDENTIFIER_SEPARATOR)[1] : p;
+                    return NhnIdentifier.of(identifier, herID1, herID2);
+                }
+                return PartnerIdentifier.parse(p);
+            })
+            .orElse(null);
     }
 
     @JsonIgnore
     public StandardBusinessDocumentHeader setReceiverIdentifier(PartnerIdentifier identifier) {
         getReceiver().clear();
         addReceiver(new Partner()
-                .setIdentifier(new PartnerIdentification()
-                        .setAuthority(identifier.getAuthority())
-                        .setValue(identifier.getIdentifier())
-                )
+            .setIdentifier(new PartnerIdentification()
+                .setAuthority(identifier.getAuthority())
+                .setValue(identifier.getIdentifier())
+            )
         );
 
         return this;
