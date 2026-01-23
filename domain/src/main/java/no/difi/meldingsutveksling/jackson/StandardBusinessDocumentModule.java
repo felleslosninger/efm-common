@@ -14,7 +14,7 @@ public class StandardBusinessDocumentModule extends SimpleModule {
         this.addSerializer(StandardBusinessDocument.class, new StandardBusinessDocumentSerializer());
         this.addDeserializer(StandardBusinessDocument.class, new StandardBusinessDocumentDeserializer() {
             @Override
-            StandardBusinessDocumentType getStandardBusinessDocumentType(String typeName) {
+            protected StandardBusinessDocumentType getStandardBusinessDocumentType(String typeName) {
                 return typeMapper.apply(typeName);
             }
         });

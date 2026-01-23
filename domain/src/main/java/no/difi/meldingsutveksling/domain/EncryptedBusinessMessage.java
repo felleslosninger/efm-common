@@ -3,6 +3,7 @@ package no.difi.meldingsutveksling.domain;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -17,6 +18,7 @@ import java.util.Base64;
 @Setter
 @ToString
 @AllArgsConstructor
+@NoArgsConstructor
 @XmlRootElement(name = "encryptedmessage", namespace = "urn:no:difi:digitalpost:json:schema::dialogmelding")
 public class EncryptedBusinessMessage implements BusinessMessage {
 
@@ -30,8 +32,8 @@ public class EncryptedBusinessMessage implements BusinessMessage {
         }
     }
 
-    private final String base64DerEncryptionCertificate;
-    private final String message;
+    private String base64DerEncryptionCertificate;
+    private String message;
 
     public X509Certificate x509Certificate() throws CertificateException {
         return (X509Certificate)cf.generateCertificate(new ByteArrayInputStream( Base64.getDecoder().decode(base64DerEncryptionCertificate.getBytes(StandardCharsets.UTF_8))));

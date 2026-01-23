@@ -13,43 +13,57 @@ import java.io.IOException;
 @SuppressWarnings("unused")
 public abstract class StandardBusinessDocumentDeserializer extends JsonDeserializer<StandardBusinessDocument> {
 
+    public static final String STANDARD_BUSINESS_DOCUMENT_HEADER = "standardBusinessDocumentHeader";
+    public static final String ENCRYPTED_MESSAGE = "encryptedMessage";
+
     @Override
     public Class<?> handledType() {
         return StandardBusinessDocument.class;
     }
 
-    abstract StandardBusinessDocumentType getStandardBusinessDocumentType(String typeName);
+    protected abstract StandardBusinessDocumentType getStandardBusinessDocumentType(String typeName);
 
     @Override
     public StandardBusinessDocument deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         StandardBusinessDocument sbd = new StandardBusinessDocument();
-        if ("standardBusinessDocumentHeader".equals(p.nextFieldName())) {
-            StandardBusinessDocumentHeader header = readObject(p, "standardBusinessDocumentHeader", StandardBusinessDocumentHeader.class);
+        if (STANDARD_BUSINESS_DOCUMENT_HEADER.equals(p.nextFieldName())) {
+            StandardBusinessDocumentHeader header = readObject(p, STANDARD_BUSINESS_DOCUMENT_HEADER, StandardBusinessDocumentHeader.class);
             StandardBusinessDocumentType type = header.getType()
                     .map(this::getStandardBusinessDocumentType)
                     .orElseThrow(() -> new IOException("Missing type!"));
 
-            String fieldName = type.getFieldName();
-            Class<?> valueType = type.getValueType();
-            if (type.supportsEncryption() && isEncryptedMessage(p)) {
-                fieldName = "encryptedmessage";
-                valueType = EncryptedBusinessMessage.class;
+            String nextField = p.currentName();
+
+            if (ENCRYPTED_MESSAGE.equals(nextField) && !type.supportsEncryption()) {
+                throw new IllegalArgumentException("Document type does not support business message encryption.");
             }
+
+            String fieldName = ENCRYPTED_MESSAGE.equals(nextField) ? ENCRYPTED_MESSAGE : type.getFieldName();
+            Class<?> valueType = ENCRYPTED_MESSAGE.equals(nextField) ? EncryptedBusinessMessage.class : type.getValueType();
+
 
             sbd.setStandardBusinessDocumentHeader(header)
                     .setAny( readObject(p, fieldName, valueType));
         }
         else {
             Object businessMsg;
-            if (p.currentName().equals("encryptedmessage")) {
-                businessMsg = readObject(p, "encryptedmessage", EncryptedBusinessMessage.class);
+            var messageField = p.currentName();
+            StandardBusinessDocumentType typeFromField = null;
+
+            if (ENCRYPTED_MESSAGE.equals(messageField)) {
+                businessMsg = readObject(p, ENCRYPTED_MESSAGE, EncryptedBusinessMessage.class);
             }
             else{
-                StandardBusinessDocumentType type = getStandardBusinessDocumentType(p.currentName());
-                businessMsg = readObject(p, type.getFieldName(), type.getValueType());
+                typeFromField = getStandardBusinessDocumentType(messageField);
+                businessMsg = readObject(p, typeFromField.getFieldName(), typeFromField.getValueType());
             }
 
-            StandardBusinessDocumentHeader header = readObject(p, "standardBusinessDocumentHeader", StandardBusinessDocumentHeader.class);
+            StandardBusinessDocumentHeader header = readObject(p, STANDARD_BUSINESS_DOCUMENT_HEADER, StandardBusinessDocumentHeader.class);
+            StandardBusinessDocumentType typeFromHeader = getStandardBusinessDocumentType(header.getType().orElseThrow(() -> new IllegalArgumentException("Missing type in standardBusinessDocumentHeader.")));
+            if (ENCRYPTED_MESSAGE.equals(messageField) && !typeFromHeader.supportsEncryption()) {
+                throw new IllegalArgumentException("Document type does not support business message encryption.");
+            }
+
             sbd.setStandardBusinessDocumentHeader(header)
                     .setAny(businessMsg);
         }
@@ -69,7 +83,7 @@ public abstract class StandardBusinessDocumentDeserializer extends JsonDeseriali
 
     private boolean isEncryptedMessage(JsonParser parser) throws IOException {
         assertToken(parser, JsonToken.FIELD_NAME);
-        if (parser.getCurrentName().equals("encryptedmessage")) {
+        if (parser.getCurrentName().equals(ENCRYPTED_MESSAGE)) {
             return true;
         }
         return false;
@@ -77,7 +91,11 @@ public abstract class StandardBusinessDocumentDeserializer extends JsonDeseriali
 
     private void assertFieldName(JsonParser parser, String expected) throws IOException {
         assertToken(parser, JsonToken.FIELD_NAME);
-        if (!parser.getCurrentName().equals(expected)) {
+        var currentName = parser.getCurrentName();
+        if (!currentName.equals(expected)) {
+            if (currentName.equals(ENCRYPTED_MESSAGE)) {
+                throw new IllegalArgumentException("Document type does not support business message encryption.");
+            }
             throw new IllegalArgumentException(String.format("Expected to find field named %s, but found %s", expected, parser.getCurrentName()));
         }
     }

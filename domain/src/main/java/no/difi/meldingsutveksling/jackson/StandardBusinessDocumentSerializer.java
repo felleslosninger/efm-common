@@ -18,9 +18,9 @@ public class StandardBusinessDocumentSerializer extends JsonSerializer<StandardB
     @Override
     public void serialize(StandardBusinessDocument value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
         gen.writeStartObject();
-        gen.writeObjectField("standardBusinessDocumentHeader", value.getStandardBusinessDocumentHeader());
-        if (value.getAny() instanceof EncryptedBusinessMessage) {
-            gen.writeObjectField("encryptedmessage", value.getAny());
+        gen.writeObjectField(StandardBusinessDocumentDeserializer.STANDARD_BUSINESS_DOCUMENT_HEADER, value.getStandardBusinessDocumentHeader());
+        if (value.getAny() instanceof EncryptedBusinessMessage msg) {
+            gen.writeObjectField(StandardBusinessDocumentDeserializer.ENCRYPTED_MESSAGE, msg);
         }
         else {
             gen.writeObjectField(value.getType(), value.getAny());
