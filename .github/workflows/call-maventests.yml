@@ -1,4 +1,4 @@
-name: Maven build
+name: Maven build library and run trivy fs scan
 
 on:
   push:
