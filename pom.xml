@@ -204,7 +204,7 @@
             <id>github</id>
             <url>https://maven.pkg.github.com/felleslosninger/*</url>
             <snapshots>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </snapshots>
         </repository>
     </repositories>
@@ -224,36 +224,4 @@
     <scm>
         <developerConnection>scm:git:git@github.com:felleslosninger/efm-common</developerConnection>
     </scm>
-
-    <profiles>
-        <profile>
-            <id>ossrh</id>
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>ossrh</id>
-                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-                </snapshotRepository>
-                <repository>
-                    <id>ossrh</id>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-                </repository>
-            </distributionManagement>
-            <repositories>
-                <repository>
-                    <id>ossrh</id>
-                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-                    <releases>
-                        <enabled>true</enabled>
-                    </releases>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                </repository>
-                <repository>
-                    <id>Jsch</id>
-                    <url>http://jsch.sf.net/maven2/</url>
-                </repository>
-            </repositories>
-        </profile>
-    </profiles>
 </project>
