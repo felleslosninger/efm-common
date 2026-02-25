@@ -1,4 +1,4 @@
-name: Testing maven build by calling reusable workflow
+name: Calling workflow ci-pr-checks for verifying title, code and image in PR
 
 on:
   pull_request:
