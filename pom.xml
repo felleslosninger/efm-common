@@ -37,7 +37,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <commons-asic.version>1.0.1</commons-asic.version>
-        <idporten-validators.version>1.6.0</idporten-validators.version>
+        <idporten-validators.version>1.6.1</idporten-validators.version>
     </properties>
 
     <modules>
@@ -134,7 +134,7 @@
             <dependency>
                 <groupId>com.nimbusds</groupId>
                 <artifactId>nimbus-jose-jwt</artifactId>
-                <version>10.6</version>
+                <version>10.8</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.santuario</groupId>
@@ -160,7 +160,7 @@
             <dependency>
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
-                <version>2.5</version>
+                <version>2.6</version>
             </dependency>
 
             <!-- test avhengigheter -->
@@ -180,7 +180,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>5.21.0</version>
+                <version>5.22.0</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
@@ -191,7 +191,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.14.1</version>
+                <version>3.15.0</version>
                 <configuration>
                     <release>${java.version}</release>
                 </configuration>
