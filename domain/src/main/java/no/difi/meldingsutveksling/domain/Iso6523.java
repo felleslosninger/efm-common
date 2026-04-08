@@ -11,15 +11,20 @@ import static no.difi.meldingsutveksling.domain.sbdh.Authority.ISO6523_ACTORID_U
 @Value
 public class Iso6523 implements PartnerIdentifier, OrganizationIdentifier {
 
+    private static final Pattern NORWEGIAN_ORGANIZATION_IDENTIFIER_PATTERN = Pattern.compile("^\\d{9}$");
     private static final Pattern ORGANIZATION_IDENTIFIER_PATTERN = Pattern.compile("^[^\\s:][^:]{1,33}[^\\s:]$");
     private static final Pattern ORGANIZATION_PART_IDENTIFIER_PATTERN = Pattern.compile("^[^\\s:][^:]{1,33}[^\\s:]$");
     private static final Pattern SOURCE_INDICATOR = Pattern.compile("^\\d$");
     private static final Pattern ISO6523_PATTERN = Pattern.compile("^(?<icd>\\d{4}):(?<organizationIdentifier>[^:]{1,35})(?::(?<organizationPartIdentifier>[^\\s:]{1,35}))?(?::(?<sourceIndicator>\\d))?$");
 
-    @With ICD icd;
-    @With String organizationIdentifier;
-    @With String organizationPartIdentifier;
-    @With String sourceIndicator;
+    @With
+    ICD icd;
+    @With
+    String organizationIdentifier;
+    @With
+    String organizationPartIdentifier;
+    @With
+    String sourceIndicator;
 
     private Iso6523(ICD icd, String organizationIdentifier, String organizationPartIdentifier, String sourceIndicator) {
         this.icd = icd;
@@ -62,13 +67,19 @@ public class Iso6523 implements PartnerIdentifier, OrganizationIdentifier {
             var organizationPartIdentifier = matcher.group("organizationPartIdentifier");
             var sourceIndicator = matcher.group("sourceIndicator");
             if ((organizationPartIdentifier + ":" + sourceIndicator).equals("0:0")) {
-                throw new  IllegalArgumentException("NHN format");
+                throw new IllegalArgumentException("NHN format");
             }
             return new Iso6523(
-                    ICD.parse(matcher.group("icd")),
-                    matcher.group("organizationIdentifier"),
-                    organizationPartIdentifier,
-                    sourceIndicator);
+                ICD.parse(matcher.group("icd")),
+                matcher.group("organizationIdentifier"),
+                organizationPartIdentifier,
+                sourceIndicator);
+        }
+
+        Matcher simpleMatcher = NORWEGIAN_ORGANIZATION_IDENTIFIER_PATTERN.matcher(identifier);
+
+        if (simpleMatcher.matches()) {
+            return Iso6523.of(ICD.NO_ORG, identifier);
         }
 
         throw new IllegalArgumentException(String.format("Invalid ISO6523 value: '%s'", identifier));

@@ -2,11 +2,9 @@ package no.difi.meldingsutveksling.jackson;
 
 import com.fasterxml.jackson.core.json.PackageVersion;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import no.difi.meldingsutveksling.domain.FiksIoIdentifier;
-import no.difi.meldingsutveksling.domain.Iso6523;
-import no.difi.meldingsutveksling.domain.PartnerIdentifier;
-import no.difi.meldingsutveksling.domain.PersonIdentifier;
+import no.difi.meldingsutveksling.domain.*;
 
+@SuppressWarnings("unused")
 public class PartnerIdentifierModule extends SimpleModule {
 
     public PartnerIdentifierModule() {
@@ -20,5 +18,6 @@ public class PartnerIdentifierModule extends SimpleModule {
         this.addDeserializer(Iso6523.class, new PartnerIdentifierDeserializer<>(Iso6523.class, Iso6523::parse));
         this.addDeserializer(FiksIoIdentifier.class, new PartnerIdentifierDeserializer<>(FiksIoIdentifier.class, FiksIoIdentifier::parse));
         this.addDeserializer(PersonIdentifier.class, new PartnerIdentifierDeserializer<>(PersonIdentifier.class, PersonIdentifier::parse));
+        this.addDeserializer(NhnIdentifier.class, new PartnerIdentifierDeserializer<>(NhnIdentifier.class, NhnIdentifier::parse));
     }
 }

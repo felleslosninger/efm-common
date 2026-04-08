@@ -10,5 +10,7 @@ public class JwtTokenInput {
     private String clientId;
     private String audience;
     private String consumerOrg;
+    private String onconsumerOrg;
+    private String onBehalfOf;
     private List<String> scopes;
 }

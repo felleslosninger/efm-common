@@ -14,7 +14,7 @@ import static no.difi.meldingsutveksling.domain.sbdh.Authority.ISO6523_ACTORID_U
 @Value
 public class PersonIdentifier implements PartnerIdentifier {
 
-    private static final Pattern SSN_PATTERN = Pattern.compile("^[01234567][0-9][014589][0-9]{8}$");
+    private static final Pattern SSN_PATTERN = Pattern.compile("^[0-9]{11}$");
     private static final int[] WEIGHTS1 = {3, 7, 6, 1, 8, 9, 4, 5, 2};
     private static final int[] WEIGHTS2 = {5, 4, 3, 2, 7, 6, 5, 4, 3, 2};
     private static final int MAX_AGE_IN_DAYS = 365 * 110;
@@ -73,8 +73,8 @@ public class PersonIdentifier implements PartnerIdentifier {
 
     private static String getRandomIdentifier(LocalDate dateOfBirth, Gender gender) {
         String identifierWithoutCheckDigits = String.format("%s%03d",
-                dateOfBirth.format(DateTimeFormatter.ofPattern("ddMMyy")),
-                getRandomIndividualNumber(dateOfBirth, gender));
+            dateOfBirth.format(DateTimeFormatter.ofPattern("ddMMyy")),
+            getRandomIndividualNumber(dateOfBirth, gender));
 
         int checkDigit1 = PartnerIdentifierUtil.modulo11(identifierWithoutCheckDigits, WEIGHTS1);
 
@@ -150,8 +150,66 @@ public class PersonIdentifier implements PartnerIdentifier {
         return 1900 + birthYear;
     }
 
+    public int getCentury() {
+        int individualNumber = Integer.parseUnsignedInt(getIndividualNumber());
+        int birthYear = Integer.parseUnsignedInt(get2DigitBirthYear());
+
+        if (isDNumber()) {
+            if (individualNumber >= 500 && individualNumber <= 599) {
+                return 18;
+            }
+
+            if (individualNumber <= 199 && birthYear < 40) {
+                return 19;
+            }
+
+            if ((individualNumber <= 499 || individualNumber >= 600 && individualNumber <= 999) && birthYear >= 40) {
+                return 19;
+            }
+
+            if (individualNumber >= 200 && individualNumber <= 999 && birthYear < 40) {
+                return 20;
+            }
+        } else {
+            if (individualNumber <= 499) {
+                return 19;
+            }
+
+            if (individualNumber >= 500 && individualNumber <= 749 && birthYear > 54) {
+                return 18;
+            }
+
+            if (individualNumber >= 500 && birthYear < 40) {
+                return 20;
+            }
+
+            if (individualNumber >= 900 && birthYear >= 40) {
+                return 19;
+            }
+        }
+
+        return -1;
+    }
+
+
     private int getMonth() {
-        return Integer.parseUnsignedInt(identifier.substring(2, 4)) % 40;
+        return getMonth(getMonthDigits());
+    }
+
+    private int getMonthDigits() {
+        return Integer.parseUnsignedInt(identifier.substring(2, 4));
+    }
+
+    private static int getMonth(int digits) {
+        if (isSyntheticSkatt(digits)) {
+            return digits - 80;
+        } else if (isSyntheticNHN(digits)) {
+            return digits - 65;
+        } else if (isSyntheticNav(digits)) {
+            return digits - 40;
+        } else {
+            return isSyntheticDigdir(digits) ? digits - 20 : digits;
+        }
     }
 
     private int getDayOfMonth() {
@@ -205,8 +263,7 @@ public class PersonIdentifier implements PartnerIdentifier {
     }
 
     public boolean isSynthetic() {
-        int thirdDigit = getThirdDigit();
-        return thirdDigit >= 8;
+        return checkIfSynthetic(getMonthDigits());
     }
 
     public Gender getGender() {
@@ -215,6 +272,26 @@ public class PersonIdentifier implements PartnerIdentifier {
         } else {
             return Gender.MALE;
         }
+    }
+
+    private static boolean checkIfSynthetic(int month) {
+        return isSyntheticSkatt(month) || isSyntheticNHN(month) || isSyntheticNav(month) || isSyntheticDigdir(month);
+    }
+
+    private static boolean isSyntheticNav(int month) {
+        return month > 40 && month <= 52;
+    }
+
+    private static boolean isSyntheticNHN(int month) {
+        return month > 65 && month <= 77;
+    }
+
+    private static boolean isSyntheticSkatt(int month) {
+        return month > 80 && month <= 92;
+    }
+
+    private static boolean isSyntheticDigdir(int month) {
+        return month > 20 && month <= 32;
     }
 
     @Override

@@ -5,8 +5,9 @@
 
     <parent>
         <groupId>no.difi.move-common</groupId>
-        <artifactId>parent</artifactId>
+        <artifactId>move-common-bom</artifactId>
         <version>DEV-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>io</artifactId>
@@ -31,6 +32,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

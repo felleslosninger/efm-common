@@ -1,9 +1,9 @@
 package no.difi.move.common;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static no.difi.move.common.IdentifierHasher.hashIfPersonnr;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test class for {@link IdentifierHasher}
@@ -23,5 +23,4 @@ public class IdentifierHasherTest {
         String s = hashIfPersonnr(identifier);
         assertEquals("254aa248acb47dd654ca3ea53f48c2c26d641d23d7e2e93a1ec56258df7674c4", s);
     }
-
 }
