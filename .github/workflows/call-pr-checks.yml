@@ -1,12 +1,16 @@
-name: Calling workflow ci-pr-checks for verifying title, code and image in PR
+name: CI PR Checks
 
 on:
   pull_request:
     branches: [main]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
-  pull-requests: write
   contents: write
+  pull-requests: write
   issues: write
   repository-projects: read
 
