@@ -33,9 +33,11 @@ public class CreateAsice {
     }
 
     public void createAsice(Input input, WritableResource output) {
-        log.info("Creating ASiC-E manifest");
+        log.info("Creating ASiC-E");
         AsicWriter asicWriter = getAsicWriter(input, output);
-        addAsicFile(asicWriter, input.getManifest());
+        if (input.getManifest() != null) {
+            addAsicFile(asicWriter, input.getManifest());
+        }
         input.getDocuments().forEachOrdered(p -> addAsicFile(asicWriter, p));
         sign(input, asicWriter);
     }
@@ -66,7 +68,6 @@ public class CreateAsice {
     @Value
     @Builder
     public static class Input {
-        @NonNull
         Manifest manifest;
         @NonNull
         Stream<? extends AsicEAttachable> documents;

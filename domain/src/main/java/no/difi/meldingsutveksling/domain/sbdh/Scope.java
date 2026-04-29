@@ -59,7 +59,7 @@ public class Scope {
 
     @XmlElement(name = "Type", required = true)
     @NotNull
-    @OneOf({"JournalpostId", "ConversationId", "SenderRef", "ReceiverRef", "MessageChannel","SenderHerId1","SenderHerId2","ReceiverHerId1","ReceiverHerId2"})
+    @OneOf({"JournalpostId", "ConversationId", "ParentId", "SenderRef", "ReceiverRef", "MessageChannel"})
     protected String type;
 
     @XmlElement(name = "InstanceIdentifier", required = true)

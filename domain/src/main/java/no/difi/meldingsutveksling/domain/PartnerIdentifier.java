@@ -26,7 +26,7 @@ public sealed interface PartnerIdentifier extends Serializable, Comparable<Partn
 
     static PartnerIdentifier parseDatabaseValue(String dbData) {
         return PartnerIdentifierUtil.parse(dbData, List.of(
-            Iso6523::parse, PersonIdentifier::parse, FiksIoIdentifier::parse, NhnIdentifier::parseQualifiedIdentifier));
+            Iso6523::parse, PersonIdentifier::parse, FiksIoIdentifier::parse, NhnIdentifier::parse));
     }
 
     static PartnerIdentifier parse(String identifier) {
@@ -108,11 +108,7 @@ public sealed interface PartnerIdentifier extends Serializable, Comparable<Partn
     }
 
     default String urlEncode() {
-        try {
-            return URLEncoder.encode(this.toString(), StandardCharsets.UTF_8.name());
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("UTF-8 encoding not supported", e);
-        }
+        return URLEncoder.encode(this.toString(), StandardCharsets.UTF_8);
     }
 
     default <T extends PartnerIdentifier> T cast(Class<T> clazz) {

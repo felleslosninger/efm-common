@@ -1,9 +1,17 @@
 package no.difi.move.common.io;
 
 import lombok.experimental.UtilityClass;
+import no.difi.move.common.io.pipe.Pipe;
+import no.difi.move.common.io.pipe.PipeResource;
+import no.difi.move.common.io.pipe.Plumber;
+import no.difi.move.common.io.pipe.Reject;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.WritableResource;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.util.StreamUtils;
+import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Schedulers;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -63,5 +71,21 @@ public class ResourceUtils {
         } catch (IOException e) {
             throw new IllegalStateException(String.format("Could not copy %s", resource), e);
         }
+    }
+
+    public Resource createPipedResource(Flux<DataBuffer> flux, Plumber plumber, Reject reject) {
+        Pipe pipe = plumber.pipe("Converting Flux<DataBuffer> to InputStream",
+            inlet -> DataBufferUtils.write(flux, inlet)
+                .subscribeOn(Schedulers.immediate())
+                .doOnComplete(() -> {
+                    try {
+                        inlet.close();
+                    } catch (IOException ignored) {
+                    }
+                })
+                .subscribe(DataBufferUtils.releaseConsumer()),
+            reject);
+
+        return new PipeResource(pipe, "Flux<DataBuffer> input");
     }
 }

@@ -43,7 +43,6 @@ public class CreateCMSEncryptedAsice {
     @Value
     @Builder
     public static class Input {
-        @NonNull
         Manifest manifest;
         @NonNull
         Stream<? extends AsicEAttachable> documents;

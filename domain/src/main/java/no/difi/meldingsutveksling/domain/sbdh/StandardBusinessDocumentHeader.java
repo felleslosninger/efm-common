@@ -129,6 +129,12 @@ public class StandardBusinessDocumentHeader {
             .orElse(null);
     }
 
+    @JsonIgnore
+    public String getParentId() {
+        return getScope(ScopeType.PARENT_ID)
+            .map(Scope::getInstanceIdentifier)
+            .orElse(null);
+    }
 
     @JsonIgnore
     public String getDocumentType() {

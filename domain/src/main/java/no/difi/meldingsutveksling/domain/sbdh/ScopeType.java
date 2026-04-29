@@ -3,6 +3,7 @@ package no.difi.meldingsutveksling.domain.sbdh;
 public enum ScopeType {
     JOURNALPOST_ID("JournalpostId"),
     CONVERSATION_ID("ConversationId"),
+    PARENT_ID("ParentId"),
     SENDER_REF("SenderRef"),
     RECEIVER_REF("ReceiverRef"),
     MESSAGE_CHANNEL("MessageChannel");

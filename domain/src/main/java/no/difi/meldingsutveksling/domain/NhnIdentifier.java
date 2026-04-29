@@ -3,6 +3,7 @@ package no.difi.meldingsutveksling.domain;
 
 import lombok.Value;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static no.difi.meldingsutveksling.domain.sbdh.Authority.NHN_ACTORID;
@@ -10,16 +11,46 @@ import static no.difi.meldingsutveksling.domain.sbdh.Authority.NHN_ACTORID;
 @Value
 public class NhnIdentifier implements PartnerIdentifier {
 
-    private static final Pattern HERID_PATTERN = Pattern.compile("^\\d+$");
+    private static final String HER_ID_PREFIX = "her-id";
+    private static final String FASTLEGE_FOR_PREFIX = "fastlege-for";
+    private static final Pattern NHN_PATTERN = Pattern.compile("^(?<prefix>(her-id|fastlege-for)):(?<id>[^:]{1,11})$");
 
-    String identifier;
+    Type type;
+    Integer herId;
+    PersonIdentifier fastlegeFor;
+
+    private NhnIdentifier(Type type, Integer herId, PersonIdentifier fastlegeFor) {
+        this.type = type;
+        this.herId = herId;
+        this.fastlegeFor = fastlegeFor;
+    }
+
+    public static NhnIdentifier herId(int herId) {
+        if (herId <= 0) {
+            throw new IllegalArgumentException("HER-id have to be positive!");
+        }
+        return new NhnIdentifier(Type.HER_ID, herId, null);
+    }
+
+    public static NhnIdentifier fastlegeFor(PersonIdentifier personIdentifier) {
+        return new NhnIdentifier(Type.FASTLEGE_FOR, null, personIdentifier);
+    }
 
     public static NhnIdentifier parse(String identifier) {
-        if (!HERID_PATTERN.matcher(identifier).matches()) {
-            throw new IllegalArgumentException(String.format("Invalid HerId: %s", identifier));
+        Matcher matcher = NHN_PATTERN.matcher(identifier);
+
+        if (!matcher.matches()) {
+            throw new IllegalArgumentException(String.format("Invalid NHN identifier: %s", identifier));
         }
 
-        return new NhnIdentifier(identifier);
+        String prefix = matcher.group("prefix");
+        String id = matcher.group("id");
+
+        if (FASTLEGE_FOR_PREFIX.equals(prefix)) {
+            return NhnIdentifier.fastlegeFor(PersonIdentifier.parse(id));
+        }
+
+        return NhnIdentifier.herId(Integer.parseInt(id));
     }
 
     public static NhnIdentifier parseQualifiedIdentifier(String identifier) {
@@ -34,18 +65,18 @@ public class NhnIdentifier implements PartnerIdentifier {
         return PartnerIdentifierUtil.isValid(identifier, NhnIdentifier::parseQualifiedIdentifier);
     }
 
-    private NhnIdentifier(String identifier) {
-        this.identifier = identifier;
+    public String getId() {
+        return type == Type.HER_ID ? herId.toString() : fastlegeFor.getIdentifier();
     }
 
     @Override
     public String getIdentifier() {
-        return identifier;
+        return type.prefix() + ":" + getId();
     }
 
     @Override
     public String getDatabaseValue() {
-        return getQualifiedIdentifier();
+        return getIdentifier();
     }
 
     @Override
@@ -56,6 +87,21 @@ public class NhnIdentifier implements PartnerIdentifier {
     @Override
     public String toString() {
         return getIdentifier();
+    }
+
+    public enum Type {
+        HER_ID("her-id"),
+        FASTLEGE_FOR("fastlege-for");
+
+        private final String prefix;
+
+        Type(String prefix) {
+            this.prefix = prefix;
+        }
+
+        public String prefix() {
+            return prefix;
+        }
     }
 }
 
