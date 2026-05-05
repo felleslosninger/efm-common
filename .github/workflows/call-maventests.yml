@@ -16,12 +16,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-permissions:
-  contents: write
-  pull-requests: write
-  issues: write
-  repository-projects: read
-
 jobs:
   call-workflow-maven-build:
     uses: felleslosninger/github-workflows/.github/workflows/ci-maven-build-lib.yml@main
