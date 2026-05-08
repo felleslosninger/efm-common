@@ -10,6 +10,7 @@ import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.text.ParseException;
 
+@SuppressWarnings("unused")
 public class JavaWebToken {
 
     private JavaWebToken() {
@@ -17,7 +18,7 @@ public class JavaWebToken {
     }
 
     public static String sign(String payload, PrivateKey privateKey) {
-        JWSObject jws = new JWSObject(new JWSHeader.Builder(JWSAlgorithm.RS256).build(), new Payload(payload));
+        JWSObject jws = new JWSObject(new JWSHeader.Builder(JWSAlgorithm.PS256).build(), new Payload(payload));
         try {
             jws.sign(new RSASSASigner(privateKey));
         } catch (JOSEException e) {

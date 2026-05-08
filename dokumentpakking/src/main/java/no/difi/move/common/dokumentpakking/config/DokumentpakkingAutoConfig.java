@@ -1,6 +1,11 @@
 package no.difi.move.common.dokumentpakking.config;
 
-import no.difi.move.common.dokumentpakking.*;
+import no.difi.move.common.dokumentpakking.AsicParser;
+import no.difi.move.common.dokumentpakking.CreateAsice;
+import no.difi.move.common.dokumentpakking.CreateCMSDocument;
+import no.difi.move.common.dokumentpakking.CreateCMSEncryptedAsice;
+import no.difi.move.common.dokumentpakking.DecryptCMSDocument;
+import no.difi.move.common.dokumentpakking.PartService;
 import no.difi.move.common.io.pipe.Plumber;
 import no.difi.move.common.io.pipe.PromiseMaker;
 import org.bouncycastle.cms.CMSAlgorithm;
@@ -24,6 +29,11 @@ public class DokumentpakkingAutoConfig {
     @Bean
     public CreateAsice createAsice(Plumber plumber) {
         return new CreateAsice(plumber);
+    }
+
+    @Bean
+    public PartService partService(Plumber plumber, PromiseMaker promiseMaker) {
+        return new PartService(plumber, promiseMaker);
     }
 
     @Bean
