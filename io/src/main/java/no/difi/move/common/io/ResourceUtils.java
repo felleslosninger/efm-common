@@ -73,6 +73,15 @@ public class ResourceUtils {
         }
     }
 
+    public void copy(Flux<DataBuffer> flux, WritableResource writableResource) {
+        try (OutputStream os = writableResource.getOutputStream()) {
+            DataBufferUtils.write(flux, os)
+                .subscribe(DataBufferUtils.releaseConsumer());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public Resource createPipedResource(Flux<DataBuffer> flux, Plumber plumber, Reject reject) {
         Pipe pipe = plumber.pipe("Converting Flux<DataBuffer> to InputStream",
             inlet -> DataBufferUtils.write(flux, inlet)
