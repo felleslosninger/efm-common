@@ -76,7 +76,8 @@ public class ResourceUtils {
     public void copy(Flux<DataBuffer> flux, WritableResource writableResource) {
         try (OutputStream os = writableResource.getOutputStream()) {
             DataBufferUtils.write(flux, os)
-                .subscribe(DataBufferUtils.releaseConsumer());
+                .map(DataBufferUtils::release)
+                .blockLast();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

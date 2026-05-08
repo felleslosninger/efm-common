@@ -150,10 +150,33 @@ class ResourceUtilsTest {
 
         ResourceUtils.copy(flux, writableResource);
 
-        // DataBufferUtils.write is asynchronous in some sense but here it should be fine as we are using a simple Flux
-        // However, we might need to wait or ensure it's completed.
-        // In ResourceUtils.java, it calls .subscribe() which is async.
-        // For testing, we might need to verify the content of outputStream after some time or use a mock that captures the write.
+        assertThat(outputStream.toByteArray()).isEqualTo(content);
+    }
+
+    @Test
+    void copy_FluxToWritableResource_withLargePayload_shouldCopyContent() throws IOException {
+        int size = 1024 * 1024; // 1 MB
+        byte[] content = new byte[size];
+        for (int i = 0; i < size; i++) {
+            content[i] = (byte) (i % 256);
+        }
+
+        DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+        int bufferSize = 8192;
+        Flux<DataBuffer> flux = Flux.range(0, (size + bufferSize - 1) / bufferSize)
+            .map(i -> {
+                int start = i * bufferSize;
+                int length = Math.min(bufferSize, size - start);
+                byte[] chunk = new byte[length];
+                System.arraycopy(content, start, chunk, 0, length);
+                return factory.wrap(chunk);
+            });
+
+        WritableResource writableResource = mock(WritableResource.class);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        when(writableResource.getOutputStream()).thenReturn(outputStream);
+
+        ResourceUtils.copy(flux, writableResource);
 
         assertThat(outputStream.toByteArray()).isEqualTo(content);
     }
