@@ -39,6 +39,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <commons-asic.version>1.0.1</commons-asic.version>
         <idporten-validators.version>1.6.1</idporten-validators.version>
+        <netty.version>4.1.133.Final</netty.version>
     </properties>
 
     <modules>
@@ -169,7 +170,11 @@
                 <artifactId>xstream</artifactId>
                 <version>1.4.21</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcpkix-jdk18on</artifactId>
+                <version>1.84</version>
+            </dependency>
             <!-- test avhengigheter -->
 
             <dependency>
