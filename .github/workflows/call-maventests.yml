@@ -1,4 +1,4 @@
-name: Maven build library and run trivy fs scan
+name: Run maven tests
 
 on:
   push:
@@ -13,8 +13,11 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
-  packages: write
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   call-workflow-maven-build:
