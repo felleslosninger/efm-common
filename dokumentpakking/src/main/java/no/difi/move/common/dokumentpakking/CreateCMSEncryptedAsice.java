@@ -11,7 +11,9 @@ import no.difi.move.common.dokumentpakking.domain.AsicEAttachable;
 import no.difi.move.common.dokumentpakking.domain.Manifest;
 import no.difi.move.common.io.pipe.PromiseMaker;
 import no.difi.move.common.io.pipe.Reject;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.cms.CMSAlgorithm;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.WritableResource;
 
@@ -49,6 +51,8 @@ public class CreateCMSEncryptedAsice {
         @NonNull
         X509Certificate certificate;
         AlgorithmIdentifier keyEncryptionScheme;
+        @Builder.Default
+        ASN1ObjectIdentifier cmsEncryptionAlgorithm = CMSAlgorithm.AES256_CBC;
         @NonNull
         SignatureMethod signatureMethod;
         @NonNull
@@ -68,6 +72,7 @@ public class CreateCMSEncryptedAsice {
                 .resource(resource)
                 .certificate(certificate)
                 .keyEncryptionScheme(keyEncryptionScheme)
+                .cmsEncryptionAlgorithm(cmsEncryptionAlgorithm)
                 .build();
         }
     }

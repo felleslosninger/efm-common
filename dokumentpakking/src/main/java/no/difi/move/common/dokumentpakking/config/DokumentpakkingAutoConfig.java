@@ -7,7 +7,6 @@ import no.difi.move.common.dokumentpakking.CreateCMSEncryptedAsice;
 import no.difi.move.common.dokumentpakking.DecryptCMSDocument;
 import no.difi.move.common.io.pipe.Plumber;
 import no.difi.move.common.io.pipe.PromiseMaker;
-import org.bouncycastle.cms.CMSAlgorithm;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -40,7 +39,7 @@ public class DokumentpakkingAutoConfig {
 
     @Bean
     public CreateCMSDocument createCMSDocument(Plumber plumber) {
-        return new CreateCMSDocument(plumber, CMSAlgorithm.AES256_CBC);
+        return new CreateCMSDocument(plumber);
     }
 
     @Bean

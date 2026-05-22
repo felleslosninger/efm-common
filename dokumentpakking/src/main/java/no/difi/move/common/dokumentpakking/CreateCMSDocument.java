@@ -11,6 +11,7 @@ import no.difi.move.common.io.pipe.Plumber;
 import no.difi.move.common.io.pipe.Reject;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.cms.CMSAlgorithm;
 import org.bouncycastle.cms.CMSEnvelopedDataGenerator;
 import org.bouncycastle.cms.CMSEnvelopedDataStreamGenerator;
 import org.bouncycastle.cms.CMSException;
@@ -32,12 +33,11 @@ import java.security.cert.X509Certificate;
 public class CreateCMSDocument {
 
     private final Plumber plumber;
-    private final ASN1ObjectIdentifier cmsEncryptionAlgorithm;
 
     public Resource encrypt(Input input, Reject reject) {
         Pipe pipe = plumber.pipe("Encrypting",
-                inlet -> encrypt(input, new OutputStreamResource(inlet)),
-                reject);
+            inlet -> encrypt(input, new OutputStreamResource(inlet)),
+            reject);
 
         return new PipeResource(pipe, String.format("Encrypted %s", input.getResource().getDescription()));
     }
@@ -52,7 +52,7 @@ public class CreateCMSDocument {
             CMSEnvelopedDataStreamGenerator cmsEnvelopedDataStreamGenerator = new CMSEnvelopedDataStreamGenerator();
             cmsEnvelopedDataStreamGenerator.addRecipientInfoGenerator(recipientInfoGenerator);
 
-            OutputEncryptor contentEncryptor = new JceCMSContentEncryptorBuilder(cmsEncryptionAlgorithm).build();
+            OutputEncryptor contentEncryptor = new JceCMSContentEncryptorBuilder(input.cmsEncryptionAlgorithm).build();
             try (OutputStream open = cmsEnvelopedDataStreamGenerator.open(output.getOutputStream(), contentEncryptor)) {
                 try (InputStream inputStream = input.getResource().getInputStream()) {
                     StreamUtils.copy(inputStream, open);
@@ -67,8 +67,8 @@ public class CreateCMSDocument {
 
     private JceKeyTransRecipientInfoGenerator getRecipientInfoGenerator(Input input) throws CertificateEncodingException {
         JceKeyTransRecipientInfoGenerator recipientInfoGenerator = input.getKeyEncryptionScheme() != null
-                ? new JceKeyTransRecipientInfoGenerator(input.getCertificate(), input.getKeyEncryptionScheme())
-                : new JceKeyTransRecipientInfoGenerator(input.getCertificate());
+            ? new JceKeyTransRecipientInfoGenerator(input.getCertificate(), input.getKeyEncryptionScheme())
+            : new JceKeyTransRecipientInfoGenerator(input.getCertificate());
 
         recipientInfoGenerator.setProvider(BouncyCastleProvider.PROVIDER_NAME);
         return recipientInfoGenerator;
@@ -77,9 +77,13 @@ public class CreateCMSDocument {
     @Value
     @Builder
     public static class Input {
-        @NonNull Resource resource;
-        @NonNull X509Certificate certificate;
+        @NonNull
+        Resource resource;
+        @NonNull
+        X509Certificate certificate;
         AlgorithmIdentifier keyEncryptionScheme;
+        @Builder.Default
+        ASN1ObjectIdentifier cmsEncryptionAlgorithm = CMSAlgorithm.AES256_CBC;
         @Builder.Default
         String tempFilePrefix = "";
     }
