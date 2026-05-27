@@ -25,6 +25,6 @@ jobs:
       pull-request-allowed-prefixes: "MOVE-,Bump,PF-"
       enable-auto-merge-dependabot: true
       auto-merge-types: "version-update:semver-patch;version-update:semver-minor"
-      enable-trivy-image-scan: false
+      enable-image-build: false
       maven-lifecycle: 'verify'
     secrets: inherit
