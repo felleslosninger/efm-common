@@ -4,8 +4,9 @@ import lombok.RequiredArgsConstructor;
 import no.difi.move.common.cert.KeystoreHelper;
 import org.springframework.core.io.Resource;
 
+@SuppressWarnings("unused")
 @RequiredArgsConstructor
-public class Decryptor {
+public class CMSDocumentDecryptor {
 
     private final DecryptCMSDocument decryptCMSDocument;
     private final KeystoreHelper keystoreHelper;

@@ -12,7 +12,7 @@ import java.security.*;
 
 @SuppressWarnings("unused")
 @RequiredArgsConstructor
-public class Signer {
+public class ResourceSigner {
 
     public byte[] sign(Input input) {
         try {

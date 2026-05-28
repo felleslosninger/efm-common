@@ -104,6 +104,11 @@
             </dependency>
             <dependency>
                 <groupId>no.difi.move-common</groupId>
+                <artifactId>certvalidator</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>no.difi.move-common</groupId>
                 <artifactId>dokumentpakking</artifactId>
                 <version>${project.version}</version>
             </dependency>
