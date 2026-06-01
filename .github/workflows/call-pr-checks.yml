@@ -1,12 +1,17 @@
-name: Calling workflow ci-pr-checks for verifying title, code and image in PR
+name: CI PR Checks
 
 on:
   pull_request:
     branches: [main]
+    types: [opened, edited, synchronize, reopened]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
-  pull-requests: write
   contents: write
+  pull-requests: write
   issues: write
   repository-projects: read
 
@@ -20,5 +25,6 @@ jobs:
       pull-request-allowed-prefixes: "MOVE-,Bump,PF-"
       enable-auto-merge-dependabot: true
       auto-merge-types: "version-update:semver-patch;version-update:semver-minor"
-      enable-trivy-image-scan: false
+      enable-image-build: false
+      maven-lifecycle: 'verify'
     secrets: inherit

@@ -139,6 +139,8 @@ public class JwtTokenClient {
         Optional.ofNullable(input.getConsumerOrg())
             .ifPresent(consumerOrg -> builder.claim("consumer_org", consumerOrg));
 
+        Optional.ofNullable(input.getOnBehalfOf())
+            .ifPresent(onBehalfOf -> builder.claim("iss_onbehalfof", onBehalfOf));
 
         if (additionalClaims != null) {
             additionalClaims.getClaims().forEach(builder::claim);

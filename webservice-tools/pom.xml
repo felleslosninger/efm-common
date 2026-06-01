@@ -5,8 +5,9 @@
 
     <parent>
         <groupId>no.difi.move-common</groupId>
-        <artifactId>parent</artifactId>
+        <artifactId>move-common-bom</artifactId>
         <version>DEV-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>webservice-tools</artifactId>

@@ -18,7 +18,6 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlType;
 import lombok.Data;
-import no.difi.meldingsutveksling.domain.NhnIdentifier;
 import no.difi.meldingsutveksling.domain.PartnerIdentifier;
 import no.difi.meldingsutveksling.validation.group.ValidationGroups;
 
@@ -130,6 +129,12 @@ public class StandardBusinessDocumentHeader {
             .orElse(null);
     }
 
+    @JsonIgnore
+    public String getParentId() {
+        return getScope(ScopeType.PARENT_ID)
+            .map(Scope::getInstanceIdentifier)
+            .orElse(null);
+    }
 
     @JsonIgnore
     public String getDocumentType() {
@@ -174,16 +179,8 @@ public class StandardBusinessDocumentHeader {
     public PartnerIdentifier getSenderIdentifier() {
         return getFirstSender()
             .flatMap(p -> Optional.ofNullable(p.getIdentifier()))
-            .flatMap(p -> Optional.ofNullable(p.getValue()))
-            .map(p -> {
-                if (getDocumentType().contains(NhnIdentifier.DIALOGMELDING_TYPE)) {
-                    var herId1 = getScope(ScopeType.SENDER_HERID1).map(Scope::getInstanceIdentifier).orElse(NhnIdentifier.ZERO_HERID);
-                    var herId2 = getScope(ScopeType.SENDER_HERID2).map(Scope::getInstanceIdentifier).orElseThrow(() -> new IllegalArgumentException("Dialogmelding requires Sender HerdId level 2 to be present"));
-                    var identifier = p.contains(NhnIdentifier.IDENTIFIER_SEPARATOR) ? p.split(NhnIdentifier.IDENTIFIER_SEPARATOR)[1] : p;
-                    return NhnIdentifier.of(identifier, herId1, herId2);
-                }
-                return PartnerIdentifier.parse(p);
-            })
+            .filter(p -> p.getValue() != null)
+            .map(p -> PartnerIdentifier.of(p.getValue(), p.getAuthority()))
             .orElse(null);
     }
 
@@ -204,16 +201,8 @@ public class StandardBusinessDocumentHeader {
     public PartnerIdentifier getReceiverIdentifier() {
         return getFirstReceiver()
             .flatMap(p -> Optional.ofNullable(p.getIdentifier()))
-            .flatMap(p -> Optional.ofNullable(p.getValue()))
-            .map(p -> {
-                if (getDocumentType().contains(NhnIdentifier.DIALOGMELDING_TYPE)) {
-                    var herID1 = this.getScope(ScopeType.RECEIVER_HERID1).map(Scope::getInstanceIdentifier).orElse(NhnIdentifier.ZERO_HERID);
-                    var herID2 = this.getScope(ScopeType.RECEIVER_HERID2).map(Scope::getInstanceIdentifier).orElse(NhnIdentifier.ZERO_HERID);
-                    var identifier = p.contains(NhnIdentifier.IDENTIFIER_SEPARATOR) ? p.split(NhnIdentifier.IDENTIFIER_SEPARATOR)[1] : p;
-                    return NhnIdentifier.of(identifier, herID1, herID2);
-                }
-                return PartnerIdentifier.parse(p);
-            })
+            .filter(p -> p.getValue() != null)
+            .map(p -> PartnerIdentifier.of(p.getValue(), p.getAuthority()))
             .orElse(null);
     }
 

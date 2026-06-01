@@ -2,69 +2,106 @@ package no.difi.meldingsutveksling.domain;
 
 
 import lombok.Value;
-import lombok.With;
-import no.idporten.validators.identifier.PersonIdentifierValidator;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static no.difi.meldingsutveksling.domain.sbdh.Authority.NHN_ACTORID;
 
 @Value
 public class NhnIdentifier implements PartnerIdentifier {
 
-    public static final String DIALOGMELDING_TYPE = "dialogmelding";
-    public static final String IDENTIFIER_SEPARATOR = ":";
-    public static final String ZERO_HERID = "0";
+    private static final String HER_ID_PREFIX = "her-id";
+    private static final String FASTLEGE_FOR_PREFIX = "fastlege-for";
+    private static final Pattern NHN_PATTERN = Pattern.compile("^(?<prefix>(her-id|fastlege-for)):(?<id>[^:]{1,11})$");
 
-    @With
-    String identifier;
-    @With
-    String herId1;
-    @With
-    String herId2;
+    Type type;
+    Integer herId;
+    PersonIdentifier fastlegeFor;
+
+    private NhnIdentifier(Type type, Integer herId, PersonIdentifier fastlegeFor) {
+        this.type = type;
+        this.herId = herId;
+        this.fastlegeFor = fastlegeFor;
+    }
+
+    public static NhnIdentifier herId(int herId) {
+        if (herId <= 0) {
+            throw new IllegalArgumentException("HER-id have to be positive!");
+        }
+        return new NhnIdentifier(Type.HER_ID, herId, null);
+    }
+
+    public static NhnIdentifier fastlegeFor(PersonIdentifier personIdentifier) {
+        return new NhnIdentifier(Type.FASTLEGE_FOR, null, personIdentifier);
+    }
 
     public static NhnIdentifier parse(String identifier) {
-        String[] parts = identifier.split(IDENTIFIER_SEPARATOR);
-        if (parts.length < 3) {
-            throw new IllegalArgumentException("Invalid NHN identifier: " + identifier + "it should consist of minimum 3 parts");
+        Matcher matcher = NHN_PATTERN.matcher(identifier);
+
+        if (!matcher.matches()) {
+            throw new IllegalArgumentException(String.format("Invalid NHN identifier: %s", identifier));
         }
-        var ident = parts[1];
-        var herId1 = parts.length == 3 ? ZERO_HERID : parts[2];
-        var herId2 = parts.length == 4 ? parts[3] : parts[2];
-        return new NhnIdentifier(ident, herId1, herId2);
+
+        String prefix = matcher.group("prefix");
+        String id = matcher.group("id");
+
+        if (FASTLEGE_FOR_PREFIX.equals(prefix)) {
+            return NhnIdentifier.fastlegeFor(PersonIdentifier.parse(id));
+        }
+
+        return NhnIdentifier.herId(Integer.parseInt(id));
     }
 
-    private NhnIdentifier(String identifier, String herId1, String herId2) {
-        this.identifier = identifier;
-        this.herId1 = herId1 == null ? ZERO_HERID : herId1;
-        this.herId2 = herId2;
+    public static NhnIdentifier parseQualifiedIdentifier(String identifier) {
+        return NhnIdentifier.parse(PartnerIdentifierUtil.getIdentifier(identifier, NHN_ACTORID));
     }
 
-    public static NhnIdentifier of(String identifier, String herId1, String herId2) {
-        return new NhnIdentifier(identifier, herId1, herId2);
+    public static boolean isValid(String identifier) {
+        return PartnerIdentifierUtil.isValid(identifier, NhnIdentifier::parse);
+    }
+
+    public static boolean isValidQualifiedIdentifier(String identifier) {
+        return PartnerIdentifierUtil.isValid(identifier, NhnIdentifier::parseQualifiedIdentifier);
+    }
+
+    public String getId() {
+        return type == Type.HER_ID ? herId.toString() : fastlegeFor.getIdentifier();
     }
 
     @Override
     public String getIdentifier() {
-        return identifier;
+        return type.prefix() + ":" + getId();
     }
 
     @Override
-    public String getPrimaryIdentifier() {
-        if (herId1 == null) {
-            return ZERO_HERID + IDENTIFIER_SEPARATOR + herId2;
-        } else {
-            return herId1 + IDENTIFIER_SEPARATOR + herId2;
+    public String getDatabaseValue() {
+        return getIdentifier();
+    }
+
+    @Override
+    public String getAuthority() {
+        return NHN_ACTORID;
+    }
+
+    @Override
+    public String toString() {
+        return getIdentifier();
+    }
+
+    public enum Type {
+        HER_ID("her-id"),
+        FASTLEGE_FOR("fastlege-for");
+
+        private final String prefix;
+
+        Type(String prefix) {
+            this.prefix = prefix;
         }
-    }
 
-    public boolean isFastlegeIdentifier() {
-        return PersonIdentifierValidator.isValid(identifier);
-    }
-
-    public boolean isNhnPartnerIdentifier() {
-        return no.idporten.validators.orgnr.OrgnrValidator.isValid(identifier);
-    }
-
-    @Override
-    public boolean hasOrganizationPartIdentifier() {
-        return PartnerIdentifier.super.hasOrganizationPartIdentifier();
+        public String prefix() {
+            return prefix;
+        }
     }
 }
 
