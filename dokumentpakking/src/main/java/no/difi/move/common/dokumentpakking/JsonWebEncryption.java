@@ -14,9 +14,9 @@ import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.text.ParseException;
 
-public class JavaWebEncryption {
+public class JsonWebEncryption {
 
-    private JavaWebEncryption() {
+    private JsonWebEncryption() {
         // Utility class
     }
 
