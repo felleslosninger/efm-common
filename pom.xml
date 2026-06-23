@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.6</version>
+        <version>4.0.7</version>
         <relativePath />
     </parent>
 
@@ -39,8 +39,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <commons-asic.version>1.0.1</commons-asic.version>
         <idporten-validators.version>1.6.1</idporten-validators.version>
-        <!-- CVE-2026-42582 -->
-        <netty.version>4.2.13.Final</netty.version>
+        <netty.version>4.2.15.Final</netty.version>
     </properties>
 
     <modules>
