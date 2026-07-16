@@ -3,7 +3,6 @@ package no.difi.meldingsutveksling.domain;
 import no.difi.meldingsutveksling.domain.sbdh.Authority;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -13,39 +12,37 @@ import java.util.function.Predicate;
 
 import static no.difi.meldingsutveksling.domain.sbdh.Authority.ISO6523_ACTORID_UPIS;
 
-public sealed interface PartnerIdentifier extends Serializable, Comparable<PartnerIdentifier> permits FiksIoIdentifier, Iso6523, NhnIdentifier, PersonIdentifier {
+public sealed interface PartnerIdentifier extends Serializable, Comparable<PartnerIdentifier> permits Iso6523, NhnIdentifier, PersonIdentifier {
 
     static PartnerIdentifier of(String identifier, String authority) {
         return switch (authority) {
             case Authority.NHN_ACTORID -> NhnIdentifier.parse(identifier);
             case ISO6523_ACTORID_UPIS -> PartnerIdentifierUtil.parse(identifier, List.of(
-                Iso6523::parse, PersonIdentifier::parse, FiksIoIdentifier::parse));
+                Iso6523::parse, PersonIdentifier::parse));
             default -> throw new IllegalArgumentException("Unknown authority = %s".formatted(authority));
         };
     }
 
     static PartnerIdentifier parseDatabaseValue(String dbData) {
         return PartnerIdentifierUtil.parse(dbData, List.of(
-            Iso6523::parse, PersonIdentifier::parse, FiksIoIdentifier::parse, NhnIdentifier::parse));
+            Iso6523::parse, PersonIdentifier::parse, NhnIdentifier::parse));
     }
 
     static PartnerIdentifier parse(String identifier) {
         return PartnerIdentifierUtil.parse(identifier, List.of(
-            Iso6523::parse, PersonIdentifier::parse, FiksIoIdentifier::parse, NhnIdentifier::parse));
+            Iso6523::parse, PersonIdentifier::parse, NhnIdentifier::parse));
     }
 
     static PartnerIdentifier parseQualifiedIdentifier(String identifier) {
         return PartnerIdentifierUtil.parse(identifier, List.of(
             Iso6523::parseQualifiedIdentifier,
             PersonIdentifier::parseQualifiedIdentifier,
-            FiksIoIdentifier::parseQualifiedIdentifier,
             NhnIdentifier::parseQualifiedIdentifier));
     }
 
     static boolean isValid(String identifier) {
         return ((Predicate<String>) Iso6523::isValid)
             .or(PersonIdentifier::isValid)
-            .or(FiksIoIdentifier::isValid)
             .or(NhnIdentifier::isValid)
             .test(identifier);
     }
@@ -53,7 +50,6 @@ public sealed interface PartnerIdentifier extends Serializable, Comparable<Partn
     static boolean isValidQualifiedIdentifier(String identifier) {
         return ((Predicate<String>) Iso6523::isValidQualifiedIdentifier)
             .or(PersonIdentifier::isValidQualifiedIdentifier)
-            .or(FiksIoIdentifier::isValidQualifiedIdentifier)
             .or(NhnIdentifier::isValidQualifiedIdentifier)
             .test(identifier);
     }
