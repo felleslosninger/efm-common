@@ -1,15 +1,13 @@
 package no.difi.meldingsutveksling.jackson;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
 import lombok.RequiredArgsConstructor;
 import no.difi.meldingsutveksling.domain.PartnerIdentifier;
-
-import java.io.IOException;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ValueSerializer;
 
 @RequiredArgsConstructor
-public class PartnerIdentifierSerializer<T extends PartnerIdentifier> extends JsonSerializer<T> {
+public class PartnerIdentifierSerializer<T extends PartnerIdentifier> extends ValueSerializer<T> {
 
     private final Class<T> handledType;
 
@@ -19,7 +17,7 @@ public class PartnerIdentifierSerializer<T extends PartnerIdentifier> extends Js
     }
 
     @Override
-    public void serialize(T value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-        gen.writeString(value != null ? value.toString() : null);
+    public void serialize(T value, JsonGenerator jgen, SerializationContext context) {
+        jgen.writeString(value != null ? value.toString() : null);
     }
 }

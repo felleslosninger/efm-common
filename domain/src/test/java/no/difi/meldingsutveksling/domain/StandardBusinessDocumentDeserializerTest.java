@@ -1,7 +1,5 @@
 package no.difi.meldingsutveksling.domain;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import no.difi.meldingsutveksling.domain.sbdh.StandardBusinessDocument;
@@ -9,6 +7,8 @@ import no.difi.meldingsutveksling.jackson.StandardBusinessDocumentModule;
 import no.difi.meldingsutveksling.jackson.StandardBusinessDocumentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -19,14 +19,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class StandardBusinessDocumentDeserializerTest {
 
-    private ObjectMapper mapper;
+    private JsonMapper mapper;
 
     @BeforeEach
     void setUp() {
 
-        mapper = new ObjectMapper();
-        mapper.registerModule(new StandardBusinessDocumentModule(TestDocumentType::fromType));
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper = JsonMapper.builder()
+            .addModule(new StandardBusinessDocumentModule(TestDocumentType::fromType))
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .build();
     }
 
     @Getter

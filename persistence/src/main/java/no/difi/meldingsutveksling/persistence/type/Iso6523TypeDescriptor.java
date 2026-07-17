@@ -5,6 +5,7 @@ import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.type.descriptor.java.AbstractClassJavaType;
 
 
+@SuppressWarnings("unused")
 public class Iso6523TypeDescriptor extends AbstractClassJavaType<Iso6523> {
     public static final Iso6523TypeDescriptor INSTANCE = new Iso6523TypeDescriptor();
 
@@ -51,8 +52,8 @@ public class Iso6523TypeDescriptor extends AbstractClassJavaType<Iso6523> {
         if (value == null) {
             return null;
         }
-        if (value instanceof String) {
-            return Iso6523.parse((String) value);
+        if (value instanceof String s) {
+            return Iso6523.parse(s);
         }
         throw unknownWrap(value.getClass());
     }

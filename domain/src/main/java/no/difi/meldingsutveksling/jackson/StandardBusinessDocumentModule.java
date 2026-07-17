@@ -1,11 +1,12 @@
 package no.difi.meldingsutveksling.jackson;
 
-import com.fasterxml.jackson.core.json.PackageVersion;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import no.difi.meldingsutveksling.domain.sbdh.StandardBusinessDocument;
+import tools.jackson.core.json.PackageVersion;
+import tools.jackson.databind.module.SimpleModule;
 
 import java.util.function.Function;
 
+@SuppressWarnings("unused")
 public class StandardBusinessDocumentModule extends SimpleModule {
 
     public StandardBusinessDocumentModule(Function<String, StandardBusinessDocumentType> typeMapper) {

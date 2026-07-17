@@ -8,8 +8,7 @@ import com.nimbusds.jwt.SignedJWT;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.http.converter.FormHttpMessageConverter;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
+import org.springframework.resilience.annotation.Retryable;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
@@ -24,6 +23,7 @@ import java.time.ZoneId;
 import java.util.*;
 
 @Slf4j
+@SuppressWarnings("unused")
 public class JwtTokenClient {
 
     public static final TimeZone DEFAULT_TIME_ZONE = TimeZone.getTimeZone("Europe/Oslo");
@@ -73,31 +73,27 @@ public class JwtTokenClient {
             .bodyToMono(JwtTokenResponse.class)
             .retryWhen(Retry.backoff(Long.MAX_VALUE, Duration.ofSeconds(2L))
                 .maxBackoff(Duration.ofMinutes(1L))
-                .doBeforeRetry(rs -> log.warn("Error connecting to token endpoint, retrying.. " + rs)))
-            .doOnNext(res -> log.info("Response: {}", res.toString()))
+                .doBeforeRetry(rs -> log.warn("Error connecting to token endpoint, retrying.. {}", rs)))
+            .doOnNext(res -> log.info("Response: {}", res))
             .cache(r -> Duration.ofSeconds(r.getExpiresIn() - 10L), t -> Duration.ZERO, () -> Duration.ZERO);
     }
 
-    @Retryable(value = HttpClientErrorException.class, maxAttempts = Integer.MAX_VALUE,
-        backoff = @Backoff(delay = 5000, maxDelay = 1000 * 60 * 60, multiplier = 3))
+    @Retryable(value = HttpClientErrorException.class, maxRetries = Integer.MAX_VALUE, delay = 5000, maxDelay = 1000 * 60 * 60, multiplier = 3)
     public JwtTokenResponse fetchToken() {
         return fetchToken(new JwtTokenInput(), null);
     }
 
-    @Retryable(value = HttpClientErrorException.class, maxAttempts = Integer.MAX_VALUE,
-        backoff = @Backoff(delay = 5000, maxDelay = 1000 * 60 * 60, multiplier = 3))
+    @Retryable(value = HttpClientErrorException.class, maxRetries = Integer.MAX_VALUE, delay = 5000, maxDelay = 1000 * 60 * 60, multiplier = 3)
     public JwtTokenResponse fetchToken(JwtTokenInput input) {
         return fetchTokenInternal(input, null);
     }
 
-    @Retryable(value = HttpClientErrorException.class, maxAttempts = Integer.MAX_VALUE,
-        backoff = @Backoff(delay = 5000, maxDelay = 1000 * 60 * 60, multiplier = 3))
+    @Retryable(value = HttpClientErrorException.class, maxRetries = Integer.MAX_VALUE, delay = 5000, maxDelay = 1000 * 60 * 60, multiplier = 3)
     public JwtTokenResponse fetchToken(JwtTokenInput input, JwtTokenAdditionalClaims additionalClaims) {
         return fetchTokenInternal(input, additionalClaims);
     }
 
-    @Retryable(value = HttpClientErrorException.class, maxAttempts = Integer.MAX_VALUE,
-        backoff = @Backoff(delay = 5000, maxDelay = 1000 * 60 * 60, multiplier = 3))
+    @Retryable(value = HttpClientErrorException.class, maxRetries = Integer.MAX_VALUE, delay = 5000, maxDelay = 1000 * 60 * 60, multiplier = 3)
     private JwtTokenResponse fetchTokenInternal(JwtTokenInput input, JwtTokenAdditionalClaims additionalClaims) {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setErrorHandler(new OidcErrorHandler());
