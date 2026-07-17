@@ -74,7 +74,7 @@ public class JwtTokenClient {
             .retryWhen(Retry.backoff(Long.MAX_VALUE, Duration.ofSeconds(2L))
                 .maxBackoff(Duration.ofMinutes(1L))
                 .doBeforeRetry(rs -> log.warn("Error connecting to token endpoint, retrying.. {}", rs)))
-            .doOnNext(res -> log.info("Response: {}", res))
+            .doOnNext(res -> log.debug("Response: {}", res))
             .cache(r -> Duration.ofSeconds(r.getExpiresIn() - 10L), t -> Duration.ZERO, () -> Duration.ZERO);
     }
 
@@ -93,7 +93,6 @@ public class JwtTokenClient {
         return fetchTokenInternal(input, additionalClaims);
     }
 
-    @Retryable(value = HttpClientErrorException.class, maxRetries = Integer.MAX_VALUE, delay = 5000, maxDelay = 1000 * 60 * 60, multiplier = 3)
     private JwtTokenResponse fetchTokenInternal(JwtTokenInput input, JwtTokenAdditionalClaims additionalClaims) {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setErrorHandler(new OidcErrorHandler());
