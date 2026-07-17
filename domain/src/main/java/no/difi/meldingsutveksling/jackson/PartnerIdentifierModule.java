@@ -1,6 +1,5 @@
 package no.difi.meldingsutveksling.jackson;
 
-import no.difi.meldingsutveksling.domain.FiksIoIdentifier;
 import no.difi.meldingsutveksling.domain.Iso6523;
 import no.difi.meldingsutveksling.domain.NhnIdentifier;
 import no.difi.meldingsutveksling.domain.PartnerIdentifier;
