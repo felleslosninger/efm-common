@@ -1,8 +1,8 @@
 package no.difi.move.common.io.pipe;
 
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.springframework.core.io.AbstractResource;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 
 import java.io.InputStream;
 
@@ -23,7 +23,7 @@ public class PipeResource extends AbstractResource {
     public InputStream getInputStream() {
         if (this.read) {
             throw new IllegalStateException("InputStream has already been read - " +
-                    "do not use InputStreamResource if a stream needs to be read multiple times");
+                "do not use InputStreamResource if a stream needs to be read multiple times");
         }
         this.read = true;
         return pipe.outlet();
@@ -37,8 +37,8 @@ public class PipeResource extends AbstractResource {
 
     @Override
     public boolean equals(@Nullable Object other) {
-        return (this == other || (other instanceof PipeResource &&
-                ((PipeResource) other).pipe.equals(this.pipe)));
+        return (this == other || (other instanceof PipeResource resource &&
+            (resource.pipe.equals(this.pipe))));
     }
 
     @Override

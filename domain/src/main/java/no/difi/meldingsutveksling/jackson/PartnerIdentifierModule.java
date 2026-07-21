@@ -1,8 +1,11 @@
 package no.difi.meldingsutveksling.jackson;
 
-import com.fasterxml.jackson.core.json.PackageVersion;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import no.difi.meldingsutveksling.domain.*;
+import no.difi.meldingsutveksling.domain.Iso6523;
+import no.difi.meldingsutveksling.domain.NhnIdentifier;
+import no.difi.meldingsutveksling.domain.PartnerIdentifier;
+import no.difi.meldingsutveksling.domain.PersonIdentifier;
+import tools.jackson.core.json.PackageVersion;
+import tools.jackson.databind.module.SimpleModule;
 
 @SuppressWarnings("unused")
 public class PartnerIdentifierModule extends SimpleModule {

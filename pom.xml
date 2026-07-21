@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.16</version>
+        <version>4.0.7</version>
         <relativePath />
     </parent>
 
@@ -114,7 +114,6 @@
             </dependency>
 
             <!-- andre digdir fellesmoduler -->
-
             <dependency>
                 <groupId>no.difi.commons</groupId>
                 <artifactId>commons-certvalidator</artifactId>
@@ -128,16 +127,10 @@
             </dependency>
 
             <!-- resterende avhengigheter -->
-
             <dependency>
                 <groupId>net.logstash.logback</groupId>
                 <artifactId>logstash-logback-encoder</artifactId>
-                <version>8.1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.retry</groupId>
-                <artifactId>spring-retry</artifactId>
-                <version>2.0.13</version>
+                <version>9.0</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
@@ -154,32 +147,13 @@
                 <artifactId>nimbus-jose-jwt</artifactId>
                 <version>10.9.1</version>
             </dependency>
-            <dependency>
-                <groupId>org.apache.santuario</groupId>
-                <artifactId>xmlsec</artifactId>
-                <version>4.0.4</version>
-            </dependency>
-            <!-- See https://better-coding.com/solved-org-w3c-dom-domexception-wrong_document_err/ -->
-            <dependency>
-                <groupId>org.apache.wss4j</groupId>
-                <artifactId>wss4j-ws-security-dom</artifactId>
-                <version>4.0.1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>3.20.0</version>
-            </dependency>
-            <dependency>
-                <groupId>com.thoughtworks.xstream</groupId>
-                <artifactId>xstream</artifactId>
-                <version>1.4.21</version>
-            </dependency>
+
             <dependency>
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcpkix-jdk18on</artifactId>
                 <version>1.84</version>
             </dependency>
+
             <!-- test avhengigheter -->
 
             <dependency>
@@ -233,6 +207,16 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
                     <source>${java.version}</source>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>
+                        -javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar
+                        -Xshare:off
+                    </argLine>
                 </configuration>
             </plugin>
         </plugins>

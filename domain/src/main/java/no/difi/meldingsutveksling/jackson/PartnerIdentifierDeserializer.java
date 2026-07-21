@@ -1,17 +1,16 @@
 package no.difi.meldingsutveksling.jackson;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
 import lombok.RequiredArgsConstructor;
 import no.difi.meldingsutveksling.domain.PartnerIdentifier;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.ValueDeserializer;
 
-import java.io.IOException;
 import java.util.function.Function;
 
 
 @RequiredArgsConstructor
-public class PartnerIdentifierDeserializer<T extends PartnerIdentifier> extends JsonDeserializer<T> {
+public class PartnerIdentifierDeserializer<T extends PartnerIdentifier> extends ValueDeserializer<T> {
 
     private final Class<T> handledType;
     private final Function<String, T> parser;
@@ -22,8 +21,8 @@ public class PartnerIdentifierDeserializer<T extends PartnerIdentifier> extends 
     }
 
     @Override
-    public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-        String s = p.readValueAs(String.class);
+    public T deserialize(JsonParser jsonParser, DeserializationContext ctxt) {
+        String s = jsonParser.readValueAs(String.class);
         return s != null ? parser.apply(s) : null;
     }
 }

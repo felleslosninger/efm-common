@@ -4,12 +4,13 @@ import no.difi.move.common.config.JwkProperties;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class JwtHeaderAndSignerFactoryTest {
+class JwtHeaderAndSignerFactoryTest {
 
     @Test
-    public void getJwsHeaderFromJwk() {
+    void getJwsHeaderFromJwk() {
 
         var jwk = new JwkProperties();
         jwk.setPath(new ClassPathResource(("test.jwk")));
@@ -24,7 +25,7 @@ public class JwtHeaderAndSignerFactoryTest {
     }
 
     @Test
-    public void getSignerFromJwk() {
+    void getSignerFromJwk() {
 
         var jwk = new JwkProperties();
         jwk.setPath(new ClassPathResource(("test.jwk")));
