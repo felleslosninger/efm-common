@@ -35,3 +35,7 @@ N/A
 ## Release
 
 Release via Github her: [https://github.com/felleslosninger/efm-common/releases](https://github.com/felleslosninger/efm-common/releases)
+
+## License
+
+This project is licensed under the BSD 3-Clause License. See the [LICENSE](LICENSE) file for details.
