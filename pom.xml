@@ -39,7 +39,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <commons-asic.version>1.0.1</commons-asic.version>
-        <idporten-validators.version>1.6.1</idporten-validators.version>
+        <idporten-validators.version>1.6.2</idporten-validators.version>
     </properties>
 
     <modules>
