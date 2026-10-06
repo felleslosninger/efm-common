@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 @Getter
 public enum ICD {
+    SPIS("0242", "SPIS", "OpenPeppol Service Provider Identification Scheme"),
     AD_VAT("9922", "AD:VAT", "Andorra VAT number"),
     AL_VAT("9923", "AL:VAT", "Albania VAT number"),
     AT_CID("9916", "AT:CID", "Firmenidentifikationsnummer der Statistik Austria"),
