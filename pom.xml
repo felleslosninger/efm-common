@@ -39,7 +39,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <commons-asic.version>1.0.2</commons-asic.version>
-        <idporten-validators.version>1.6.3</idporten-validators.version>
+        <idporten-validators.version>1.6.4</idporten-validators.version>
 
         <!-- CVE-2026-89407 -->
         <jackson-bom.version>3.1.7</jackson-bom.version>
