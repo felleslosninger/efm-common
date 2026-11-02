@@ -10,6 +10,7 @@ import org.springframework.http.codec.multipart.Part;
 import reactor.core.publisher.Flux;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -37,6 +38,21 @@ class PartUtilsTest {
         String result = PartUtils.toString(filePart);
 
         assertThat(result).isEqualTo(content);
+    }
+
+    @Test
+    void toString_FilePartNotEmittedSynchronously_shouldWaitForWholeContent() {
+        FilePart filePart = Mockito.mock(FilePart.class);
+        DefaultDataBufferFactory bufferFactory = new DefaultDataBufferFactory();
+        // As when the part is larger than max-in-memory-size and is streamed from disk
+        Flux<DataBuffer> content = Flux.just("file-", "content")
+            .map(s -> (DataBuffer) bufferFactory.wrap(s.getBytes(StandardCharsets.UTF_8)))
+            .delayElements(Duration.ofMillis(50));
+        when(filePart.content()).thenReturn(content);
+
+        String result = PartUtils.toString(filePart);
+
+        assertThat(result).isEqualTo("file-content");
     }
 
     @Test

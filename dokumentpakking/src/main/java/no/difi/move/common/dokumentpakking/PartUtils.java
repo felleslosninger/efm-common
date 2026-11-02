@@ -21,8 +21,10 @@ public class PartUtils {
         } else if (part instanceof FilePart filePart) {
             Flux<DataBuffer> flux = part.content();
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            // Wait for the whole part: it is only emitted synchronously when it is held in memory
             DataBufferUtils.write(flux, outputStream)
-                .subscribe(DataBufferUtils.releaseConsumer());
+                .map(DataBufferUtils::release)
+                .blockLast();
             return outputStream.toString(StandardCharsets.UTF_8);
         } else {
             throw new IllegalArgumentException("Unhandled part type = '%s".formatted(part.getClass().getName()));
