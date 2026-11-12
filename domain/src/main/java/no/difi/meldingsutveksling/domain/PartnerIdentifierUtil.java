@@ -43,11 +43,19 @@ class PartnerIdentifierUtil {
         return value == null ? null : UNPRINTABLE_PATTERN.matcher(value).replaceAll("?");
     }
 
+    /// Copy of the exception with a sanitized message and without cause or suppressed exceptions,
+    /// which may contain unsanitized input.
+    static IllegalArgumentException sanitize(IllegalArgumentException e) {
+        IllegalArgumentException sanitized = new IllegalArgumentException(sanitize(e.getMessage()));
+        sanitized.setStackTrace(e.getStackTrace());
+        return sanitized;
+    }
+
     static String getIdentifier(String qualifiedIdentifier, String expectedAuthority) {
         Matcher matcher = QUALIFIED_IDENTIFIER_PATTERN.matcher(qualifiedIdentifier);
 
         if (!matcher.matches()) {
-            throw new IllegalArgumentException(String.format("Invalid qualified identifier = '%s'. Expected <authoriyy>::<identifier>", qualifiedIdentifier));
+            throw new IllegalArgumentException(String.format("Invalid qualified identifier = '%s'. Expected <authoriyy>::<identifier>", sanitize(qualifiedIdentifier)));
         }
 
         String authority = matcher.group("authority");
@@ -57,7 +65,7 @@ class PartnerIdentifierUtil {
             return identifier;
         }
 
-        throw new IllegalArgumentException(String.format("Invalid authority='%s', expected '%s'", authority, expectedAuthority));
+        throw new IllegalArgumentException(String.format("Invalid authority='%s', expected '%s'", sanitize(authority), expectedAuthority));
     }
 
     static boolean isValid(String identifier, Consumer<String> parser) {
@@ -76,7 +84,7 @@ class PartnerIdentifierUtil {
             try {
                 return parser.apply(identifier);
             } catch (IllegalArgumentException e) {
-                exceptionList.add(e);
+                exceptionList.add(sanitize(e));
             }
         }
 

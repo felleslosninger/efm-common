@@ -40,7 +40,7 @@ public class NhnIdentifier implements PartnerIdentifier {
         Matcher matcher = NHN_PATTERN.matcher(identifier);
 
         if (!matcher.matches()) {
-            throw new IllegalArgumentException(String.format("Invalid NHN identifier: %s", identifier));
+            throw new IllegalArgumentException(String.format("Invalid NHN identifier: %s", PartnerIdentifierUtil.sanitize(identifier)));
         }
 
         String prefix = matcher.group("prefix");
@@ -50,7 +50,12 @@ public class NhnIdentifier implements PartnerIdentifier {
             return NhnIdentifier.fastlegeFor(PersonIdentifier.parse(id));
         }
 
-        return NhnIdentifier.herId(Integer.parseInt(id));
+        try {
+            return NhnIdentifier.herId(Integer.parseInt(id));
+        } catch (NumberFormatException e) {
+            // Not rethrown as cause, since the message of NumberFormatException contains the raw input
+            throw new IllegalArgumentException(String.format("Invalid HER-id: %s", PartnerIdentifierUtil.sanitize(id)));
+        }
     }
 
     public static NhnIdentifier parseQualifiedIdentifier(String identifier) {

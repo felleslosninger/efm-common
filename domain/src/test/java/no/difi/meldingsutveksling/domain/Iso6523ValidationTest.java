@@ -1,11 +1,15 @@
 package no.difi.meldingsutveksling.domain;
 
 import org.junit.jupiter.api.Test;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 /// MOVE-5376: Iso6523 must reject identifiers containing markup, control characters and invalid organization numbers.
 class Iso6523ValidationTest {
@@ -124,6 +128,46 @@ class Iso6523ValidationTest {
             .isInstanceOf(IllegalArgumentException.class);
         assertThatThrownBy(() -> valid.withIcd(null))
             .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void nhnSuffixIsRejectedByConstructorSoEveryCreatedValueCanBeParsedBack() {
+        assertThatThrownBy(() -> Iso6523.of(ICD.NO_ORG, "996668649", "0", "0"))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("NHN format");
+        assertThatThrownBy(() -> Iso6523.parse("0192:996668649:0:0"))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("NHN format");
+
+        Iso6523 iso6523 = Iso6523.of(ICD.NO_ORG, "996668649", "0", "1");
+        assertThat(Iso6523.parse(iso6523.getIdentifier())).isEqualTo(iso6523);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "x\r\nFAKE LOG LINE",
+        "0192:x\r\nFAKE LOG LINE",
+        "her-id:\r\nFAKE",
+        "fastlege-for:\nFAKE",
+        "iso6523-actorid-upis::x\r\nFAKE LOG LINE",
+        "x\r\nFAKE::y",
+    })
+    void renderedStackTraceDoesNotContainLineBreaksFromInput(String identifier) {
+        assertNoInjectedLineBreaks(catchThrowable(() -> PartnerIdentifier.parse(identifier)));
+        assertNoInjectedLineBreaks(catchThrowable(() -> PartnerIdentifier.parseQualifiedIdentifier(identifier)));
+        assertNoInjectedLineBreaks(catchThrowable(() -> Iso6523.parse(identifier)));
+        assertNoInjectedLineBreaks(catchThrowable(() -> Iso6523.parseQualifiedIdentifier(identifier)));
+        assertNoInjectedLineBreaks(catchThrowable(() -> PersonIdentifier.parse(identifier)));
+        assertNoInjectedLineBreaks(catchThrowable(() -> NhnIdentifier.parse(identifier)));
+    }
+
+    private static void assertNoInjectedLineBreaks(Throwable throwable) {
+        assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+        StringWriter stackTrace = new StringWriter();
+        throwable.printStackTrace(new PrintWriter(stackTrace));
+        assertThat(stackTrace.toString().lines())
+            .noneMatch(line -> line.startsWith("FAKE"))
+            .noneMatch(line -> line.contains("\r"));
     }
 
     @Test

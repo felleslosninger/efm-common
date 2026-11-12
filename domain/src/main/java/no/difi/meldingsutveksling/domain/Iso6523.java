@@ -76,21 +76,21 @@ public class Iso6523 implements PartnerIdentifier, OrganizationIdentifier {
         if (sourceIndicator != null && organizationPartIdentifier == null) {
             throw new IllegalArgumentException("Source Indicator requires that the part identifier is specified");
         }
+
+        // The suffix ":0:0" is the NHN format, which is not a valid Iso6523 value
+        if ("0".equals(organizationPartIdentifier) && "0".equals(sourceIndicator)) {
+            throw new IllegalArgumentException("NHN format");
+        }
     }
 
     public static Iso6523 parse(String identifier) {
         Matcher matcher = ISO6523_PATTERN.matcher(identifier);
         if (matcher.matches()) {
-            var organizationPartIdentifier = matcher.group("organizationPartIdentifier");
-            var sourceIndicator = matcher.group("sourceIndicator");
-            if ((organizationPartIdentifier + ":" + sourceIndicator).equals("0:0")) {
-                throw new IllegalArgumentException("NHN format");
-            }
             return new Iso6523(
                 ICD.parse(matcher.group("icd")),
                 matcher.group("organizationIdentifier"),
-                organizationPartIdentifier,
-                sourceIndicator);
+                matcher.group("organizationPartIdentifier"),
+                matcher.group("sourceIndicator"));
         }
 
         Matcher simpleMatcher = NORWEGIAN_ORGANIZATION_IDENTIFIER_PATTERN.matcher(identifier);
