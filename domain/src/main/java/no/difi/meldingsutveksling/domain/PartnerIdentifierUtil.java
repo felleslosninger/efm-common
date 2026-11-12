@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 class PartnerIdentifierUtil {
 
     private static final Pattern QUALIFIED_IDENTIFIER_PATTERN = Pattern.compile("^(?<authority>.+)::(?<identifier>.*)");
+    private static final Pattern UNPRINTABLE_PATTERN = Pattern.compile("[\\p{Cc}\\p{Cf}\\p{Zl}\\p{Zp}]");
 
     private PartnerIdentifierUtil() {
         // Utility class
@@ -34,6 +35,12 @@ class PartnerIdentifierUtil {
 
     static int getDigit(String s, int index) {
         return s.charAt(index) - '0';
+    }
+
+    /// Replaces control and format characters (e.g. CR/LF) so that untrusted input
+    /// can be included in exception messages that may end up in logs.
+    static String sanitize(String value) {
+        return value == null ? null : UNPRINTABLE_PATTERN.matcher(value).replaceAll("?");
     }
 
     static String getIdentifier(String qualifiedIdentifier, String expectedAuthority) {
@@ -73,7 +80,7 @@ class PartnerIdentifierUtil {
             }
         }
 
-        IllegalArgumentException exception = new IllegalArgumentException(String.format("Unable to parse identifier = '%s'", identifier));
+        IllegalArgumentException exception = new IllegalArgumentException(String.format("Unable to parse identifier = '%s'", sanitize(identifier)));
         exceptionList.forEach(exception::addSuppressed);
         throw exception;
     }

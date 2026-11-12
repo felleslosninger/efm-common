@@ -46,10 +46,10 @@ public class Iso6523Test {
     @Test
     public void isValid() {
         assertThat(Iso6523.isValid("0192:987654321")).isTrue();
-        assertThat(Iso6523.isValid("0192:fiken")).isTrue();
         assertThat(Iso6523.isValid("0007:000000-0000")).isTrue();
-        assertThat(Iso6523.isValid("0007:19571003-6970 001")).isTrue();
 
+        assertThat(Iso6523.isValid("0192:fiken")).isFalse();
+        assertThat(Iso6523.isValid("0007:19571003-6970 001")).isFalse();
         assertThat(Iso6523.isValid("0192A987654321")).isFalse();
     }
 
@@ -57,10 +57,11 @@ public class Iso6523Test {
     public void isValidQualifiedIdentifier() {
         assertThat(Iso6523.isValidQualifiedIdentifier("0192:987654321")).isFalse();
         assertThat(Iso6523.isValidQualifiedIdentifier("iso6523-actorid-upis::0192:987654321")).isTrue();
-        assertThat(Iso6523.isValidQualifiedIdentifier("iso6523-actorid-upis::0192:fiken")).isTrue();
         assertThat(Iso6523.isValidQualifiedIdentifier("iso6523-actorid-upis::0007:000000-0000")).isTrue();
-        assertThat(Iso6523.isValidQualifiedIdentifier("iso6523-actorid-upis::0007:19571003-6970 001")).isTrue();
+        assertThat(Iso6523.isValidQualifiedIdentifier("iso6523-actorid-upis::0192:fiken")).isFalse();
+        assertThat(Iso6523.isValidQualifiedIdentifier("iso6523-actorid-upis::0007:19571003-6970 001")).isFalse();
         assertThat(Iso6523.isValidQualifiedIdentifier("iso6523-actorid-upis::0192A987654321")).isFalse();
+        assertThat(Iso6523.isValidQualifiedIdentifier("iso6523-actorid-upis::0192:996668649;x")).isFalse();
     }
 
     @Test

@@ -1,5 +1,19 @@
 # Changelog
 
+## Neste versjon
+
+### Breaking Changes
+- MOVE-5376: `Iso6523` validerer strengare. Valideringa skjer no i konstruktøren og gjeld difor `parse`, `of` og alle `with`-metodane:
+  - Organisasjonsidentifikatoren kan berre innehalde `A-Z`, `a-z`, `0-9`, `.`, `_` og `-` (maks 35 teikn).
+    Mellomrom, kontrollteikn, `<`, `>`, `"`, `;`, `/` og andre teikn blir avviste for alle ICD-ar.
+  - For ICD `0192` må organisasjonsidentifikatoren vere nøyaktig 9 siffer. `0192:fiken` og liknande blir avvist.
+  - Organisasjonsdel-identifikatoren (t.d. `MP//Vergemålsetaten`) kan framleis innehalde `/` og Unicode-bokstavar,
+    men ikkje mellomrom, kontroll- og formatteikn, `:`, `<`, `>`, `"`, `'`, `` ` ``, `;`, `&` eller `\`.
+  - Ugyldige verdiar som alt ligg i databasar vil gi `IllegalArgumentException` når dei blir lesne via `Iso6523Converter`/`Iso6523TypeDescriptor`.
+- Kontrollsifferet (modulus 11) for ICD `0192` blir **ikkje** sjekka i `parse`, slik at eksisterande data og testdata som `987654321` framleis kan lesast.
+  Bruk nye `Iso6523.parseStrict` / `Iso6523.isValidStrict` når ny input skal validerast, t.d. i `@Iso6523`-validatoren.
+- Feilmeldingar frå `Iso6523` og `PartnerIdentifier.parse` erstattar kontroll- og formatteikn (t.d. CR/LF) med `?`.
+
 ## 2.x.y
 
 ### Breaking Changes i v 2.x.y
