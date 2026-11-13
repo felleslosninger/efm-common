@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 class PartnerIdentifierUtil {
 
     private static final Pattern QUALIFIED_IDENTIFIER_PATTERN = Pattern.compile("^(?<authority>.+)::(?<identifier>.*)");
+    private static final Pattern UNPRINTABLE_PATTERN = Pattern.compile("[\\p{Cc}\\p{Cf}\\p{Zl}\\p{Zp}]");
 
     private PartnerIdentifierUtil() {
         // Utility class
@@ -36,11 +37,25 @@ class PartnerIdentifierUtil {
         return s.charAt(index) - '0';
     }
 
+    /// Replaces control and format characters (e.g. CR/LF) so that untrusted input
+    /// can be included in exception messages that may end up in logs.
+    static String sanitize(String value) {
+        return value == null ? null : UNPRINTABLE_PATTERN.matcher(value).replaceAll("?");
+    }
+
+    /// Copy of the exception with a sanitized message and without cause or suppressed exceptions,
+    /// which may contain unsanitized input.
+    static IllegalArgumentException sanitize(IllegalArgumentException e) {
+        IllegalArgumentException sanitized = new IllegalArgumentException(sanitize(e.getMessage()));
+        sanitized.setStackTrace(e.getStackTrace());
+        return sanitized;
+    }
+
     static String getIdentifier(String qualifiedIdentifier, String expectedAuthority) {
         Matcher matcher = QUALIFIED_IDENTIFIER_PATTERN.matcher(qualifiedIdentifier);
 
         if (!matcher.matches()) {
-            throw new IllegalArgumentException(String.format("Invalid qualified identifier = '%s'. Expected <authoriyy>::<identifier>", qualifiedIdentifier));
+            throw new IllegalArgumentException(String.format("Invalid qualified identifier = '%s'. Expected <authoriyy>::<identifier>", sanitize(qualifiedIdentifier)));
         }
 
         String authority = matcher.group("authority");
@@ -50,7 +65,7 @@ class PartnerIdentifierUtil {
             return identifier;
         }
 
-        throw new IllegalArgumentException(String.format("Invalid authority='%s', expected '%s'", authority, expectedAuthority));
+        throw new IllegalArgumentException(String.format("Invalid authority='%s', expected '%s'", sanitize(authority), expectedAuthority));
     }
 
     static boolean isValid(String identifier, Consumer<String> parser) {
@@ -69,11 +84,11 @@ class PartnerIdentifierUtil {
             try {
                 return parser.apply(identifier);
             } catch (IllegalArgumentException e) {
-                exceptionList.add(e);
+                exceptionList.add(sanitize(e));
             }
         }
 
-        IllegalArgumentException exception = new IllegalArgumentException(String.format("Unable to parse identifier = '%s'", identifier));
+        IllegalArgumentException exception = new IllegalArgumentException(String.format("Unable to parse identifier = '%s'", sanitize(identifier)));
         exceptionList.forEach(exception::addSuppressed);
         throw exception;
     }

@@ -21,7 +21,7 @@ public class PersonIdentifier implements PartnerIdentifier {
 
     public static PersonIdentifier parse(String identifier) {
         if (!SSN_PATTERN.matcher(identifier).matches()) {
-            throw new IllegalArgumentException(String.format("Invalid SSN='%s'", identifier));
+            throw new IllegalArgumentException(String.format("Invalid SSN='%s'", PartnerIdentifierUtil.sanitize(identifier)));
         }
 
         validateCheckDigit(identifier, 9, WEIGHTS1);
