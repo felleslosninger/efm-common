@@ -23,7 +23,11 @@ permissions:
 jobs:
   call-workflow-maven-build:
     uses: felleslosninger/github-workflows/.github/workflows/ci-pr-checks-lib.yml@main
+    # ci-pr-checks-lib.yml declares a (Dependabot) auto-merge job requiring these permissions.
+    # GitHub validates them at startup even though auto-merge is disabled here, so they must be granted.
+    permissions:
+      contents: write
+      pull-requests: write
     with:
       java-version: 21
-      sbom-path: ./
     secrets: inherit
