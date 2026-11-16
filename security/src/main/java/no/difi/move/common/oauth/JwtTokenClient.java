@@ -6,22 +6,23 @@ import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.*;
-import org.springframework.http.converter.FormHttpMessageConverter;
+import org.springframework.http.MediaType;
 import org.springframework.resilience.annotation.Retryable;
 import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
+/**
+ * Hentar token frå token-endepunktet med JWT bearer grant.
+ * <p>
+ * {@link #fetchToken()} og {@link #generateJWT()} krev ikkje webflux på classpath.
+ * {@link #fetchTokenMono()} krev at appen sjølv har {@code spring-boot-starter-webflux} som avhengigheit.
+ */
 @Slf4j
 @SuppressWarnings("unused")
 public class JwtTokenClient {
@@ -30,13 +31,18 @@ public class JwtTokenClient {
     public static final ZoneId DEFAULT_ZONE_ID = DEFAULT_TIME_ZONE.toZoneId();
 
     private final JwtTokenConfig config;
-    private final WebClient wc;
+    private final RestClient restClient;
     private final JWSHeader jwsHeader;
     private final RSASSASigner signer;
 
+    // Blir laga først når fetchTokenMono() blir kalla, slik at webflux ikkje trengst for det synkrone API-et.
+    private volatile ReactiveJwtTokenFetcher reactiveFetcher;
+
     public JwtTokenClient(JwtTokenConfig config) {
         this.config = config;
-        this.wc = WebClient.create(config.getTokenUri());
+        this.restClient = RestClient.builder()
+            .defaultStatusHandler(new OidcErrorHandler())
+            .build();
 
         this.jwsHeader = JwtHeaderAndSignerFactory.getJwsHeader(config);
         this.signer = JwtHeaderAndSignerFactory.getSigner(config);
@@ -55,27 +61,21 @@ public class JwtTokenClient {
     }
 
     private Mono<JwtTokenResponse> fetchTokenMonoInternal(JwtTokenInput input, JwtTokenAdditionalClaims additionalClaims) {
-        Mono<LinkedMultiValueMap<String, String>> body = Mono.fromSupplier(() -> {
-            LinkedMultiValueMap<String, String> fields = new LinkedMultiValueMap<>();
-            fields.add("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
-            fields.add("assertion", generateJWT(input, additionalClaims));
-            return fields;
-        });
+        return getReactiveFetcher().fetchTokenMono(() -> createTokenRequestForm(input, additionalClaims));
+    }
 
-        return wc.post()
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .accept(MediaType.APPLICATION_JSON)
-            .body(body, LinkedMultiValueMap.class)
-            .retrieve()
-            .onStatus(HttpStatusCode::isError, e -> e.bodyToMono(String.class)
-                .flatMap(s -> Mono.error(new JwtTokenException("http status: " + e.statusCode() + ", body: " + s)))
-            )
-            .bodyToMono(JwtTokenResponse.class)
-            .retryWhen(Retry.backoff(Long.MAX_VALUE, Duration.ofSeconds(2L))
-                .maxBackoff(Duration.ofMinutes(1L))
-                .doBeforeRetry(rs -> log.warn("Error connecting to token endpoint, retrying.. {}", rs)))
-            .doOnNext(res -> log.debug("Response: {}", res))
-            .cache(r -> Duration.ofSeconds(r.getExpiresIn() - 10L), t -> Duration.ZERO, () -> Duration.ZERO);
+    private ReactiveJwtTokenFetcher getReactiveFetcher() {
+        ReactiveJwtTokenFetcher fetcher = reactiveFetcher;
+        if (fetcher == null) {
+            synchronized (this) {
+                fetcher = reactiveFetcher;
+                if (fetcher == null) {
+                    fetcher = new ReactiveJwtTokenFetcher(config.getTokenUri());
+                    reactiveFetcher = fetcher;
+                }
+            }
+        }
+        return fetcher;
     }
 
     @Retryable(value = HttpClientErrorException.class, maxRetries = Integer.MAX_VALUE, delay = 5000, maxDelay = 1000 * 60 * 60, multiplier = 3)
@@ -94,24 +94,20 @@ public class JwtTokenClient {
     }
 
     private JwtTokenResponse fetchTokenInternal(JwtTokenInput input, JwtTokenAdditionalClaims additionalClaims) {
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.setErrorHandler(new OidcErrorHandler());
+        return restClient.post()
+            .uri(config.getTokenUri())
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .accept(MediaType.APPLICATION_JSON)
+            .body(createTokenRequestForm(input, additionalClaims))
+            .retrieve()
+            .body(JwtTokenResponse.class);
+    }
 
-        LinkedMultiValueMap<String, String> attrMap = new LinkedMultiValueMap<>();
-        attrMap.add("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
-        attrMap.add("assertion", generateJWT(input, additionalClaims));
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(attrMap, headers);
-
-        FormHttpMessageConverter formHttpMessageConverter = new FormHttpMessageConverter();
-        restTemplate.getMessageConverters().add(formHttpMessageConverter);
-
-        ResponseEntity<JwtTokenResponse> response = restTemplate.exchange(config.getTokenUri(), HttpMethod.POST,
-            httpEntity, JwtTokenResponse.class);
-
-        return response.getBody();
+    private LinkedMultiValueMap<String, String> createTokenRequestForm(JwtTokenInput input, JwtTokenAdditionalClaims additionalClaims) {
+        LinkedMultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+        form.add("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
+        form.add("assertion", generateJWT(input, additionalClaims));
+        return form;
     }
 
     public String generateJWT() {
