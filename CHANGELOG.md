@@ -13,6 +13,13 @@
 - Kontrollsifferet (modulus 11) for ICD `0192` blir **ikkje** sjekka i `parse`, slik at eksisterande data og testdata som `987654321` framleis kan lesast.
   Bruk nye `Iso6523.parseStrict` / `Iso6523.isValidStrict` når ny input skal validerast, t.d. i `@Iso6523`-validatoren.
 - Feilmeldingar frå `Iso6523` og `PartnerIdentifier.parse` erstattar kontroll- og formatteikn (t.d. CR/LF) med `?`.
+- MOVE-5436: `security` dreg ikkje lenger inn `spring-boot-starter-webflux` (avhengigheita er no `optional`).
+  - `JwtTokenClient.fetchToken()` og `generateJWT()` fungerer utan webflux. `fetchToken()` brukar no `RestClient` i staden for `RestTemplate`.
+  - Appar som brukar `JwtTokenClient.fetchTokenMono()` eller `JwtWebClient` må sjølve leggje til `spring-boot-starter-webflux`
+    (t.d. efm-dpv-proxy, efm-move-admin, efm-sr-proxy, og efm-integrasjonspunkt viss det ikkje alt har webflux direkte).
+  - `JwtTokenClient` deklarerer framleis metodar som returnerer `Mono`. Utan reactor på classpath kan han difor ikkje
+    inspiserast med refleksjon (t.d. registrerast som Spring-`@Bean` eller mockast). Lag han med `new JwtTokenClient(...)` slik ks-fiks gjer.
+  - `dokumentpakking` har no `spring-boot-starter-webflux` som eigen avhengigheit, så brukarane der merkar inga endring.
 
 ## 2.x.y
 

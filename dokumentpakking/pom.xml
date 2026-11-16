@@ -24,6 +24,11 @@
             <artifactId>security</artifactId>
         </dependency>
         <dependency>
+            <!-- PartUtils brukar reaktive multipart-typar. Kom tidlegare transitivt via security. -->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+        <dependency>
             <groupId>no.difi.move-common</groupId>
             <artifactId>io</artifactId>
         </dependency>

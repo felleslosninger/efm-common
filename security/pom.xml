@@ -29,6 +29,13 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
+            <!-- Berre naudsynt for fetchTokenMono() og JwtWebClient. Appar som brukar desse må sjølve ha webflux. -->
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <!-- JwtTokenResponse og RestClient treng Jackson. Kom tidlegare transitivt via webflux. -->
+            <groupId>tools.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -84,5 +91,46 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*WithoutWebfluxTest.java</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <!-- Køyrer testar utan webflux/reactor på classpath, slik ein Spring MVC-app ser modulen. -->
+                    <execution>
+                        <id>without-webflux</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <excludes combine.self="override"/>
+                            <includes>
+                                <include>**/*WithoutWebfluxTest.java</include>
+                            </includes>
+                            <classpathDependencyExcludes>
+                                <classpathDependencyExclude>org.springframework.boot:spring-boot-starter-webflux</classpathDependencyExclude>
+                                <classpathDependencyExclude>org.springframework.boot:spring-boot-webflux</classpathDependencyExclude>
+                                <classpathDependencyExclude>org.springframework.boot:spring-boot-starter-reactor-netty</classpathDependencyExclude>
+                                <classpathDependencyExclude>org.springframework.boot:spring-boot-reactor-netty</classpathDependencyExclude>
+                                <classpathDependencyExclude>org.springframework.boot:spring-boot-reactor</classpathDependencyExclude>
+                                <classpathDependencyExclude>org.springframework:spring-webflux</classpathDependencyExclude>
+                                <classpathDependencyExclude>io.projectreactor:reactor-core</classpathDependencyExclude>
+                                <classpathDependencyExclude>io.projectreactor.netty:reactor-netty-core</classpathDependencyExclude>
+                                <classpathDependencyExclude>io.projectreactor.netty:reactor-netty-http</classpathDependencyExclude>
+                                <classpathDependencyExclude>org.reactivestreams:reactive-streams</classpathDependencyExclude>
+                            </classpathDependencyExcludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
