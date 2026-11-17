@@ -2,6 +2,25 @@
 
 ## Neste versjon
 
+### Feilrettingar
+- MOVE-5430: `MarkerFactory.senderMarker` hashar no fødselsnummer (SHA-256) slik `receiverMarker` alt gjorde.
+  Loggfeltet `sender_org_number` inneheld difor ein hash, ikkje fødselsnummeret, når avsendar er ein person.
+  Søk i sentral logg på avsendar som er person må gjerast på hashen. Orgnummer står framleis i klårtekst.
+  - `IdentifierHasher.hashIfPersonnr` tek no imot `null` og returnerer `null`, så markørane krasjar ikkje når avsendar eller mottakar manglar.
+
+## 5.0.0
+
+### Breaking Changes
+- MOVE-5436: `security` dreg ikkje lenger inn `spring-boot-starter-webflux` (avhengigheita er no `optional`).
+  - `JwtTokenClient.fetchToken()` og `generateJWT()` fungerer utan webflux. `fetchToken()` brukar no `RestClient` i staden for `RestTemplate`.
+  - Appar som brukar `JwtTokenClient.fetchTokenMono()` eller `JwtWebClient` må sjølve leggje til `spring-boot-starter-webflux`
+    (t.d. efm-dpv-proxy, efm-move-admin, efm-sr-proxy, og efm-integrasjonspunkt viss det ikkje alt har webflux direkte).
+  - `JwtTokenClient` deklarerer framleis metodar som returnerer `Mono`. Utan reactor på classpath kan han difor ikkje
+    inspiserast med refleksjon (t.d. registrerast som Spring-`@Bean` eller mockast). Lag han med `new JwtTokenClient(...)` slik ks-fiks gjer.
+  - `dokumentpakking` har no `spring-boot-starter-webflux` som eigen avhengigheit, så brukarane der merkar inga endring.
+
+## 4.0.0
+
 ### Breaking Changes
 - MOVE-5376: `Iso6523` validerer strengare. Valideringa skjer no i konstruktøren og gjeld difor `parse`, `of` og alle `with`-metodane:
   - Organisasjonsidentifikatoren kan berre innehalde `A-Z`, `a-z`, `0-9`, `.`, `_` og `-` (maks 35 teikn).
@@ -13,13 +32,6 @@
 - Kontrollsifferet (modulus 11) for ICD `0192` blir **ikkje** sjekka i `parse`, slik at eksisterande data og testdata som `987654321` framleis kan lesast.
   Bruk nye `Iso6523.parseStrict` / `Iso6523.isValidStrict` når ny input skal validerast, t.d. i `@Iso6523`-validatoren.
 - Feilmeldingar frå `Iso6523` og `PartnerIdentifier.parse` erstattar kontroll- og formatteikn (t.d. CR/LF) med `?`.
-- MOVE-5436: `security` dreg ikkje lenger inn `spring-boot-starter-webflux` (avhengigheita er no `optional`).
-  - `JwtTokenClient.fetchToken()` og `generateJWT()` fungerer utan webflux. `fetchToken()` brukar no `RestClient` i staden for `RestTemplate`.
-  - Appar som brukar `JwtTokenClient.fetchTokenMono()` eller `JwtWebClient` må sjølve leggje til `spring-boot-starter-webflux`
-    (t.d. efm-dpv-proxy, efm-move-admin, efm-sr-proxy, og efm-integrasjonspunkt viss det ikkje alt har webflux direkte).
-  - `JwtTokenClient` deklarerer framleis metodar som returnerer `Mono`. Utan reactor på classpath kan han difor ikkje
-    inspiserast med refleksjon (t.d. registrerast som Spring-`@Bean` eller mockast). Lag han med `new JwtTokenClient(...)` slik ks-fiks gjer.
-  - `dokumentpakking` har no `spring-boot-starter-webflux` som eigen avhengigheit, så brukarane der merkar inga endring.
 
 ## 2.x.y
 

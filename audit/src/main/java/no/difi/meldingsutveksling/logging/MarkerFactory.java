@@ -41,7 +41,7 @@ public class MarkerFactory {
     }
 
     public static LogstashMarker senderMarker(String senderPartynumber) {
-        return Markers.append(SENDER_ORG_NUMBER, senderPartynumber);
+        return Markers.append(SENDER_ORG_NUMBER, hashIfPersonnr(senderPartynumber));
     }
 
     public static LogstashMarker responseTypeMarker(String responseType) {
