@@ -20,6 +20,10 @@
   - `JwtTokenClient` deklarerer framleis metodar som returnerer `Mono`. Utan reactor på classpath kan han difor ikkje
     inspiserast med refleksjon (t.d. registrerast som Spring-`@Bean` eller mockast). Lag han med `new JwtTokenClient(...)` slik ks-fiks gjer.
   - `dokumentpakking` har no `spring-boot-starter-webflux` som eigen avhengigheit, så brukarane der merkar inga endring.
+- MOVE-5430: `MarkerFactory.senderMarker` hashar no fødselsnummer (SHA-256) slik `receiverMarker` alt gjorde.
+  Loggfeltet `sender_org_number` inneheld difor ein hash, ikkje fødselsnummeret, når avsendar er ein person.
+  Søk i sentral logg på avsendar som er person må gjerast på hashen. Orgnummer står framleis i klårtekst.
+  - `IdentifierHasher.hashIfPersonnr` tek no imot `null` og returnerer `null`, så markørane krasjar ikkje når avsendar eller mottakar manglar.
 
 ## 2.x.y
 
