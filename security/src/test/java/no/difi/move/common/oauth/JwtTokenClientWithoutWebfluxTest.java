@@ -5,7 +5,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.HttpClientErrorException;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestClientException;
 
 import java.net.http.HttpTimeoutException;
 import java.time.Duration;
@@ -87,6 +90,47 @@ class JwtTokenClientWithoutWebfluxTest {
         assertThat(elapsed).isBetween(Duration.ofMillis(450), Duration.ofSeconds(5));
         // Klienten prøver ikkje på nytt av seg sjølv.
         assertThat(tokenEndpoint.requests()).hasSize(1);
+    }
+
+    @Test
+    void fetchTokenTimesOutWhenTokenEndpointStallsInBody() {
+        tokenEndpoint.stallBodyFor(Duration.ofSeconds(30));
+        var config = tokenEndpoint.config();
+        config.setReadTimeout(Duration.ofMillis(500));
+        var client = new JwtTokenClient(config);
+
+        long start = System.nanoTime();
+        // Headerane er komne, så RestClient ville elles kasta ein generell RestClientException.
+        assertThatThrownBy(client::fetchToken).isInstanceOf(ResourceAccessException.class);
+
+        assertThat(Duration.ofNanos(System.nanoTime() - start)).isBetween(Duration.ofMillis(450), Duration.ofSeconds(5));
+    }
+
+    @Test
+    void invalidJsonFromTokenEndpointIsNotReportedAsResourceAccessException() {
+        tokenEndpoint.respondWith(200, "not json");
+        var client = new JwtTokenClient(tokenEndpoint.config());
+
+        assertThatThrownBy(client::fetchToken)
+            .isInstanceOf(RestClientException.class)
+            .isNotInstanceOf(ResourceAccessException.class);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"PT0S", "PT-1S", "PT0.0005S"})
+    void timeoutsBelowOneMillisecondAreRejected(String value) {
+        var zeroRead = tokenEndpoint.config();
+        zeroRead.setReadTimeout(Duration.parse(value));
+        var zeroConnect = tokenEndpoint.config();
+        zeroConnect.setConnectTimeout(Duration.parse(value));
+
+        // 0 ville elles gitt «ingen grense» i JdkClientHttpRequestFactory.
+        assertThatThrownBy(() -> new JwtTokenClient(zeroRead))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("readTimeout");
+        assertThatThrownBy(() -> new JwtTokenClient(zeroConnect))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("connectTimeout");
     }
 
     @Test

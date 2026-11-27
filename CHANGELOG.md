@@ -4,11 +4,18 @@
 
 ### Feilrettingar
 - MOVE-5323: `JwtTokenClient.fetchToken()` har no tidsavbrot mot token-endepunktet, slik at eit endepunkt som heng
-  ikkje held tråden til kallaren utan grense. Standard er 5 s for tilkopling og 10 s for svar.
+  ikkje held tråden til kallaren utan grense. Standard er 5 s for tilkopling og 10 s for heile kallet.
   - Kan setjast med `connectTimeout` og `readTimeout` (`Duration`) i `JwtTokenConfig`. `null` gir standardverdiane.
-  - Ved tidsavbrot kastar `fetchToken()` `ResourceAccessException`. Han blir ikkje prøvd på nytt av `@Retryable`, som berre gjeld `HttpClientErrorException`.
-  - `fetchToken()` brukar no alltid JDK sin `HttpClient` (HTTP/1.1) i staden for den HTTP-klienten `RestClient` fann på classpath.
-  - `fetchTokenMono()` er uendra.
+    `readTimeout` er samla tid frå førespurnaden blir send til heile svaret er lese, tilkopling medrekna.
+  - Verdiar under 1 ms (òg `0`) blir avviste med `IllegalArgumentException` når klienten blir laga, sidan 0 elles hadde vore «ingen grense».
+    Skriv eining i properties (t.d. `5s`); eit tal utan eining blir tolka som millisekund.
+  - Ved tidsavbrot og andre I/O-feil kastar `fetchToken()` `ResourceAccessException`, òg når feilen skjer midt i body.
+    Han blir ikkje prøvd på nytt av `@Retryable`, som berre gjeld `HttpClientErrorException`.
+  - `fetchToken()` brukar no alltid JDK sin `HttpClient` (HTTP/1.1) i staden for den HTTP-klienten `RestClient` fann på classpath
+    (Apache HttpClient, Jetty eller Reactor Netty). JDK-klienten følgjer JVM-ens standard proxy- og TLS-oppsett
+    (`https.proxyHost`, `http.nonProxyHosts`, `javax.net.ssl.trustStore`), så appar som set desse kan få token-kallet gjennom ein proxy dei ikkje gjekk gjennom før.
+  - Kvar `JwtTokenClient` har sin eigen `HttpClient` med eigne trådar, så lag klienten éin gong og gjenbruk han.
+  - `fetchTokenMono()` er uendra og har framleis ikkje tidsavbrot.
 - MOVE-5430: `MarkerFactory.senderMarker` hashar no fødselsnummer (SHA-256) slik `receiverMarker` alt gjorde.
   Loggfeltet `sender_org_number` inneheld difor ein hash, ikkje fødselsnummeret, når avsendar er ein person.
   Søk i sentral logg på avsendar som er person må gjerast på hashen. Orgnummer står framleis i klårtekst.

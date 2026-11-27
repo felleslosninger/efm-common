@@ -35,6 +35,7 @@ class TokenEndpointStub implements AutoCloseable {
     private volatile int status = 200;
     private volatile String responseBody = TOKEN_RESPONSE;
     private volatile Duration responseDelay = Duration.ZERO;
+    private volatile Duration bodyStall = Duration.ZERO;
     // Slepper ventande svar når stubben blir lukka, så server.stop() ikkje må vente ut forseinkinga.
     private final CountDownLatch closed = new CountDownLatch(1);
 
@@ -43,12 +44,20 @@ class TokenEndpointStub implements AutoCloseable {
         server.createContext("/token", exchange -> {
             String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
             requests.add(new ReceivedRequest(exchange.getRequestHeaders().getFirst("Content-Type"), parseForm(body)));
-            awaitResponseDelay();
+            await(responseDelay);
             byte[] response = responseBody.getBytes(StandardCharsets.UTF_8);
             exchange.getResponseHeaders().add("Content-Type", "application/json");
             exchange.sendResponseHeaders(status, response.length);
             try (OutputStream os = exchange.getResponseBody()) {
-                os.write(response);
+                if (bodyStall.isZero()) {
+                    os.write(response);
+                } else {
+                    // Send headerane og byrjinga av body, og stopp så opp.
+                    os.write(response, 0, 5);
+                    os.flush();
+                    await(bodyStall);
+                    os.write(response, 5, response.length - 5);
+                }
             }
         });
         server.start();
@@ -68,12 +77,20 @@ class TokenEndpointStub implements AutoCloseable {
         return this;
     }
 
-    private void awaitResponseDelay() {
-        if (responseDelay.isZero()) {
+    /**
+     * Sender headerane med ein gong, men stoppar så lenge midt i body.
+     */
+    TokenEndpointStub stallBodyFor(Duration stall) {
+        this.bodyStall = stall;
+        return this;
+    }
+
+    private void await(Duration delay) {
+        if (delay.isZero()) {
             return;
         }
         try {
-            closed.await(responseDelay.toMillis(), TimeUnit.MILLISECONDS);
+            closed.await(delay.toMillis(), TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }

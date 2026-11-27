@@ -52,13 +52,15 @@ public class JwtTokenConfig {
 
     /**
      * Maks tid på å opne tilkopling til token-endepunktet i {@link JwtTokenClient#fetchToken()}.
-     * {@code null} gir {@link #DEFAULT_CONNECT_TIMEOUT}.
+     * {@code null} gir {@link #DEFAULT_CONNECT_TIMEOUT}. Må vere minst 1 ms.
+     * Skriv eining i properties (t.d. {@code 5s}); eit tal utan eining blir tolka som millisekund.
      */
     private Duration connectTimeout = DEFAULT_CONNECT_TIMEOUT;
 
     /**
-     * Maks tid på å vente på svar frå token-endepunktet i {@link JwtTokenClient#fetchToken()}.
-     * {@code null} gir {@link #DEFAULT_READ_TIMEOUT}.
+     * Maks samla tid for eitt kall i {@link JwtTokenClient#fetchToken()}, frå førespurnaden blir send til heile
+     * svaret er lese (tilkopling medrekna). {@code null} gir {@link #DEFAULT_READ_TIMEOUT}. Må vere minst 1 ms.
+     * Skriv eining i properties (t.d. {@code 10s}); eit tal utan eining blir tolka som millisekund.
      */
     private Duration readTimeout = DEFAULT_READ_TIMEOUT;
 }
