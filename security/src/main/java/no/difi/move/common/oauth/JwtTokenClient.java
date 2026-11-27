@@ -7,12 +7,19 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.resilience.annotation.Retryable;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestClientResponseException;
 import reactor.core.publisher.Mono;
 
+import java.io.IOException;
+import java.net.http.HttpClient;
+import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -22,6 +29,15 @@ import java.util.*;
  * <p>
  * {@link #fetchToken()} og {@link #generateJWT()} krev ikkje webflux på classpath.
  * {@link #fetchTokenMono()} krev at appen sjølv har {@code spring-boot-starter-webflux} som avhengigheit.
+ * <p>
+ * {@link #fetchToken()} har tidsavbrot for tilkopling og svar ({@link JwtTokenConfig#getConnectTimeout()} og
+ * {@link JwtTokenConfig#getReadTimeout()}), slik at eit token-endepunkt som heng ikkje held tråden til kallaren
+ * utan grense. Ved tidsavbrot og andre I/O-feil kastar han {@link ResourceAccessException}.
+ * Tidsavbrota blir lesne frå konfigurasjonen når klienten blir laga; seinare endringar i {@link JwtTokenConfig}
+ * har ingen verknad.
+ * <p>
+ * Kvar klient har sin eigen {@link HttpClient} med eigne trådar, så klienten er meint å leve lenge (t.d. éin per
+ * token-endepunkt), ikkje lagast per kall.
  */
 @Slf4j
 @SuppressWarnings("unused")
@@ -41,11 +57,50 @@ public class JwtTokenClient {
     public JwtTokenClient(JwtTokenConfig config) {
         this.config = config;
         this.restClient = RestClient.builder()
+            .requestFactory(createRequestFactory(config))
             .defaultStatusHandler(new OidcErrorHandler())
             .build();
 
         this.jwsHeader = JwtHeaderAndSignerFactory.getJwsHeader(config);
         this.signer = JwtHeaderAndSignerFactory.getSigner(config);
+    }
+
+    /**
+     * Vel request factory sjølv i staden for den RestClient finn på classpath (t.d. Reactor Netty, som ikkje har
+     * svartidsavbrot som standard). JDK-klienten treng inga ekstra avhengigheit, prøver ikkje POST på nytt av seg
+     * sjølv, og er låst til HTTP/1.1 så han ikkje prøver h2c-oppgradering over http.
+     */
+    private static JdkClientHttpRequestFactory createRequestFactory(JwtTokenConfig config) {
+        HttpClient httpClient = HttpClient.newBuilder()
+            .version(HttpClient.Version.HTTP_1_1)
+            .connectTimeout(connectTimeout(config))
+            .build();
+        JdkClientHttpRequestFactory requestFactory = new JdkClientHttpRequestFactory(httpClient);
+        requestFactory.setReadTimeout(readTimeout(config));
+        return requestFactory;
+    }
+
+    static Duration connectTimeout(JwtTokenConfig config) {
+        return validTimeout("connectTimeout", config.getConnectTimeout(), JwtTokenConfig.DEFAULT_CONNECT_TIMEOUT);
+    }
+
+    static Duration readTimeout(JwtTokenConfig config) {
+        return validTimeout("readTimeout", config.getReadTimeout(), JwtTokenConfig.DEFAULT_READ_TIMEOUT);
+    }
+
+    /**
+     * {@code null} gir standardverdien. 0 og negative verdiar blir avviste: JdkClientHttpRequestFactory tolkar
+     * 0 som «ingen grense», og det er nettopp det tidsavbrota skal hindre.
+     */
+    private static Duration validTimeout(String name, Duration value, Duration defaultValue) {
+        if (value == null) {
+            return defaultValue;
+        }
+        if (value.toMillis() < 1) {
+            throw new IllegalArgumentException("JwtTokenConfig." + name + " må vere minst 1 ms, men var " + value
+                + ". Utelat verdien for å bruke standard (" + defaultValue + ").");
+        }
+        return value;
     }
 
     public Mono<JwtTokenResponse> fetchTokenMono() {
@@ -94,13 +149,36 @@ public class JwtTokenClient {
     }
 
     private JwtTokenResponse fetchTokenInternal(JwtTokenInput input, JwtTokenAdditionalClaims additionalClaims) {
-        return restClient.post()
-            .uri(config.getTokenUri())
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .accept(MediaType.APPLICATION_JSON)
-            .body(createTokenRequestForm(input, additionalClaims))
-            .retrieve()
-            .body(JwtTokenResponse.class);
+        try {
+            return restClient.post()
+                .uri(config.getTokenUri())
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(createTokenRequestForm(input, additionalClaims))
+                .retrieve()
+                .body(JwtTokenResponse.class);
+        } catch (ResourceAccessException | RestClientResponseException e) {
+            throw e;
+        } catch (RestClientException e) {
+            // Når tidsavbrotet slår til etter at headerane er komne, stengjer Spring body-straumen, og RestClient
+            // pakkar IOException-en inn i ein generell RestClientException. Gjer han om til ResourceAccessException,
+            // slik at I/O-feil og tidsavbrot alltid gir same unntak uansett når dei skjer.
+            IOException ioException = findIOException(e);
+            if (ioException == null) {
+                throw e;
+            }
+            throw new ResourceAccessException("I/O error reading response from token endpoint "
+                + config.getTokenUri() + ": " + ioException.getMessage(), ioException);
+        }
+    }
+
+    private static IOException findIOException(Throwable throwable) {
+        for (Throwable t = throwable; t != null; t = t.getCause() == t ? null : t.getCause()) {
+            if (t instanceof IOException ioException) {
+                return ioException;
+            }
+        }
+        return null;
     }
 
     private LinkedMultiValueMap<String, String> createTokenRequestForm(JwtTokenInput input, JwtTokenAdditionalClaims additionalClaims) {

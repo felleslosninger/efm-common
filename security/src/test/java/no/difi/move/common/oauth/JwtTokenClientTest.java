@@ -3,10 +3,12 @@ package no.difi.move.common.oauth;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.client.ResourceAccessException;
 
 import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Testar JwtTokenClient med webflux på classpath, slik appar som brukar fetchTokenMono() ser han.
@@ -58,6 +60,20 @@ class JwtTokenClientTest {
         var client = new JwtTokenClient(tokenEndpoint.config());
 
         assertThat(client.fetchToken().getAccessToken()).isEqualTo("test-access-token");
+    }
+
+    @Test
+    void fetchTokenTimesOutWithWebfluxOnClasspath() {
+        // Med webflux på classpath ville RestClient elles valt Reactor Netty, som ikkje har svartidsavbrot.
+        tokenEndpoint.respondAfter(Duration.ofSeconds(30));
+        var config = tokenEndpoint.config();
+        config.setReadTimeout(Duration.ofMillis(500));
+        var client = new JwtTokenClient(config);
+
+        long start = System.nanoTime();
+        assertThatThrownBy(client::fetchToken).isInstanceOf(ResourceAccessException.class);
+
+        assertThat(Duration.ofNanos(System.nanoTime() - start)).isLessThan(Duration.ofSeconds(5));
     }
 
     @Test
