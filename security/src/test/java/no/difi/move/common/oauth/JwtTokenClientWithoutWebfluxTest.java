@@ -5,6 +5,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
+
+import java.net.http.HttpTimeoutException;
+import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -64,6 +68,56 @@ class JwtTokenClientWithoutWebfluxTest {
         assertThatThrownBy(client::fetchToken)
             .isInstanceOf(HttpClientErrorException.class)
             .hasMessageContaining("400");
+    }
+
+    @Test
+    void fetchTokenTimesOutWhenTokenEndpointDoesNotAnswer() {
+        tokenEndpoint.respondAfter(Duration.ofSeconds(30));
+        var config = tokenEndpoint.config();
+        config.setReadTimeout(Duration.ofMillis(500));
+        var client = new JwtTokenClient(config);
+
+        long start = System.nanoTime();
+        assertThatThrownBy(client::fetchToken)
+            .isInstanceOf(ResourceAccessException.class)
+            .hasRootCauseInstanceOf(HttpTimeoutException.class);
+        Duration elapsed = Duration.ofNanos(System.nanoTime() - start);
+
+        // Den konfigurerte read timeout-en blir brukt: ikkje før 500 ms, og langt før endepunktet ville svart.
+        assertThat(elapsed).isBetween(Duration.ofMillis(450), Duration.ofSeconds(5));
+        // Klienten prøver ikkje på nytt av seg sjølv.
+        assertThat(tokenEndpoint.requests()).hasSize(1);
+    }
+
+    @Test
+    void fetchTokenSucceedsWhenTokenEndpointAnswersWithinReadTimeout() {
+        tokenEndpoint.respondAfter(Duration.ofMillis(200));
+        var config = tokenEndpoint.config();
+        config.setReadTimeout(Duration.ofSeconds(5));
+        var client = new JwtTokenClient(config);
+
+        assertThat(client.fetchToken().getAccessToken()).isEqualTo("test-access-token");
+    }
+
+    @Test
+    void timeoutsDefaultWhenNotConfigured() {
+        var config = tokenEndpoint.config();
+
+        assertThat(config.getConnectTimeout()).isEqualTo(Duration.ofSeconds(5));
+        assertThat(config.getReadTimeout()).isEqualTo(Duration.ofSeconds(10));
+        assertThat(new JwtTokenConfig().getConnectTimeout()).isEqualTo(JwtTokenConfig.DEFAULT_CONNECT_TIMEOUT);
+        assertThat(new JwtTokenConfig().getReadTimeout()).isEqualTo(JwtTokenConfig.DEFAULT_READ_TIMEOUT);
+    }
+
+    @Test
+    void timeoutsFallBackToDefaultsWhenSetToNull() {
+        var config = tokenEndpoint.config();
+        config.setConnectTimeout(null);
+        config.setReadTimeout(null);
+
+        assertThat(JwtTokenClient.connectTimeout(config)).isEqualTo(JwtTokenConfig.DEFAULT_CONNECT_TIMEOUT);
+        assertThat(JwtTokenClient.readTimeout(config)).isEqualTo(JwtTokenConfig.DEFAULT_READ_TIMEOUT);
+        assertThat(new JwtTokenClient(config).fetchToken().getAccessToken()).isEqualTo("test-access-token");
     }
 
     @Test

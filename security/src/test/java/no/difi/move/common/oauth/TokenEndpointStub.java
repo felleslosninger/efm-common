@@ -10,10 +10,13 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -31,12 +34,16 @@ class TokenEndpointStub implements AutoCloseable {
     private final List<ReceivedRequest> requests = new CopyOnWriteArrayList<>();
     private volatile int status = 200;
     private volatile String responseBody = TOKEN_RESPONSE;
+    private volatile Duration responseDelay = Duration.ZERO;
+    // Slepper ventande svar når stubben blir lukka, så server.stop() ikkje må vente ut forseinkinga.
+    private final CountDownLatch closed = new CountDownLatch(1);
 
     TokenEndpointStub() throws IOException {
         server = HttpServer.create(new InetSocketAddress(InetAddress.getLoopbackAddress(), 0), 0);
         server.createContext("/token", exchange -> {
             String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
             requests.add(new ReceivedRequest(exchange.getRequestHeaders().getFirst("Content-Type"), parseForm(body)));
+            awaitResponseDelay();
             byte[] response = responseBody.getBytes(StandardCharsets.UTF_8);
             exchange.getResponseHeaders().add("Content-Type", "application/json");
             exchange.sendResponseHeaders(status, response.length);
@@ -51,6 +58,25 @@ class TokenEndpointStub implements AutoCloseable {
         this.status = status;
         this.responseBody = body;
         return this;
+    }
+
+    /**
+     * Ventar så lenge før endepunktet svarar, for å simulere eit token-endepunkt som heng.
+     */
+    TokenEndpointStub respondAfter(Duration delay) {
+        this.responseDelay = delay;
+        return this;
+    }
+
+    private void awaitResponseDelay() {
+        if (responseDelay.isZero()) {
+            return;
+        }
+        try {
+            closed.await(responseDelay.toMillis(), TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     String tokenUri() {
@@ -77,6 +103,7 @@ class TokenEndpointStub implements AutoCloseable {
 
     @Override
     public void close() {
+        closed.countDown();
         server.stop(0);
     }
 }

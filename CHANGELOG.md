@@ -3,6 +3,12 @@
 ## Neste versjon
 
 ### Feilrettingar
+- MOVE-5323: `JwtTokenClient.fetchToken()` har no tidsavbrot mot token-endepunktet, slik at eit endepunkt som heng
+  ikkje held tråden til kallaren utan grense. Standard er 5 s for tilkopling og 10 s for svar.
+  - Kan setjast med `connectTimeout` og `readTimeout` (`Duration`) i `JwtTokenConfig`. `null` gir standardverdiane.
+  - Ved tidsavbrot kastar `fetchToken()` `ResourceAccessException`. Han blir ikkje prøvd på nytt av `@Retryable`, som berre gjeld `HttpClientErrorException`.
+  - `fetchToken()` brukar no alltid JDK sin `HttpClient` (HTTP/1.1) i staden for den HTTP-klienten `RestClient` fann på classpath.
+  - `fetchTokenMono()` er uendra.
 - MOVE-5430: `MarkerFactory.senderMarker` hashar no fødselsnummer (SHA-256) slik `receiverMarker` alt gjorde.
   Loggfeltet `sender_org_number` inneheld difor ein hash, ikkje fødselsnummeret, når avsendar er ein person.
   Søk i sentral logg på avsendar som er person må gjerast på hashen. Orgnummer står framleis i klårtekst.

@@ -7,12 +7,15 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.resilience.annotation.Retryable;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 import reactor.core.publisher.Mono;
 
+import java.net.http.HttpClient;
+import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -22,6 +25,10 @@ import java.util.*;
  * <p>
  * {@link #fetchToken()} og {@link #generateJWT()} krev ikkje webflux på classpath.
  * {@link #fetchTokenMono()} krev at appen sjølv har {@code spring-boot-starter-webflux} som avhengigheit.
+ * <p>
+ * {@link #fetchToken()} har tidsavbrot for tilkopling og svar ({@link JwtTokenConfig#getConnectTimeout()} og
+ * {@link JwtTokenConfig#getReadTimeout()}), slik at eit token-endepunkt som heng ikkje held tråden til kallaren
+ * utan grense. Ved tidsavbrot kastar han {@link org.springframework.web.client.ResourceAccessException}.
  */
 @Slf4j
 @SuppressWarnings("unused")
@@ -41,11 +48,35 @@ public class JwtTokenClient {
     public JwtTokenClient(JwtTokenConfig config) {
         this.config = config;
         this.restClient = RestClient.builder()
+            .requestFactory(createRequestFactory(config))
             .defaultStatusHandler(new OidcErrorHandler())
             .build();
 
         this.jwsHeader = JwtHeaderAndSignerFactory.getJwsHeader(config);
         this.signer = JwtHeaderAndSignerFactory.getSigner(config);
+    }
+
+    /**
+     * Vel request factory sjølv i staden for den RestClient finn på classpath (t.d. Reactor Netty, som ikkje har
+     * svartidsavbrot som standard). JDK-klienten treng inga ekstra avhengigheit, prøver ikkje POST på nytt av seg
+     * sjølv, og er låst til HTTP/1.1 så han ikkje prøver h2c-oppgradering over http.
+     */
+    private static JdkClientHttpRequestFactory createRequestFactory(JwtTokenConfig config) {
+        HttpClient httpClient = HttpClient.newBuilder()
+            .version(HttpClient.Version.HTTP_1_1)
+            .connectTimeout(connectTimeout(config))
+            .build();
+        JdkClientHttpRequestFactory requestFactory = new JdkClientHttpRequestFactory(httpClient);
+        requestFactory.setReadTimeout(readTimeout(config));
+        return requestFactory;
+    }
+
+    static Duration connectTimeout(JwtTokenConfig config) {
+        return Optional.ofNullable(config.getConnectTimeout()).orElse(JwtTokenConfig.DEFAULT_CONNECT_TIMEOUT);
+    }
+
+    static Duration readTimeout(JwtTokenConfig config) {
+        return Optional.ofNullable(config.getReadTimeout()).orElse(JwtTokenConfig.DEFAULT_READ_TIMEOUT);
     }
 
     public Mono<JwtTokenResponse> fetchTokenMono() {
